@@ -156,14 +156,37 @@ XROOM_PLUGIN({
     }
   },
 
-  stopRecording() {
+  stopRecording () {
     this.mediaRecorder.stop()
     this.isRecording = false
     this.api('renderControls')
   },
 
+  composite (videoTrackStream = null, audioTrackStreams = []) {
+
+    const
+      ctx = new AudioContext(),
+      dest = ctx.createMediaStreamDestination()
+
+    audioTrackStreams.map(stream => {
+      if (stream) {
+        ctx.createMediaStreamSource(stream).connect(dest)
+      }
+    })
+
+    if (videoTrackStream) {
+      const
+        videoTrack = videoTrackStream.getVideoTracks()[0],
+        mixedTracks = dest.stream.getAudioTracks()[0]
+
+      return new MediaStream([videoTrack, mixedTracks])
+    }
+
+    return dest.stream
+  },
+
   onRoomEnter (event) {
-    this.audioCompositeStream = event.detail.audioCompositeStream
+    this.audioCompositeStream = this.composite(null, [event.detail.cameraStream, event.detail.screenStream, ...Object.values(event.detail.remoteStreams)])
     this.addIcon()
     this.inDaChat = true
     this.addIcon()
@@ -177,6 +200,6 @@ XROOM_PLUGIN({
   },
 
   onStreamsChanged (event) {
-    this.audioCompositeStream = event.detail.audioCompositeStream
+    this.audioCompositeStream = this.composite(null, [event.detail.cameraStream, event.detail.screenStream, ...Object.values(event.detail.remoteStreams)])
   }
 })
