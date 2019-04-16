@@ -21,7 +21,7 @@ XROOM_PLUGIN({
 | addIcon           | Add icon to UI        | `{title, onClick, svg}`           |
 | removeIcon        | Remove icon from UI   | -                                 |
 | renderControls    | Rerender UI, useful for dynamic icons | -                 |
-
+| broadcastData     | Broadcasts RTC data   | Any data
 
 ### Exposed events
 | Event             | Description           | Payload |
@@ -29,3 +29,4 @@ XROOM_PLUGIN({
 | room/enter        | User entered a room   | `{roomId, cameraStream, screenStream, remoteStreams}` |
 | room/exit         | User quit a room      | `{roomId}` |
 | streams/changed   | Media streams changed | `{cameraStream, screenStream, remoteStreams}` |
+| data/in           | Media streams changed | `{pluginId, data}` |
