@@ -33,7 +33,7 @@ XROOM_PLUGIN({
 
     this.editorDiv = document.createElement('div')
     this.editorDiv.setAttribute('id', 'nisdos-pp-editor')
-    this.editorDiv.setAttribute('style', 'position:absolute;top:0;left:0;width:100vw;height:calc(100vh - 72px);z-index:10;display:none')
+    this.editorDiv.setAttribute('style', 'position:absolute;top:0;left:0;width:100vw;height:calc(100% - 72px);z-index:10;display:none')
     document.body.appendChild(this.editorDiv)
 
     this.editor = window.ace.edit('nisdos-pp-editor')
