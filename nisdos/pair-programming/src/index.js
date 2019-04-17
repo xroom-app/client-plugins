@@ -16,6 +16,7 @@ XROOM_PLUGIN({
     this.onRoomEnter = this.onRoomEnter.bind(this)
     this.onRoomExit = this.onRoomExit.bind(this)
     this.onDataIn = this.onDataIn.bind(this)
+    this.onDrop = this.onDrop.bind(this)
 
     window.addEventListener('room/enter', this.onRoomEnter)
     window.addEventListener('room/exit', this.onRoomExit)
@@ -35,6 +36,10 @@ XROOM_PLUGIN({
     this.editorDiv.setAttribute('id', 'nisdos-pp-editor')
     this.editorDiv.setAttribute('style', 'position:absolute;top:0;left:0;width:100vw;height:calc(100% - 72px);z-index:10;display:none')
     document.body.appendChild(this.editorDiv)
+
+    this.editorDiv.addEventListener('dragenter', this.dumpEvent, false)
+    this.editorDiv.addEventListener('dragover', this.dumpEvent, false)
+    this.editorDiv.addEventListener('drop', this.onDrop, false)
 
     this.editor = window.ace.edit('nisdos-pp-editor')
     this.editor.setTheme('ace/theme/twilight')
@@ -64,6 +69,15 @@ XROOM_PLUGIN({
     this.editorDiv.parentNode.removeChild(this.editorDiv)
   },
 
+  isSupported () {
+    return true
+  },
+
+  dumpEvent (ev) {
+    ev.stopPropagation()
+    ev.preventDefault()
+  },
+
   addIcon () {
     this.api('addIcon', {
       title: 'Pair program',
@@ -75,10 +89,6 @@ XROOM_PLUGIN({
     })
   },
 
-  isSupported () {
-    return true
-  },
-
   showEditor () {
     this.editorDiv.style.display = 'block'
     this.isShown = true
@@ -87,6 +97,21 @@ XROOM_PLUGIN({
   hideEditor () {
     this.editorDiv.style.display = 'none'
     this.isShown = false
+  },
+
+  onDrop (ev) {
+    this.dumpEvent(ev)
+    const file = ev.dataTransfer.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (ev) => {
+        const contents = ev.target.result
+        this.editor.session.setValue(contents)
+      }
+      reader.readAsText(file)
+    } else {
+      alert('Failed to load file')
+    }
   },
 
   onRoomEnter (event) {
