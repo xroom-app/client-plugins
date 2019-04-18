@@ -7,6 +7,8 @@ if (!global._babelPolyfill) {
 
 let TheRange = null
 
+// filter:invert(100%)
+
 XROOM_PLUGIN({
 
   inDaChat: false,
@@ -14,6 +16,7 @@ XROOM_PLUGIN({
   editor: null,
   pdi: false, // processing data-in
   selDebounceTimer: null,
+  nightMode: false,
 
   translations: {
     en: {
@@ -34,7 +37,7 @@ XROOM_PLUGIN({
     window.addEventListener('room/exit', this.onRoomExit)
     window.addEventListener('data/in', this.onDataIn)
 
-    for (const script of ['ace', 'theme-twilight', 'mode-javascript']) {
+    for (const script of ['ace', 'theme-twilight', 'mode-javascript', 'mode-php', 'mode-java', 'mode-python', 'mode-jsx']) {
       await new Promise((resolve) => {
         const s = document.createElement('script')
         s.setAttribute('src', `/plugins/${this.id}/ace/${script}.js`)
@@ -45,8 +48,24 @@ XROOM_PLUGIN({
     }
 
     this.editorDiv = document.createElement('div')
-    this.editorDiv.setAttribute('id', 'nisdos-pp-editor')
-    this.editorDiv.setAttribute('style', 'position:absolute;top:0;left:0;width:100vw;height:calc(100% - 72px);z-index:10;display:none')
+    this.editorDiv.innerHTML = `
+    <div style="position:absolute;top:0;left:0;width:100vw;height:calc(100% - 72px);z-index:10">
+        <div id="${this.id}_bar" style="padding:4px;display:flex;justify-content:flex-start;align-items:center">
+            <button id="${this.id}_open">📂</button>
+            <button id="${this.id}_daynight">🌞️️🌙</button>
+            <select id="${this.id}_syntax">
+                <option value="javascript">JavaScript</option>
+                <option value="php">PHP</option>
+                <option value="java">Java</option>
+                <option value="python">Python</option>
+                <option value="jsx">JSX (React)</option>
+            </select>
+            <input type="file" id="${this.id}_file" style="display:none"/>
+        </div>
+        <div id="nisdos-pp-editor" style="height:calc(100% - 36px)"/>
+    </div>
+    `
+    this.editorDiv.style.display = 'none'
     document.body.appendChild(this.editorDiv)
 
     this.editorDiv.addEventListener('dragenter', this.dumpEvent, false)
@@ -54,13 +73,17 @@ XROOM_PLUGIN({
     this.editorDiv.addEventListener('drop', this.onDrop, false)
 
     this.editor = window.ace.edit('nisdos-pp-editor')
-    this.editor.setTheme('ace/theme/twilight')
-
     TheRange = window.ace.require('ace/range').Range
+
+    document.getElementById(`${this.id}_daynight`).onclick = this.onDayNightClick.bind(this)
+    document.getElementById(`${this.id}_open`).onclick = this.onOpenClick.bind(this)
+    document.getElementById(`${this.id}_syntax`).onchange = this.onSyntaxChange.bind(this)
+    document.getElementById(`${this.id}_file`).onchange = this.onFileChange.bind(this)
 
     const JavaScriptMode = ace.require('ace/mode/javascript').Mode
     this.editor.session.setMode(new JavaScriptMode())
     this.editor.setFontSize(16)
+    this.editor.session.setValue('')
 
     this.editor.selection.on('changeCursor', () => {
       if (this.pdi) return
@@ -83,7 +106,6 @@ XROOM_PLUGIN({
       if (this.selDebounceTimer) clearTimeout(this.selDebounceTimer)
 
       this.selDebounceTimer = setTimeout(() => {
-        console.log('qqq', sels, ranges)
         this.api('broadcastData', {cmd: 'select', args: ranges})
         this.selDebounceTimer = null
       }, 250)
@@ -134,9 +156,39 @@ XROOM_PLUGIN({
     this.isShown = false
   },
 
+  onDayNightClick () {
+    if (this.nightMode) {
+      this.editor.setTheme('ace/theme/chrome')
+      this.nightMode = false
+    } else {
+      this.editor.setTheme('ace/theme/twilight')
+      this.nightMode = true
+    }
+
+    document.getElementById(`${this.id}_bar`).querySelectorAll('button, select').forEach(el => {
+      el.style.filter = `invert(${this.nightMode ? 100 : 0}%)`
+    })
+  },
+
+  onOpenClick () {
+    document.getElementById(`${this.id}_file`).click()
+  },
+
+  onFileChange (ev) {
+    this.loadFile(ev.target.files[0])
+  },
+
+  onSyntaxChange (ev) {
+    const SyntaxMode = ace.require(`ace/mode/${ev.target.value}`).Mode
+    this.editor.session.setMode(new SyntaxMode())
+  },
+
   onDrop (ev) {
     this.dumpEvent(ev)
-    const file = ev.dataTransfer.files[0]
+    this.loadFile(ev.dataTransfer.files[0])
+  },
+
+  loadFile (file) {
     if (file) {
       const reader = new FileReader()
       reader.onload = (ev) => {
