@@ -12,6 +12,15 @@ XROOM_PLUGIN({
   editor: null,
   pdi: false, // processing data-in
 
+  translations: {
+    en: {
+      iconCaption: 'Pair program',
+    },
+    ru: {
+      iconCaption: 'Парное\nпрограммирование',
+    },
+  },
+
   async register () {
     this.onRoomEnter = this.onRoomEnter.bind(this)
     this.onRoomExit = this.onRoomExit.bind(this)
@@ -80,7 +89,7 @@ XROOM_PLUGIN({
 
   addIcon () {
     this.api('addIcon', {
-      title: 'Pair program',
+      title: this.i18n.t('iconCaption'),
       onClick: () => { this.isShown ? this.hideEditor() : this.showEditor() },
       svg: props =>
         <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24">
