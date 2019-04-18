@@ -74,6 +74,21 @@ XROOM_PLUGIN({
   isRecording: false,
   audioCompositeStream: null,
 
+  translations: {
+    en: {
+      iconCaptionOn: 'Rec on',
+      iconCaptionOff: 'Rec off',
+    },
+    sv: {
+      iconCaptionOn: 'Insp. på',
+      iconCaptionOff: 'Insp. av',
+    },
+    ru: {
+      iconCaptionOn: 'Запись вкл.',
+      iconCaptionOff: 'Запись выкл.',
+    },
+  },
+
   register () {
     this.onRoomEnter = this.onRoomEnter.bind(this)
     this.onRoomExit = this.onRoomExit.bind(this)
@@ -100,7 +115,7 @@ XROOM_PLUGIN({
   addIcon () {
     this.api('addIcon', {
       title: () => {
-        return 'Rec ' + (this.isRecording ? 'on' : 'off')
+        return this.isRecording ? this.i18n.t('iconCaptionOn') : this.i18n.t('iconCaptionOff')
       },
       onClick: () => {
         if (this.isRecording) {
