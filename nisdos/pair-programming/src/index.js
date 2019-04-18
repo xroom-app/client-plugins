@@ -5,12 +5,15 @@ if (!global._babelPolyfill) {
   require('babel-polyfill')
 }
 
+let TheRange = null
+
 XROOM_PLUGIN({
 
   inDaChat: false,
   isShown: false,
   editor: null,
   pdi: false, // processing data-in
+  selDebounceTimer: null,
 
   translations: {
     en: {
@@ -53,6 +56,8 @@ XROOM_PLUGIN({
     this.editor = window.ace.edit('nisdos-pp-editor')
     this.editor.setTheme('ace/theme/twilight')
 
+    TheRange = window.ace.require('ace/range').Range
+
     const JavaScriptMode = ace.require('ace/mode/javascript').Mode
     this.editor.session.setMode(new JavaScriptMode())
     this.editor.setFontSize(16)
@@ -61,6 +66,27 @@ XROOM_PLUGIN({
       if (this.pdi) return
       const pos = this.editor.selection.getCursor()
       this.api('broadcastData', {cmd: 'gotoLine', args: [pos.row + 1, pos.column]})
+    })
+
+    this.editor.selection.on('changeSelection', () => {
+      if (this.pdi) return
+
+      const
+        ranges = [],
+        sels = this.editor.selection.getAllRanges()
+
+      for (const s of sels) {
+        ranges.push([s.start.row, s.start.column, s.end.row, s.end.column])
+      }
+
+      // debounce
+      if (this.selDebounceTimer) clearTimeout(this.selDebounceTimer)
+
+      this.selDebounceTimer = setTimeout(() => {
+        console.log('qqq', sels, ranges)
+        this.api('broadcastData', {cmd: 'select', args: ranges})
+        this.selDebounceTimer = null
+      }, 250)
     })
 
     this.editor.on('change', (delta) => {
@@ -153,6 +179,14 @@ XROOM_PLUGIN({
       case 'change':
       //  console.log('change', args[0])
         this.editor.session.getDocument().applyDeltas(args)
+        break
+
+      case 'select':
+        // console.log('select', args, new TheRange(...args[0]))
+        this.editor.selection.clearSelection()
+        for (const s of args) {
+          this.editor.selection.addRange(new TheRange(...s))
+        }
         break
     }
 
