@@ -1,5 +1,14 @@
-### How to create a plugin
-```js
+## How to create a plugin
+
+#### Plugin dir structure:
+* index.js — plugin code
+* icon.png — icon for the marketplace
+* any other files your plugin may need
+
+
+#### index.js skeleton:
+
+```ts
 XROOM_PLUGIN({
     isSupported () {
       // called to check if plugin is supported in the current browser
@@ -15,15 +24,15 @@ XROOM_PLUGIN({
 ```
 
 
-### Exposed API
+## Exposed API
 | Method            | Description           | Arguments                         |
 | ---               | ---                   | ---                               |
 | addIcon           | Add icon to UI        | `{title, onClick, svg}`           |
-| removeIcon        | Remove icon from UI   | -                                 |
-| renderControls    | Rerender UI, useful for dynamic icons | -                 |
+| removeIcon        | Remove icon from UI   | —                                 |
+| renderControls    | Rerender UI, useful for dynamic icons | —                 |
 | broadcastData     | Broadcasts RTC data   | Any data
 
-### Exposed events
+## Exposed events
 | Event             | Description           | Payload |
 | ---               | ---                   | --- |
 | room/enter        | User entered a room   | `{roomId, cameraStream, screenStream, remoteStreams}` |
@@ -32,11 +41,11 @@ XROOM_PLUGIN({
 | data/in           | Media streams changed | `{pluginId, data}` |
 
 
-### Translations support
+## Translations support
 
 1. Add `translations` object to the root.
 2. Add keys for supported languages, e.g. `{ en: {...}, ru: {...} }`
-3. English (en) must be present, as it is used as a fallback. If your plugin uses only one language that
+3. English (en) **must** be present, as it is used as a fallback. If your plugin uses only one language that
 is not English we recommend placing all the data into `en` for simplicity sake.
 4. Language objects from p.2 must have keys, can be arranged in a tree if complexity needed, 
 e.g. `en: { a: { b: 'hello'}, c: 'world }`
