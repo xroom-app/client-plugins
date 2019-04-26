@@ -41,14 +41,8 @@ XROOM_PLUGIN({
     window.addEventListener('room/exit', this.onRoomExit)
     window.addEventListener('data/in', this.onDataIn)
 
-    for (const script of ['ace', 'theme-twilight', 'mode-javascript', 'mode-php', 'mode-java', 'mode-python', 'mode-jsx']) {
-      await new Promise((resolve) => {
-        const s = document.createElement('script')
-        s.setAttribute('src', `/plugins/${this.id}/ace/${script}.js`)
-        s.onerror = () => resolve(false)
-        s.onload = () => resolve(true)
-        document.head.appendChild(s)
-      })
+    for (const script of ['ace', 'theme-twilight', 'mode-javascript']) {
+      await this.loadAceModule(script)
     }
 
     this.editorDiv = document.createElement('div')
@@ -160,6 +154,16 @@ XROOM_PLUGIN({
     this.isShown = false
   },
 
+  async loadAceModule (module) {
+    return new Promise((resolve) => {
+      const s = document.createElement('script')
+      s.setAttribute('src', `/plugins/${this.id}/ace/${module}.js`)
+      s.onerror = () => resolve(false)
+      s.onload = () => resolve(true)
+      document.head.appendChild(s)
+    })
+  },
+
   onDayNightClick () {
     if (this.nightMode) {
       this.editor.setTheme('ace/theme/chrome')
@@ -182,7 +186,8 @@ XROOM_PLUGIN({
     this.loadFile(ev.target.files[0])
   },
 
-  onSyntaxChange (ev) {
+  async onSyntaxChange (ev) {
+    await this.loadAceModule(`mode-${ev.target.value}`)
     const SyntaxMode = ace.require(`ace/mode/${ev.target.value}`).Mode
     this.editor.session.setMode(new SyntaxMode())
   },
