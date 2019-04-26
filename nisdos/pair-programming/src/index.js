@@ -55,8 +55,15 @@ XROOM_PLUGIN({
                 <option value="javascript">JavaScript</option>
                 <option value="php">PHP</option>
                 <option value="java">Java</option>
+                <option value="c_cpp">C/C++</option>
                 <option value="python">Python</option>
+                <option value="golang">Go</option>
+                <option value="mysql">MySQL</option>
                 <option value="jsx">JSX (React)</option>
+                <option value="css">CSS</option>
+                <option value="sass">SASS</option>
+                <option value="html">HTML</option>
+                <option value="json">JSON</option>
             </select>
             <input type="file" id="${this.id}_file" style="display:none"/>
         </div>
