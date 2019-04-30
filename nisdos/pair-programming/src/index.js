@@ -83,8 +83,10 @@ class UI extends Component {
   }
 
   toggleEditor (set = null) {
-    const { isShown } = this.state
-    this.setState({isShown: set === null ? !isShown : set})
+    const isShown = set === null ? !this.state.isShown : set
+
+    this.setState({isShown})
+    this.props.api('setHotKeysEnable', !isShown)
   }
 
   onDayNightClick () {
