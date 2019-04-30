@@ -37,10 +37,13 @@ XROOM_PLUGIN({
 ## Exposed events
 | Event             | Description           | Payload 
 | ---               | ---                   | --- 
-| room/enter        | User entered a room   | `{roomId, cameraStream, screenStream, remoteStreams}` 
-| room/exit         | User quit a room      | `{roomId}` 
+| room/enter        | You entered a room    | `{roomId, cameraStream, screenStream, remoteStreams}` 
+| room/exit         | You quit a room       | `{roomId}` 
 | streams/changed   | Media streams changed | `{cameraStream, screenStream, remoteStreams}` 
 | data/in           | Media streams changed | `{pluginId, data}` 
+| peer/enter        | Peer entered a room   | `{peerId}` 
+| peer/exit         | Peer quit a room      | `{peerId}` 
+| peer/card         | Peer card updated     | `{peerId, card}` 
 
 
 ## Translations support
