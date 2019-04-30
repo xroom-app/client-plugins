@@ -82,9 +82,9 @@ class UI extends Component {
     this.loadFile(ev.dataTransfer.files[0])
   }
 
-  toggleEditor () {
+  toggleEditor (set = null) {
     const { isShown } = this.state
-    this.setState({isShown: !isShown})
+    this.setState({isShown: set === null ? !isShown : set})
   }
 
   onDayNightClick () {
@@ -238,7 +238,7 @@ XROOM_PLUGIN({
   },
 
   onRoomExit () {
-    this.hideEditor()
+    this.ui.toggleEditor(false)
     this.inDaChat = false
     this.api('removeIcon')
     this.api('renderControls')
