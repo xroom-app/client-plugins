@@ -25,20 +25,22 @@ XROOM_PLUGIN({
 
 
 ## Exposed API
-| Method            | Description           | Arguments                         |
-| ---               | ---                   | ---                               |
-| addIcon           | Add icon to UI        | `{title, onClick, svg}`           |
-| removeIcon        | Remove icon from UI   | —                                 |
-| renderControls    | Rerender UI, useful for dynamic icons | —                 |
+| Method            | Description           | Arguments                         
+| ---               | ---                   | ---                               
+| addIcon           | Add icon to UI        | `{title, onClick, svg}`           
+| addUI             | Add own UI            | `{component}`                     
+| removeIcon        | Remove icon from UI   | —                                 
+| renderControls    | Rerender UI, useful for dynamic icons | —                 
 | broadcastData     | Broadcasts RTC data   | Any data
+| setHotKeysEnable  | Hot keys on/off       | Enable flag           
 
 ## Exposed events
-| Event             | Description           | Payload |
-| ---               | ---                   | --- |
-| room/enter        | User entered a room   | `{roomId, cameraStream, screenStream, remoteStreams}` |
-| room/exit         | User quit a room      | `{roomId}` |
-| streams/changed   | Media streams changed | `{cameraStream, screenStream, remoteStreams}` |
-| data/in           | Media streams changed | `{pluginId, data}` |
+| Event             | Description           | Payload 
+| ---               | ---                   | --- 
+| room/enter        | User entered a room   | `{roomId, cameraStream, screenStream, remoteStreams}` 
+| room/exit         | User quit a room      | `{roomId}` 
+| streams/changed   | Media streams changed | `{cameraStream, screenStream, remoteStreams}` 
+| data/in           | Media streams changed | `{pluginId, data}` 
 
 
 ## Translations support
