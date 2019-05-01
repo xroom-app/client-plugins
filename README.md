@@ -32,7 +32,7 @@ XROOM_PLUGIN({
 | removeIcon        | Remove icon from UI   | —                                 
 | renderControls    | Rerender UI, useful for dynamic icons | —                 
 | broadcastData     | Broadcasts RTC data   | Any data
-| setHotKeysEnable  | Hot keys on/off       | Enable flag           
+| setHotKeysEnable  | Hot keys on/off, useful if your plugin interacts with keyboard | Enable flag           
 
 ## Exposed events
 | Event             | Description           | Payload 
@@ -40,7 +40,7 @@ XROOM_PLUGIN({
 | room/enter        | You entered a room    | `{roomId, cameraStream, screenStream, remoteStreams}` 
 | room/exit         | You quit a room       | `{roomId}` 
 | streams/changed   | Media streams changed | `{cameraStream, screenStream, remoteStreams}` 
-| data/in           | Media streams changed | `{pluginId, data}` 
+| data/in           | Incoming rtc data via plugins data channel | `{pluginId, data}` 
 | peer/enter        | Peer entered a room   | `{peerId}` 
 | peer/exit         | Peer quit a room      | `{peerId}` 
 | peer/card         | Peer card updated     | `{peerId, card}` 
