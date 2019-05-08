@@ -37,7 +37,7 @@ class UI extends Component {
 
     a.style = 'display:none'
     a.href = url
-    a.download = recordings[i].mimeType.replace('/', '.')
+    a.download = recordings[i].mimeType.replace('/', `-${i + 1}.`)
     a.click()
     window.URL.revokeObjectURL(url)
   }
