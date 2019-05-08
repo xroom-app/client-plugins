@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import UI from './ui'
 
 /**
  * Advanced rec icon :)
@@ -78,14 +79,23 @@ XROOM_PLUGIN({
     en: {
       iconCaptionOn: 'Rec on',
       iconCaptionOff: 'Rec off',
+      btnSave: 'Save',
+      btnClose: 'Close',
+      warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
     },
     sv: {
       iconCaptionOn: 'Insp. på',
       iconCaptionOff: 'Insp. av',
+      btnSave: 'Spara',
+      btnClose: 'Stänga',
+      warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
     },
     ru: {
       iconCaptionOn: 'Запись вкл.',
       iconCaptionOff: 'Запись выкл.',
+      btnSave: 'Сохранить',
+      btnClose: 'Закрыть',
+      warn1: 'Файлы исчезнут после закрытия окна.<br>Скачайте их, если они нужны!',
     },
   },
 
@@ -98,11 +108,18 @@ XROOM_PLUGIN({
     window.addEventListener('room/exit', this.onRoomExit)
     window.addEventListener('streams/changed', this.onStreamsChanged)
 
-    if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
+    if (window.MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
       this.mimeType = 'audio/ogg'
-    } else if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+    } else if (window.MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
       this.mimeType = 'audio/webm'
     }
+
+    this.api('addUI', { component:
+      <UI
+        i18n={this.i18n}
+        ref={(ref) => { this.ui = ref} }
+      />
+    })
   },
 
   unregister () {
@@ -144,21 +161,10 @@ XROOM_PLUGIN({
       return
     }
 
-    this.mediaRecorder.onstop = (event) => {
-
-      const
-        blob = new Blob(this.recordedBlobs, { type: this.mimeType }),
-        a = document.createElement('a'),
-        url = window.URL.createObjectURL(blob)
-
-      document.body.appendChild(a)
-
-      a.style = 'display:none'
-      a.href = url
-      a.download = this.mimeType.replace('/', '.')
-      a.click()
-      window.URL.revokeObjectURL(url)
+    this.mediaRecorder.onstop = () => {
+      this.ui.openWith(new Blob(this.recordedBlobs, { type: this.mimeType }), this.mimeType)
     }
+
     this.mediaRecorder.ondataavailable = (e) => this.handleDataAvailable(e)
     this.mediaRecorder.start(1000)
     this.isRecording = true
