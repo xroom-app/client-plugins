@@ -104,6 +104,7 @@ const styles = {
   },
   box: {
     width: '480px',
+    maxWidth: '100vw',
     padding: '16px',
     background: '#fff',
   },
