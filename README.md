@@ -44,6 +44,7 @@ XROOM_PLUGIN({
 | peer/enter        | Peer entered a room   | `{peerId}` 
 | peer/exit         | Peer quit a room      | `{peerId}` 
 | peer/card         | Peer card updated     | `{peerId, card}` 
+| peer/mute-set     | Peer muted/unumuted   | `{peerId, camOn, micOn}` 
 
 
 ## Translations support
