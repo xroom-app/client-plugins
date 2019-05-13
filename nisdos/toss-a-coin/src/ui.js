@@ -108,11 +108,11 @@ const styles = {
   },
   sideA: {
     zIndex: 100,
-    backgroundColor: 'red',
+    backgroundColor: '#FF0084',
   },
   sideB: {
     transform: 'rotateY(-180deg)',
-    backgroundColor: 'blue',
+    backgroundColor: '#4096EE',
   },
   h2: {
     textAlign: 'center',

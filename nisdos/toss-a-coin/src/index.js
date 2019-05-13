@@ -10,11 +10,11 @@ XROOM_PLUGIN({
     },
     sv: {
       iconCaption: 'Singla slant',
-      hint: 'Click on coin to flip',
+      hint: 'Klicka på slanten för att singla den',
     },
     ru: {
       iconCaption: 'Монетка',
-      hint: 'Click on coin to flip',
+      hint: 'Кликни, чтобы подбросить монетку',
     },
   },
 
