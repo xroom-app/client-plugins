@@ -33,12 +33,14 @@ XROOM_PLUGIN({
 | renderControls    | Rerender UI, useful for dynamic icons | —                 
 | broadcastData     | Broadcasts RTC data   | Any data
 | setHotKeysEnable  | Hot keys on/off, useful if your plugin interacts with keyboard | Enable flag           
+| setRoomLock       | Lock/unlock the current room | Lock flag           
 
 ## Exposed events
 | Event             | Description           | Payload 
 | ---               | ---                   | --- 
 | room/enter        | You entered a room    | `{roomId, cameraStream, screenStream, remoteStreams}` 
 | room/exit         | You quit a room       | `{roomId}` 
+| room/lock-set     | Room lock status changed | `{lock, peerId}` 
 | streams/changed   | Media streams changed | `{cameraStream, screenStream, remoteStreams}` 
 | data/in           | Incoming rtc data via plugins data channel | `{pluginId, data}` 
 | peer/enter        | Peer entered a room   | `{peerId}` 
