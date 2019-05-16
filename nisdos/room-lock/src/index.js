@@ -23,13 +23,16 @@ XROOM_PLUGIN({
   register () {
     this.onRoomEnter = this.onRoomEnter.bind(this)
     this.onRoomExit = this.onRoomExit.bind(this)
+    this.onRoomLockSet = this.onRoomLockSet.bind(this)
     window.addEventListener('room/enter', this.onRoomEnter)
     window.addEventListener('room/exit', this.onRoomExit)
+    window.addEventListener('room/lock-set', this.onRoomLockSet)
   },
 
   unregister () {
     window.removeEventListener('room/enter', this.onRoomEnter)
     window.removeEventListener('room/exit', this.onRoomExit)
+    window.removeEventListener('room/lock-set', this.onRoomLockSet)
     this.api('removeIcon')
   },
 
@@ -66,5 +69,12 @@ XROOM_PLUGIN({
   onRoomExit () {
     this.inDaChat = false
     this.api('removeIcon')
+  },
+
+  onRoomLockSet (event) {
+    const { lock } = event.detail
+
+    this.isLocked = lock
+    this.api('renderControls')
   },
 })
