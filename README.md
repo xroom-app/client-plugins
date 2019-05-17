@@ -34,6 +34,8 @@ XROOM_PLUGIN({
 | broadcastData     | Broadcasts RTC data   | Any data
 | setHotKeysEnable  | Hot keys on/off, useful if your plugin interacts with keyboard | Enable flag           
 | setRoomLock       | Lock/unlock the current room | Lock flag           
+| appendScript      | Load a script | `{src}`           
+| removeScript      | Remove a script from DOM | Script reference ID           
 
 ## Exposed events
 | Event             | Description           | Payload 
