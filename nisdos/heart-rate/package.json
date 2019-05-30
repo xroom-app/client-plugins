@@ -1,0 +1,17 @@
+{
+  "name": "heart-rate",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack -p"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "react": "^16.8.6"
+  }
+}
