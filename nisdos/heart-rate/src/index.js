@@ -4,6 +4,7 @@ import UI from './ui'
 XROOM_PLUGIN({
 
   inDaChat: false,
+  videoStream: null,
 
   translations: {
     en: {
@@ -30,6 +31,7 @@ XROOM_PLUGIN({
       <UI
         i18n={this.i18n}
         ref={(ref) => { this.ui = ref} }
+        getSystemStream={() => this.videoStream}
       />
     })
   },
@@ -66,7 +68,5 @@ XROOM_PLUGIN({
 
   onStreamsChanged (event) {
     this.videoStream = event.detail.cameraStream
-
-    console.log('qqq', this.videoStream)
-  }
+  },
 })
