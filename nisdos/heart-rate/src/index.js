@@ -31,6 +31,7 @@ XROOM_PLUGIN({
       <UI
         i18n={this.i18n}
         ref={(ref) => { this.ui = ref} }
+        isInDaChat={() => this.inDaChat}
         getSystemStream={() => this.videoStream}
       />
     })
