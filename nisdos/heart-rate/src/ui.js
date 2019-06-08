@@ -37,6 +37,8 @@ class UI extends Component {
     const { isInDaChat, getSystemStream } = this.props
 
     const video = {
+      width: 320,
+      height: 240,
       facingMode: 'environment',
       optional: [{ fillLightMode: 'on' }],
     }
@@ -71,6 +73,10 @@ class UI extends Component {
   }
 
   draw () {
+
+    if (!this.state.isShown) {
+      return
+    }
 
     const frame = this.readFrame()
     if (frame) {
@@ -151,9 +157,9 @@ class UI extends Component {
     // write bpm
     if (pulseCnt) {
       const pulseRate = 60000 / (pulseAvr / pulseCnt)
-      this.bpm.innerHTML = pulseRate.toFixed(0) + ' BPM (' + pulseCnt + ' pulses)'
+      this.bpm.innerHTML = pulseRate.toFixed(0)
     } else {
-      this.bpm.innerHTML = '-- BPM'
+      this.bpm.innerHTML = '⏳'
     }
   }
 
@@ -170,23 +176,30 @@ class UI extends Component {
       <div style={styles.ui}>
         <div style={styles.box}>
           <video ref={c => this.video = c} height="100" style={{display: 'none'}} muted/>
-          <canvas ref={c => this.videoCanvas = c} style={{width: '100px', height: '100px', filter: 'blur(6px)', borderRadius: '100px'}} />
-          <canvas ref={c => this.graphCanvas = c} width="320" height="30" />
+          <div style={styles.firstRow}>
+            <canvas ref={c => this.videoCanvas = c} style={styles.videoCanvas} />
+            <div style={styles.bpmBox}>
+              <span ref={c => this.bpm = c} style={styles.bpm}>⏳</span>
+              <span> bpm</span>
+            </div>
+          </div>
+          <canvas ref={c => this.graphCanvas = c} width="320" height="30" style={styles.graphCanvas} />
 
-          <div ref={c => this.bpm = c} />
+          <div style={styles.buttons}>
+            <button
+              onClick={this.start}
+              style={styles.button}
+            >
+              { 'Start' }
+            </button>
+            <button
+              onClick={this.close}
+              style={styles.button}
+            >
+              { 'Close' }
+            </button>
+          </div>
 
-          <button
-            onClick={this.start}
-            style={styles.button}
-          >
-            { 'Start' }
-          </button>
-          <button
-            onClick={this.close}
-            style={styles.button}
-          >
-            { 'Close' }
-          </button>
         </div>
       </div>
     )
@@ -206,10 +219,40 @@ const styles = {
     alignItems: 'center',
   },
   box: {
-    width: '480px',
+    width: '360px',
     maxWidth: '100vw',
     padding: '16px',
     background: '#fff',
+    justifyContent: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  firstRow: {
+    marginTop: '8px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  videoCanvas: {
+    width: '100px',
+    height: '100px',
+    filter: 'blur(5px)',
+    borderRadius: '100px',
+    marginLeft: '50px',
+  },
+  graphCanvas: {
+    margin: '16px 0',
+  },
+  bpmBox: {
+    width: '150px',
+  },
+  bpm: {
+    fontSize: '36px',
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
   button: {
     marginTop: '8px',
