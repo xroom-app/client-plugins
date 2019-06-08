@@ -60,3 +60,8 @@ is not English we recommend placing all the data into `en` for simplicity sake.
 4. Language objects from p.2 must have keys, can be arranged in a tree if complexity needed, 
 e.g. `en: { a: { b: 'hello'}, c: 'world }`
 5. Use `this.i18n.t( /* your key here, e.g. 'a.c' from the example above */ )`
+
+
+## License
+All the plugins in this repository have GPLv3 license. We may later change it on MIT after we reach 
+some critical massof public plugins.
