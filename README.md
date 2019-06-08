@@ -64,4 +64,4 @@ e.g. `en: { a: { b: 'hello'}, c: 'world }`
 
 ## License
 All the plugins in this repository have GPLv3 license. We may later change it on MIT after we reach 
-some critical massof public plugins.
+some critical mass of public plugins.
