@@ -12,18 +12,21 @@ XROOM_PLUGIN({
       useHint: 'Press "start" and put your finger on the camera',
       btnStart: 'Start',
       btnClose: 'Close',
+      btnTorch: 'Torch',
     },
     sv: {
       iconCaption: 'Puls',
       useHint: 'Tryck på "starta" och lägg ett finger på kameran',
       btnStart: 'Starta',
       btnClose: 'Stäng',
+      btnTorch: 'Lampa',
     },
     ru: {
       iconCaption: 'Пульс',
       useHint: 'Нажмите "начать" и слегка прижмите палец к камере',
       btnStart: 'Начать',
       btnClose: 'Закрыть',
+      btnTorch: 'Свет',
     },
   },
 

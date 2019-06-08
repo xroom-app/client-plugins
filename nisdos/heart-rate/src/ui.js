@@ -10,6 +10,7 @@ class UI extends Component {
     this.state = {
       isShown: false,
       started: false,
+      torchOn: false,
     }
 
     this.localStream = null
@@ -18,6 +19,7 @@ class UI extends Component {
     this.close = this.close.bind(this)
     this.start = this.start.bind(this)
     this.draw = this.draw.bind(this)
+    this.toggleTorch = this.toggleTorch.bind(this)
   }
 
   toggle () {
@@ -38,10 +40,7 @@ class UI extends Component {
     const { isInDaChat, getSystemStream } = this.props
 
     const video = {
-      width: 320,
-      height: 240,
       facingMode: 'environment',
-      optional: [{ fillLightMode: 'on' }],
     }
 
     window.navigator.mediaDevices.getUserMedia({ video, audio: false }).then(stream => {
@@ -55,6 +54,21 @@ class UI extends Component {
         alert('It looks like all the cameras are blocked')
       }
     })
+  }
+
+  toggleTorch () {
+
+    const torchOn = !this.state.torchOn
+
+    if (this.localStream) {
+      const track = this.localStream.getVideoTracks()[0]
+
+      track.applyConstraints({
+        advanced: [{torch: torchOn}]
+      }).catch(() => null)
+    }
+
+    this.setState({torchOn})
   }
 
   init (stream) {
@@ -195,18 +209,11 @@ class UI extends Component {
           <canvas ref={c => this.graphCanvas = c} width="320" height="30" style={styles.graphCanvas} />
 
           <div style={styles.buttons}>
-            <button
-              onClick={this.start}
-              style={styles.button}
-            >
-              { i18n.t('btnStart') }
-            </button>
-            <button
-              onClick={this.close}
-              style={styles.button}
-            >
-              { i18n.t('btnClose') }
-            </button>
+            <button onClick={this.start} style={styles.button}>{ i18n.t('btnStart') }</button>
+            {
+            //  started && <button onClick={this.toggleTorch} style={styles.button}>{ i18n.t('btnTorch') }</button>
+            }
+            <button onClick={this.close} style={styles.button}>{ i18n.t('btnClose') }</button>
           </div>
 
         </div>
@@ -221,7 +228,7 @@ const styles = {
     top: 0,
     left: 0,
     width: '100vw',
-    height: '100vh',
+    height: '100%',
     background: 'transparent',
     display: 'flex',
     justifyContent: 'center',
