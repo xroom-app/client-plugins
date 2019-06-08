@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 
 let width, height, hist = [], videoContext, graphContext
 
@@ -9,6 +9,7 @@ class UI extends Component {
 
     this.state = {
       isShown: false,
+      started: false,
     }
 
     this.localStream = null
@@ -44,12 +45,12 @@ class UI extends Component {
     }
 
     window.navigator.mediaDevices.getUserMedia({ video, audio: false }).then(stream => {
-      this.init(stream)
+      this.setState({started: true}, () => this.init(stream))
     }, () => {
       const stream = getSystemStream()
 
       if (stream) {
-        this.init(stream)
+        this.setState({started: true}, () => this.init(stream))
       } else {
         alert('It looks like all the cameras are blocked')
       }
@@ -166,7 +167,7 @@ class UI extends Component {
   render () {
 
     const { i18n } = this.props
-    const { isShown } = this.state
+    const { isShown, started } = this.state
 
     if (!isShown) {
       return null
@@ -177,11 +178,19 @@ class UI extends Component {
         <div style={styles.box}>
           <video ref={c => this.video = c} height="100" style={{display: 'none'}} muted/>
           <div style={styles.firstRow}>
-            <canvas ref={c => this.videoCanvas = c} style={styles.videoCanvas} />
-            <div style={styles.bpmBox}>
-              <span ref={c => this.bpm = c} style={styles.bpm}>⏳</span>
-              <span> bpm</span>
-            </div>
+            {
+              started ?
+                <Fragment>
+                  <canvas ref={c => this.videoCanvas = c} style={styles.videoCanvas} />
+                  <div style={styles.bpmBox}>
+                    <span ref={c => this.bpm = c} style={styles.bpm}>⏳</span>
+                    <span> bpm</span>
+                  </div>
+                </Fragment>
+                :
+                <div style={{textAlign: 'center'}}>{ i18n.t('useHint') }</div>
+            }
+
           </div>
           <canvas ref={c => this.graphCanvas = c} width="320" height="30" style={styles.graphCanvas} />
 
@@ -190,13 +199,13 @@ class UI extends Component {
               onClick={this.start}
               style={styles.button}
             >
-              { 'Start' }
+              { i18n.t('btnStart') }
             </button>
             <button
               onClick={this.close}
               style={styles.button}
             >
-              { 'Close' }
+              { i18n.t('btnClose') }
             </button>
           </div>
 
