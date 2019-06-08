@@ -213,8 +213,10 @@ XROOM_PLUGIN({
     window.removeEventListener('room/exit', this.onRoomExit)
     window.removeEventListener('data/in', this.onDataIn)
     this.api('removeIcon')
-    this.editor.destroy()
-    this.editorDiv.parentNode.removeChild(this.editorDiv)
+    if (this.editor) {
+      this.editor.destroy()
+      this.editorDiv.parentNode.removeChild(this.editorDiv)
+    }
   },
 
   isSupported () {
