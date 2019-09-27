@@ -206,6 +206,8 @@ XROOM_PLUGIN({
         onModuleRequest={(module) => this.loadAceModule(module)}
       />
     })
+
+    this.addIcon()
   },
 
   unregister () {

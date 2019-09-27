@@ -27,6 +27,8 @@ XROOM_PLUGIN({
     window.addEventListener('room/enter', this.onRoomEnter)
     window.addEventListener('room/exit', this.onRoomExit)
     window.addEventListener('room/lock-set', this.onRoomLockSet)
+
+    this.addIcon()
   },
 
   unregister () {
