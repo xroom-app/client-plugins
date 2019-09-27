@@ -120,6 +120,8 @@ XROOM_PLUGIN({
         ref={(ref) => { this.ui = ref} }
       />
     })
+
+    this.addIcon()
   },
 
   unregister () {
@@ -221,6 +223,10 @@ XROOM_PLUGIN({
   },
 
   onStreamsChanged (event) {
-    this.audioCompositeStream = this.composite(null, [event.detail.cameraStream, event.detail.screenStream, ...Object.values(event.detail.remoteStreams)])
+    if (event.detail.remoteStreams) {
+      this.audioCompositeStream = this.composite(null, [event.detail.cameraStream, event.detail.screenStream, ...Object.values(event.detail.remoteStreams)])
+    } else {
+      this.audioCompositeStream = this.composite(null, [event.detail.cameraStream, event.detail.screenStream])
+    }
   }
 })
