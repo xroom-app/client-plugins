@@ -36,6 +36,7 @@ XROOM_PLUGIN({
 | setRoomLock       | Lock/unlock the current room | Lock flag           
 | appendScript      | Load a script | `{src}`           
 | removeScript      | Remove a script from DOM | Script reference ID           
+| postToChat        | Post a message to chat | `{text, notLocal: false}`           
 
 ## Exposed events
 | Event             | Description           | Payload 
