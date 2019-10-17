@@ -53,7 +53,6 @@ XROOM_PLUGIN({
 
 
 ## Translations support
-
 1. Add `translations` object to the root.
 2. Add keys for supported languages, e.g. `{ en: {...}, ru: {...} }`
 3. English (en) **must** be present, as it is used as a fallback. If your plugin uses only one language that
@@ -62,6 +61,17 @@ is not English we recommend placing all the data into `en` for simplicity sake.
 e.g. `en: { a: { b: 'hello'}, c: 'world }`
 5. Use `this.i18n.t( /* your key here, e.g. 'a.c' from the example above */ )`
 
+
+## Testing locally
+To be able to test your code locally open app's plugins manager, click Add on "Add new plugin" line, input
+plugin name and its root URL, that is a path to a remote directory. Both index.js and icon.png must be 
+present in that directory. 
+
+As XROOM loads a plugin from another domain in that case please assure your server feeds CORS headers, at least: 
+```
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, OPTIONS
+```
 
 ## License
 All the plugins in this repository have GPLv3 license. We may later change it on MIT after we reach 
