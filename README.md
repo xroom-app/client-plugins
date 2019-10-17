@@ -67,7 +67,8 @@ To be able to test your code locally open app's plugins manager, click Add on "A
 plugin name and its root URL, that is a path to a remote directory. Both index.js and icon.png must be 
 present in that directory. 
 
-As XROOM loads a plugin from another domain in that case please assure your server feeds CORS headers, at least: 
+As XROOM loads a plugin from another origin (e.g. localhost:3000) please assure your server feeds CORS headers,
+at least: 
 ```
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET, OPTIONS
