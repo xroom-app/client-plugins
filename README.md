@@ -37,6 +37,7 @@ XROOM_PLUGIN({
 | appendScript      | Load a script | `{src}`           
 | removeScript      | Remove a script from DOM | Script reference ID           
 | postToChat        | Post a message to chat | `{text, notLocal: false}`           
+| setLocalAP        | Set local audio processor | A processing AudioNode          
 
 ## Exposed events
 | Event             | Description           | Payload 
@@ -61,6 +62,8 @@ is not English we recommend placing all the data into `en` for simplicity sake.
 e.g. `en: { a: { b: 'hello'}, c: 'world }`
 5. Use `this.i18n.t( /* your key here, e.g. 'a.c' from the example above */ )`
 
+## Audio context
+In case you need to access XROOM's audio context it is available as `this.audioContext`.
 
 ## Testing locally
 To be able to test your code locally open app's plugins manager, click Add on "Add new plugin" line, input
