@@ -37,6 +37,7 @@ XROOM_PLUGIN({
 | appendScript      | Load a script | `{src}`           
 | removeScript      | Remove a script from DOM | Script reference ID           
 | postToChat        | Post a message to chat | `{text, notLocal: false}`           
+| fileToChat        | Post a file to chat for everyone | `{file}`           
 | setLocalAP        | Set local audio processor | A processing AudioNode          
 
 ## Exposed events
@@ -64,6 +65,10 @@ e.g. `en: { a: { b: 'hello'}, c: 'world }`
 
 ## Audio context
 In case you need to access XROOM's audio context it is available as `this.audioContext`.
+
+## Message boxes
+Message boxes (SweetAlert2) are exposed to plugins as `this.mbox`. See all the usage tricks
+[here](https://sweetalert2.github.io/#examples).
 
 ## Testing locally
 To be able to test your code locally open app's plugins manager, click Add on "Add new plugin" line, input
