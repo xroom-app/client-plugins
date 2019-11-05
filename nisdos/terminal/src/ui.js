@@ -16,7 +16,7 @@ class UI extends Component {
 
   componentDidUpdate() {
     if (this.state.isShown && window.Terminal) {
-      this.term = new window.Terminal()
+      this.term = new window.Terminal({cursorBlink: true, cols: 100})
       this.term.open(document.getElementById('plugin-nisdos-terminal'))
       this.term.write('Terminal v1.0, awaiting connection...')
 
@@ -25,8 +25,15 @@ class UI extends Component {
 
         switch (domEvent.keyCode) {
           case 8:
-            this.term.write('\x1b[D')
-            this.props.api('broadcastData', {cmd: 'key', args: ['\b \b']})
+            // backspace
+            this.term.write('\b \b')
+            this.props.api('broadcastData', {cmd: 'key', args: ['\b']})
+            break
+
+          case 46:
+            // delete
+            this.term.write(' \b')
+            this.props.api('broadcastData', {cmd: 'key', args: ['\x2E']})
             break
 
           case 13:
@@ -37,6 +44,7 @@ class UI extends Component {
           default:
             this.term.write(key)
             this.props.api('broadcastData', {cmd: 'key', args: [key]})
+          //  console.log('keyCode', domEvent.keyCode)
         }
       })
     }
