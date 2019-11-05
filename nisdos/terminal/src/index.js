@@ -58,7 +58,7 @@ XROOM_PLUGIN({
   },
 
   isSupported () {
-    return true
+    return window.screen && window.screen.width > 1000
   },
 
   onRoomEnter () {
