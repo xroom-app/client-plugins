@@ -1,3 +1,7 @@
+Prerequisites
+---
+* node.js
+
 Install
 ---
 
