@@ -35,7 +35,8 @@ XROOM_PLUGIN({
 | setHotKeysEnable  | Hot keys on/off, useful if your plugin interacts with keyboard | Enable flag           
 | setRoomLock       | Lock/unlock the current room | Lock flag           
 | appendScript      | Load a script | `{src}`           
-| removeScript      | Remove a script from DOM | Script reference ID           
+| appendStyle       | Load a style file | `{src}`           
+| removeElement     | Remove an element from DOM | Element reference ID           
 | postToChat        | Post a message to chat | `{text, notLocal: false}`           
 | fileToChat        | Post a file to chat for everyone | `{file}`           
 | setLocalAP        | Set local audio processor | A processing AudioNode          

@@ -27,7 +27,7 @@ XROOM_PLUGIN({
 
   unregister () {
     this.api('removeIcon')
-    this.api('removeScript', this.calendlyScriptRef)
+    this.api('removeElement', this.calendlyScriptRef)
   },
 
   isSupported () {
