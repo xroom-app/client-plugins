@@ -82,6 +82,7 @@ XROOM_PLUGIN({
       btnSave: 'Save',
       btnClose: 'Close',
       warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
+      getIntoRoom: 'To start recording enter this room with a plugin already added.',
     },
     sv: {
       iconCaptionOn: 'Insp. på',
@@ -89,6 +90,7 @@ XROOM_PLUGIN({
       btnSave: 'Spara',
       btnClose: 'Stänga',
       warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
+      getIntoRoom: 'Для записи зайдите в комнату с уже добавленным плагином.',
     },
     ru: {
       iconCaptionOn: 'Запись вкл.',
@@ -96,6 +98,7 @@ XROOM_PLUGIN({
       btnSave: 'Сохранить',
       btnClose: 'Закрыть',
       warn1: 'Файлы исчезнут после закрытия окна.<br>Скачайте их, если они нужны!',
+      getIntoRoom: 'För att börja inspelningen, gå in i rummet med plugin:et redan lagt till.',
     },
   },
 
@@ -155,6 +158,10 @@ XROOM_PLUGIN({
     this.recordedBlobs = []
 
     let options = { mimeType: this.mimeType }
+
+    if (!stream) {
+      return this.mbox.fire({text: this.i18n.t('getIntoRoom')})
+    }
 
     try {
       this.mediaRecorder = new MediaRecorder(stream, options)
