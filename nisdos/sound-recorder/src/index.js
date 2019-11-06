@@ -199,7 +199,7 @@ XROOM_PLUGIN({
       dest = ctx.createMediaStreamDestination()
 
     audioTrackStreams.map(stream => {
-      if (stream) {
+      if (stream && stream.getAudioTracks().length) {
         ctx.createMediaStreamSource(stream).connect(dest)
       }
     })
