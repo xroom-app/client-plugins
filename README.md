@@ -40,6 +40,7 @@ XROOM_PLUGIN({
 | postToChat        | Post a message to chat | `{text, notLocal: false}`           
 | fileToChat        | Post a file to chat for everyone | `{file}`           
 | setLocalAP        | Set local audio processor | A processing AudioNode          
+| goToRoom          | Go to a new room | `{roomId, preview: false}`          
 
 ## Exposed events
 | Event             | Description           | Payload 
