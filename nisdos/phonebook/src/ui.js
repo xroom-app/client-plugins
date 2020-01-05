@@ -65,8 +65,7 @@ class UI extends Component {
   }
 
   goto (roomId) {
-    // this.api('goToRoom', { roomId })
-    document.location.href = '/' + roomId
+    this.props.api('goToRoom', { roomId })
   }
 
   render () {
