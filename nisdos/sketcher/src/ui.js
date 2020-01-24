@@ -7,6 +7,7 @@ class UI extends Component {
     super(props)
 
     this.state = {
+      color: 'black',
       isShown: false,
     }
 
@@ -20,11 +21,23 @@ class UI extends Component {
   }
 
   render () {
-    const { isShown } = this.state
+    const { isShown, color } = this.state
 
     if (!isShown) {
       return null
     }
+
+    const colorStyle = (x, border = '#fff') => {
+      return {
+        width: '20px',
+        height: '20px',
+        border: `2px dotted ${border}`,
+        borderRadius: '24px',
+        backgroundColor: x,
+      }
+    }
+
+    const colors = ['black', 'blue', 'green', 'red', 'yellow']
 
     return (
       <div style={styles.ui}>
@@ -39,6 +52,11 @@ class UI extends Component {
               <path fill="#333" d="M12.5,8C9.85,8 7.45,9 5.6,10.6L2,7V16H11L7.38,12.38C8.77,11.22 10.54,10.5 12.5,10.5C16.04,10.5 19.05,12.81 20.1,16L22.47,15.22C21.08,11.03 17.15,8 12.5,8Z" />
             </svg>
           </div>
+          {
+            colors.map(x => {
+              return <div onClick={() => this.setState({color: x})} style={{...styles.button, ...colorStyle(x, x === color ? '#fff' : 'transparent')}} />
+            })
+          }
         </div>
         <div style={styles.canvas}>
           <CanvasDraw
@@ -47,7 +65,7 @@ class UI extends Component {
             canvasHeight="100%"
             brushRadius={1}
             lazyRadius={0}
-            brushColor="#111"
+            brushColor={color}
             hideInterface={true}
           />
         </div>
@@ -66,13 +84,13 @@ const styles = {
     backgroundColor: '#fff',
   },
   controls: {
-    paddingTop: '2px',
+    paddingTop: '3px',
     borderBottom: '1px solid #aaa',
     display: 'flex',
   },
   button: {
     cursor: 'pointer',
-    padding: '0 2px',
+    margin: '0 2px',
   },
   canvas: {
     width: '100%',
