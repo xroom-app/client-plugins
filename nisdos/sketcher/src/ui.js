@@ -46,9 +46,7 @@ class UI extends Component {
           canvasHeight="100%"
           brushRadius={1}
           lazyRadius={0}
-          loadTimeOffset={0}
           brushColor="#111"
-          immediateLoading={true}
         />
       </div>
     )
