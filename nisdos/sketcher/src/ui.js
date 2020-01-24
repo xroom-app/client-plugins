@@ -40,14 +40,17 @@ class UI extends Component {
             </svg>
           </div>
         </div>
-        <CanvasDraw
-          ref={ref => this.draw = ref}
-          canvasWidth="100%"
-          canvasHeight="100%"
-          brushRadius={1}
-          lazyRadius={0}
-          brushColor="#111"
-        />
+        <div style={styles.canvas}>
+          <CanvasDraw
+            ref={ref => this.draw = ref}
+            canvasWidth="100%"
+            canvasHeight="100%"
+            brushRadius={1}
+            lazyRadius={0}
+            brushColor="#111"
+            hideInterface={true}
+          />
+        </div>
       </div>
     )
   }
@@ -74,6 +77,7 @@ const styles = {
   canvas: {
     width: '100%',
     height: '100%',
+    cursor: 'crosshair',
   },
 }
 
