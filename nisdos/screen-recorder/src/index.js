@@ -151,7 +151,7 @@ XROOM_PLUGIN({
     this.recordedBlobs = []
 
     if (!this.screenStream) {
-      return this.mbox.fire({text: this.i18n.t('warn2')})
+      return this.mbox({text: this.i18n.t('warn2')})
     }
 
     try {

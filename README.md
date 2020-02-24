@@ -69,8 +69,24 @@ e.g. `en: { a: { b: 'hello'}, c: 'world }`
 In case you need to access XROOM's audio context it is available as `this.audioContext`.
 
 ## Message boxes
-Message boxes (SweetAlert2) are exposed to plugins as `this.mbox`. See all the usage tricks
-[here](https://sweetalert2.github.io/#examples).
+Message boxes are exposed to plugins as `this.mbox`. Example usage: 
+```js 
+const [key, value] = await this.mbox({
+  title: 'Optional title',
+  text: 'Optional content',
+  html: 'Optional HTML content',
+  input: 'text', // optional input mode: text, range
+  buttons: {  // optional, defaults to one OK button
+    ok: 'OK',
+    cancel: 'Cancel',
+    // any other buttons
+  },
+  defaultValue: 'ololo',  // default value fr inputs
+  imageUrl: 'https://'    // optional image URL
+})
+// key -- pressed button key
+// value -- returned value
+```
 
 ## Testing locally
 To be able to test your code locally open app's plugins manager, click Add on "Add new plugin" line, input

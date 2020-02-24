@@ -160,7 +160,7 @@ XROOM_PLUGIN({
     let options = { mimeType: this.mimeType }
 
     if (!stream) {
-      return this.mbox.fire({text: this.i18n.t('getIntoRoom')})
+      return this.mbox({text: this.i18n.t('getIntoRoom')})
     }
 
     try {
