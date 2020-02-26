@@ -67,6 +67,7 @@ XROOM_PLUGIN({
 
   inDaChat: null,
   mimeType: null,
+  countDownStep: 0,
   recordedBlobs: [],
   mediaRecorder: null,
   isRecording: false,
@@ -106,6 +107,7 @@ XROOM_PLUGIN({
     this.onRoomEnter = this.onRoomEnter.bind(this)
     this.onRoomExit = this.onRoomExit.bind(this)
     this.onStreamsChanged = this.onStreamsChanged.bind(this)
+    this.boundCountDown = this.countDown.bind(this)
 
     window.addEventListener('room/enter', this.onRoomEnter)
     window.addEventListener('room/exit', this.onRoomExit)
@@ -138,7 +140,7 @@ XROOM_PLUGIN({
       title: () => {
         return this.isRecording ? this.i18n.t('iconCaptionOn') : this.i18n.t('iconCaptionOff')
       },
-      onClick: () => this.isRecording ? this.stopRecording() : this.startRecording(),
+      onClick: () => this.isRecording ? this.stopRecording() : this.preStartRecording(),
       svg: props => <NisdosScreenRecorderIconSvg {...props} on={this.isRecording}/>
     })
   },
@@ -147,7 +149,29 @@ XROOM_PLUGIN({
     return !!window.MediaRecorder && window.MediaRecorder.isTypeSupported('video/webm')
   },
 
-  startRecording () {
+  countDown () {
+    const theDiv = document.querySelector('#screen-recorder-n > div')
+
+    if (--this.countDownStep < 0) {
+      document.body.removeChild(document.getElementById('screen-recorder-n'))
+      this.startRecording()
+    } else {
+      // play animation
+      setTimeout(function (arg, theDiv) {
+        theDiv.innerHTML = arg
+        theDiv.style.transform = 'scale(10)'
+      }, 16, `${this.countDownStep + 1}`, theDiv)
+
+      setTimeout(function (theDiv) {
+        theDiv.style.transform = 'scale(0)'
+      }, 500, theDiv)
+
+      setTimeout(this.boundCountDown, 1000)
+    }
+  },
+
+  preStartRecording () {
+    this.countDownStep = 3
     this.recordedBlobs = []
 
     if (!this.screenStream) {
@@ -166,6 +190,18 @@ XROOM_PLUGIN({
     }
 
     this.mediaRecorder.ondataavailable = (e) => this.handleDataAvailable(e)
+
+    const iDiv = document.createElement('div')
+
+    iDiv.id = 'screen-recorder-n'
+    iDiv.style.cssText = 'top:0;bottom:0;width:100vw;height:100vh;position:fixed;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5)'
+    iDiv.innerHTML = `<div style="color:#fff;transition:transform 0.5s;transform:scale(0)"/>`
+    document.body.appendChild(iDiv)
+
+    this.countDown()
+  },
+
+  startRecording () {
     this.mediaRecorder.start(1000)
     this.isRecording = true
     this.api('renderControls')
