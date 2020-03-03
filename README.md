@@ -71,21 +71,23 @@ In case you need to access XROOM's audio context it is available as `this.audioC
 ## Message boxes
 Message boxes are exposed to plugins as `this.mbox`. Example usage: 
 ```js 
+/*
+  key -- pressed button key
+  value -- returned value
+*/
 const [key, value] = await this.mbox({
   title: 'Optional title',
   text: 'Optional content',
   html: 'Optional HTML content',
-  input: 'text', // optional input mode: text, range
-  buttons: {  // optional, defaults to one OK button
+  input: 'text',                        // optional input mode: text, range
+  buttons: [{                           // optional, defaults to one OK button
     ok: 'OK',
     cancel: 'Cancel',
     // any other buttons
-  },
-  defaultValue: 'ololo',  // default value fr inputs
-  imageUrl: 'https://'    // optional image URL
+  }],
+  defaultValue: 'ololo',                // default value for inputs
+  imageUrl: '...'                       // optional image URL (dataURL supported)
 })
-// key -- pressed button key
-// value -- returned value
 ```
 
 ## Testing locally
