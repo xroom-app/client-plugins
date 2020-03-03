@@ -83,25 +83,33 @@ const [key, value] = await this.mbox({
   buttons: [{                           // optional, defaults to one OK button
     ok: 'OK',
     cancel: 'Cancel',
-    // any other buttons
   }],
   defaultValue: 'ololo',                // default value for inputs
   imageUrl: '...'                       // optional image URL (dataURL supported)
 })
 ```
 
-## Testing locally
-To be able to test your code locally open app's plugins manager, click Add on "Add new plugin" line, input
-plugin name and its root URL, that is a path to a remote directory. Both index.js and icon.png must be 
-present in that directory. 
+## Developing locally
+To be able to develop and test your code locally open the plugin manager on xroom.app, click Add on "Add new plugin" 
+line, input plugin name and its root URL, that is a path to a remote directory. Both index.js and icon.png must be 
+present in that directory.
 
-As XROOM loads a plugin from another origin (e.g. localhost:3000) please assure your server feeds CORS headers,
+As XROOM loads a plugin from another origin (e.g. localhost:3000) so please assure your server feeds CORS headers,
 at least: 
 ```
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET, OPTIONS
 ```
 
+You can use [this](https://www.npmjs.com/package/http-server) package to solve CORS problem quickly:
+
+```bash
+# install
+npm install http-server -g
+
+# run from the build directory
+http-server --cors
+```
+
 ## License
-All the plugins in this repository have GPLv3 license. We may later change it on MIT after we reach 
-some critical mass of public plugins.
+MIT License
