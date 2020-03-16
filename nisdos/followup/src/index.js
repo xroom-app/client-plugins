@@ -61,7 +61,6 @@ XROOM_PLUGIN({
 
   unregister () {
     this.api('removeIcon')
-    this.api('removeElement', this.calendlyScriptRef)
     window.removeEventListener('room/enter', this.onRoomEnter)
     window.removeEventListener('room/exit', this.onRoomExit)
   },
