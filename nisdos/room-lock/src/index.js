@@ -9,14 +9,23 @@ XROOM_PLUGIN({
     en: {
       iconCaptionOn: 'Locked',
       iconCaptionOff: 'Open',
+      mbox: {
+        enterFirst: 'Enter the room first',
+      },
     },
     sv: {
       iconCaptionOn: 'Låst',
       iconCaptionOff: 'Upplåst',
+      mbox: {
+        enterFirst: 'Gå in i rummet först',
+      },
     },
     ru: {
       iconCaptionOn: 'Закрыто',
       iconCaptionOff: 'Открыто',
+      mbox: {
+        enterFirst: 'Сначала войдите в комнату',
+      },
     },
   },
 
@@ -58,9 +67,13 @@ XROOM_PLUGIN({
   },
 
   toggleLock () {
-    this.isLocked = !this.isLocked
-    this.api('setRoomLock', this.isLocked)
-    this.api('renderControls')
+    if (!this.inDaChat) {
+      this.mbox({text: this.i18n.t('mbox.enterFirst')})
+    } else {
+      this.isLocked = !this.isLocked
+      this.api('setRoomLock', this.isLocked)
+      this.api('renderControls')
+    }
   },
 
   onRoomEnter () {
