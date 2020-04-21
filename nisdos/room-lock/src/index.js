@@ -30,9 +30,11 @@ XROOM_PLUGIN({
   },
 
   register () {
+    this.onRoomRead = this.onRoomRead.bind(this)
     this.onRoomEnter = this.onRoomEnter.bind(this)
     this.onRoomExit = this.onRoomExit.bind(this)
     this.onRoomLockSet = this.onRoomLockSet.bind(this)
+    window.addEventListener('room/read', this.onRoomRead)
     window.addEventListener('room/enter', this.onRoomEnter)
     window.addEventListener('room/exit', this.onRoomExit)
     window.addEventListener('room/lock-set', this.onRoomLockSet)
@@ -41,6 +43,7 @@ XROOM_PLUGIN({
   },
 
   unregister () {
+    window.removeEventListener('room/read', this.onRoomRead)
     window.removeEventListener('room/enter', this.onRoomEnter)
     window.removeEventListener('room/exit', this.onRoomExit)
     window.removeEventListener('room/lock-set', this.onRoomLockSet)
@@ -72,6 +75,11 @@ XROOM_PLUGIN({
     } else {
       this.api('setRoomLock', !this.isLocked)
     }
+  },
+
+  onRoomRead (event) {
+    this.isLocked = event.detail.access.lock
+    this.api('renderControls')
   },
 
   onRoomEnter (event) {
