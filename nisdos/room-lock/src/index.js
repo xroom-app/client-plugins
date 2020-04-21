@@ -70,14 +70,13 @@ XROOM_PLUGIN({
     if (!this.inDaChat) {
       this.mbox({text: this.i18n.t('mbox.enterFirst')})
     } else {
-      this.isLocked = !this.isLocked
-      this.api('setRoomLock', this.isLocked)
-      this.api('renderControls')
+      this.api('setRoomLock', !this.isLocked)
     }
   },
 
-  onRoomEnter () {
+  onRoomEnter (event) {
     this.inDaChat = true
+    this.isLocked = event.detail.isLocked
     this.addIcon()
   },
 
@@ -87,9 +86,7 @@ XROOM_PLUGIN({
   },
 
   onRoomLockSet (event) {
-    const { lock } = event.detail
-
-    this.isLocked = lock
+    this.isLocked = event.detail
     this.api('renderControls')
   },
 })
