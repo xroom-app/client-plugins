@@ -45,16 +45,29 @@ XROOM_PLUGIN({
 ## Exposed events
 | Event             | Description           | Payload 
 | ---               | ---                   | --- 
+| ss/lockSet        | Room lock status changed | `{lock, peerId}` 
+| ss/onReadRoom     | Room pre-enter status update | `{id, type?, access?: {lock, password}}` 
 | room/enter        | You entered a room    | `{roomId, cameraStream, screenStream, remoteStreams}` 
 | room/exit         | You quit a room       | `{roomId}` 
-| room/lock-set     | Room lock status changed | `{lock, peerId}` 
 | streams/changed   | Media streams changed | `{cameraStream, screenStream, remoteStreams}` 
 | data/in           | Incoming rtc data via plugins data channel | `{pluginId, data}` 
 | peer/enter        | Peer entered a room   | `{peerId}` 
 | peer/exit         | Peer quit a room      | `{peerId}` 
 | peer/card         | Peer card updated     | `{peerId, card}` 
-| peer/mute-set     | Peer muted/unumuted   | `{peerId, camOn, micOn}` 
+| peer/muteSet      | Peer muted/unmuted   | `{peerId, camOn, micOn}` 
 
+`ss/...`&ndash;events are 
+
+## Using events
+Starting from XROOM v2 you can utilize automatic plugin event management. Simply define `this.events` object with
+event keys and corresponding handlers, e.g.:
+```
+  this.events: {
+    'room/enter': onRoomEnter,
+    'room/exit': onRoomExit,
+    ...
+  }
+```
 
 ## Translations support
 1. Add `translations` object to the root.
