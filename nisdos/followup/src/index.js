@@ -3,6 +3,14 @@ import UI from './ui'
 
 const github = 'https://github.com/punarinta/xroom-plugins/tree/master/nisdos/followup'
 
+function onRoomEnter () {
+  this.ui.onRoomEnter()
+}
+
+function onRoomExit () {
+  this.ui.onRoomExit()
+}
+
 XROOM_PLUGIN({
 
   translations: {
@@ -32,13 +40,12 @@ XROOM_PLUGIN({
     },
   },
 
+  events: {
+    'room/enter': onRoomEnter,
+    'room/exit': onRoomExit,
+  },
+
   register ({roomId}) {
-    this.onRoomEnter = this.onRoomEnter.bind(this)
-    this.onRoomExit = this.onRoomExit.bind(this)
-
-    window.addEventListener('room/enter', this.onRoomEnter)
-    window.addEventListener('room/exit', this.onRoomExit)
-
     this.api('addIcon', {
       title: this.i18n.t('iconCaption'),
       onClick: () => this.ui.toggleShow(),
@@ -61,19 +68,9 @@ XROOM_PLUGIN({
 
   unregister () {
     this.api('removeIcon')
-    window.removeEventListener('room/enter', this.onRoomEnter)
-    window.removeEventListener('room/exit', this.onRoomExit)
   },
 
   isSupported () {
     return !!window.Intl
-  },
-
-  onRoomEnter () {
-    this.ui.onRoomEnter()
-  },
-
-  onRoomExit () {
-    this.ui.onRoomExit()
-  },
+  }
 })

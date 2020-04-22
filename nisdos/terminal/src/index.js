@@ -1,6 +1,22 @@
 import React from 'react'
 import UI from './ui'
 
+function onRoomEnter () {
+  this.addIcon()
+  this.api('renderControls')
+}
+
+function onRoomExit () {
+  this.api('removeIcon')
+}
+
+function onDataIn (data) {
+  const { pluginId, cmd, args } = data
+
+  if (pluginId !== this.id || !cmd) return
+  this.ui.dataIn({cmd, args})
+}
+
 XROOM_PLUGIN({
 
   translations: {
@@ -18,15 +34,13 @@ XROOM_PLUGIN({
     },
   },
 
+  events: {
+    'room/enter': onRoomEnter,
+    'room/exit': onRoomExit,
+    'data/in': onDataIn,
+  },
+
   register () {
-    this.onRoomEnter = this.onRoomEnter.bind(this)
-    this.onRoomExit = this.onRoomExit.bind(this)
-    this.onDataIn = this.onDataIn.bind(this)
-
-    window.addEventListener('room/enter', this.onRoomEnter)
-    window.addEventListener('room/exit', this.onRoomExit)
-    window.addEventListener('data/in', this.onDataIn)
-
     this.api('appendScript', {src: '/plugins/nisdos/terminal/xterm.js'})
     this.api('appendStyle', {src: '/plugins/nisdos/terminal/xterm.css'})
 
@@ -40,9 +54,6 @@ XROOM_PLUGIN({
   },
 
   unregister () {
-    window.removeEventListener('room/enter', this.onRoomEnter)
-    window.removeEventListener('room/exit', this.onRoomExit)
-    window.removeEventListener('data/in', this.onDataIn)
     this.api('removeIcon')
   },
 
@@ -59,21 +70,5 @@ XROOM_PLUGIN({
 
   isSupported () {
     return window.screen && window.screen.width > 1000
-  },
-
-  onRoomEnter () {
-    this.addIcon()
-    this.api('renderControls')
-  },
-
-  onRoomExit () {
-    this.api('removeIcon')
-  },
-
-  onDataIn (event) {
-    const { pluginId, cmd, args } = event.detail
-
-    if (pluginId !== this.id || !cmd) return
-    this.ui.dataIn({cmd, args})
   }
 })

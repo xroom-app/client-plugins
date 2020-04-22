@@ -34,7 +34,7 @@ class NisdosSoundRecoderIconSvg extends Component {
 
     this.timer = setInterval(() => {
       this.setState({blink: !this.state.blink})
-    }, 1000)
+    }, 500)
 
     this.setState({blink: true})
   }
@@ -63,6 +63,28 @@ class NisdosSoundRecoderIconSvg extends Component {
         <path fill={ color } d="M22.79 22.83h1.06c.64 0 1.05.38 1.05.98 0 .62-.39.98-1.05.98H22.8v-1.96zM21 21.48v7.04h1.8v-2.46h.92l1.2 2.46h2.02l-1.4-2.73a2.1 2.1 0 0 0 1.2-1.99c0-1.45-1-2.32-2.64-2.32z"/>
       </svg>
     )
+  }
+}
+
+function onRoomEnter (data) {
+  this.audioCompositeStream = this.composite(null, [data.cameraStream, data.screenStream, ...Object.values(data.remoteStreams)])
+  this.addIcon()
+  this.inDaChat = true
+  this.addIcon()
+  this.api('renderControls')
+}
+
+function onRoomExit () {
+  this.inDaChat = null
+  this.api('removeIcon')
+  this.api('renderControls')
+}
+
+function onStreamsChanged (data) {
+  if (data.remoteStreams) {
+    this.audioCompositeStream = this.composite(null, [data.cameraStream, data.screenStream, ...Object.values(data.remoteStreams)])
+  } else {
+    this.audioCompositeStream = this.composite(null, [data.cameraStream, data.screenStream])
   }
 }
 
@@ -102,15 +124,13 @@ XROOM_PLUGIN({
     },
   },
 
+  events: {
+    'room/enter': onRoomEnter,
+    'room/exit': onRoomExit,
+    'streams/changed': onStreamsChanged,
+  },
+
   register () {
-    this.onRoomEnter = this.onRoomEnter.bind(this)
-    this.onRoomExit = this.onRoomExit.bind(this)
-    this.onStreamsChanged = this.onStreamsChanged.bind(this)
-
-    window.addEventListener('room/enter', this.onRoomEnter)
-    window.addEventListener('room/exit', this.onRoomExit)
-    window.addEventListener('streams/changed', this.onStreamsChanged)
-
     if (window.MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
       this.mimeType = 'audio/ogg'
     } else if (window.MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
@@ -128,9 +148,6 @@ XROOM_PLUGIN({
   },
 
   unregister () {
-    window.removeEventListener('room/enter', this.onRoomEnter)
-    window.removeEventListener('room/exit', this.onRoomExit)
-    window.removeEventListener('streams/changed', this.onStreamsChanged)
     this.api('removeIcon')
   },
 
@@ -213,27 +230,5 @@ XROOM_PLUGIN({
     }
 
     return dest.stream
-  },
-
-  onRoomEnter (event) {
-    this.audioCompositeStream = this.composite(null, [event.detail.cameraStream, event.detail.screenStream, ...Object.values(event.detail.remoteStreams)])
-    this.addIcon()
-    this.inDaChat = true
-    this.addIcon()
-    this.api('renderControls')
-  },
-
-  onRoomExit () {
-    this.inDaChat = null
-    this.api('removeIcon')
-    this.api('renderControls')
-  },
-
-  onStreamsChanged (event) {
-    if (event.detail.remoteStreams) {
-      this.audioCompositeStream = this.composite(null, [event.detail.cameraStream, event.detail.screenStream, ...Object.values(event.detail.remoteStreams)])
-    } else {
-      this.audioCompositeStream = this.composite(null, [event.detail.cameraStream, event.detail.screenStream])
-    }
   }
 })

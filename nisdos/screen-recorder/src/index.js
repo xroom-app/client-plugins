@@ -31,7 +31,7 @@ class NisdosScreenRecorderIconSvg extends Component {
 
     this.timer = setInterval(() => {
       this.setState({blink: !this.state.blink})
-    }, 1000)
+    }, 500)
 
     this.setState({blink: true})
   }
@@ -60,6 +60,26 @@ class NisdosScreenRecorderIconSvg extends Component {
         <path fill={ color } d="M15.57 9.69h-.98v1.17l1.08.03 1.15-.2-.04-1.02M36.12 40.3l.04-1.18-1.57-.07-1.61.03.05 1.28 1.63-.03m9.13-3.02H6.3v-25h37.5m0-4.16H6.3a4.15 4.15 0 00-4.16 4.17v25c0 2.3 1.87 4.16 4.17 4.16h14.58v4.17h-4.17v4.16h16.67v-4.16H29.2v-4.17H43.8c2.3 0 4.17-1.86 4.17-4.17v-25a4.16 4.16 0 00-4.17-4.16"/>
       </svg>
     )
+  }
+}
+
+function onRoomEnter (data) {
+  if (data.screenStream) {
+    this.screenStream = data.screenStream
+  }
+  this.addIcon()
+  this.inDaChat = true
+  this.addIcon()
+  this.api('renderControls')
+}
+
+function onRoomExit () {
+  this.inDaChat = null
+}
+
+function onStreamsChanged (data) {
+  if (data.screenStream) {
+    this.screenStream = data.screenStream
   }
 }
 
@@ -103,15 +123,14 @@ XROOM_PLUGIN({
     },
   },
 
-  register () {
-    this.onRoomEnter = this.onRoomEnter.bind(this)
-    this.onRoomExit = this.onRoomExit.bind(this)
-    this.onStreamsChanged = this.onStreamsChanged.bind(this)
-    this.boundCountDown = this.countDown.bind(this)
+  events: {
+    'room/enter': onRoomEnter,
+    'room/exit': onRoomExit,
+    'streams/changed': onStreamsChanged,
+  },
 
-    window.addEventListener('room/enter', this.onRoomEnter)
-    window.addEventListener('room/exit', this.onRoomExit)
-    window.addEventListener('streams/changed', this.onStreamsChanged)
+  register () {
+    this.boundCountDown = this.countDown.bind(this)
 
     if (window.MediaRecorder.isTypeSupported('video/webm')) {
       this.mimeType = 'video/webm'
@@ -129,9 +148,6 @@ XROOM_PLUGIN({
   },
 
   unregister () {
-    window.removeEventListener('room/enter', this.onRoomEnter)
-    window.removeEventListener('room/exit', this.onRoomExit)
-    window.removeEventListener('streams/changed', this.onStreamsChanged)
     this.api('removeIcon')
   },
 
@@ -217,25 +233,5 @@ XROOM_PLUGIN({
     this.mediaRecorder.stop()
     this.isRecording = false
     this.api('renderControls')
-  },
-
-  onRoomEnter (event) {
-    if (event.detail.screenStream) {
-      this.screenStream = event.detail.screenStream
-    }
-    this.addIcon()
-    this.inDaChat = true
-    this.addIcon()
-    this.api('renderControls')
-  },
-
-  onRoomExit () {
-    this.inDaChat = null
-  },
-
-  onStreamsChanged (event) {
-    if (event.detail.screenStream) {
-      this.screenStream = event.detail.screenStream
-    }
   }
 })
