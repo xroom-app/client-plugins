@@ -1,9 +1,36 @@
 import React from 'react'
 
+function onRoomRead (data) {
+  this.isLocked = data.access ? data.access.lock : false
+  this.api('renderControls')
+}
+
+function onRoomEnter (data) {
+  this.inDaChat = true
+  this.isLocked = data.isLocked
+  this.addIcon()
+}
+
+function onRoomExit () {
+  this.inDaChat = false
+}
+
+function onRoomLockSet (data) {
+  this.isLocked = data
+  this.api('renderControls')
+}
+
 XROOM_PLUGIN({
 
   inDaChat: false,
   isLocked: false,
+
+  events: {
+    'ss/onReadRoom': onRoomRead,
+    'ss/lockSet': onRoomLockSet,
+    'room/enter': onRoomEnter,
+    'room/exit': onRoomExit,
+  },
 
   translations: {
     en: {
@@ -30,23 +57,10 @@ XROOM_PLUGIN({
   },
 
   register () {
-    this.onRoomRead = this.onRoomRead.bind(this)
-    this.onRoomEnter = this.onRoomEnter.bind(this)
-    this.onRoomExit = this.onRoomExit.bind(this)
-    this.onRoomLockSet = this.onRoomLockSet.bind(this)
-    window.addEventListener('room/read', this.onRoomRead)
-    window.addEventListener('room/enter', this.onRoomEnter)
-    window.addEventListener('room/exit', this.onRoomExit)
-    window.addEventListener('room/lock-set', this.onRoomLockSet)
-
     this.addIcon()
   },
 
   unregister () {
-    window.removeEventListener('room/read', this.onRoomRead)
-    window.removeEventListener('room/enter', this.onRoomEnter)
-    window.removeEventListener('room/exit', this.onRoomExit)
-    window.removeEventListener('room/lock-set', this.onRoomLockSet)
     this.api('removeIcon')
   },
 
@@ -75,26 +89,5 @@ XROOM_PLUGIN({
     } else {
       this.api('setRoomLock', !this.isLocked)
     }
-  },
-
-  onRoomRead (event) {
-    this.isLocked = event.detail.access ? event.detail.access.lock : false
-    this.api('renderControls')
-  },
-
-  onRoomEnter (event) {
-    this.inDaChat = true
-    this.isLocked = event.detail.isLocked
-    this.addIcon()
-  },
-
-  onRoomExit () {
-    this.inDaChat = false
-    this.api('removeIcon')
-  },
-
-  onRoomLockSet (event) {
-    this.isLocked = event.detail
-    this.api('renderControls')
-  },
+  }
 })
