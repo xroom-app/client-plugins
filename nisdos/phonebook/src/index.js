@@ -1,6 +1,17 @@
 import React from 'react'
 import UI from './ui'
 
+function  onRoomEnter (data) {
+  const { roomId } = data
+
+  this.storage.stats[roomId] = (this.storage.stats[roomId] || 0) + 1
+
+  localStorage.setItem('nisdos/phonebook', JSON.stringify(this.storage))
+  if (this.ui) {
+    this.ui.sync(this.storage)
+  }
+}
+
 XROOM_PLUGIN({
 
   storage: null,
@@ -18,6 +29,10 @@ XROOM_PLUGIN({
     },
   },
 
+  events: {
+    'room/enter': onRoomEnter,
+  },
+
   isSupported () {
     return !!window.localStorage
   },
@@ -25,9 +40,6 @@ XROOM_PLUGIN({
   register () {
     const stg = localStorage.getItem('nisdos/phonebook') || null
 
-    this.onRoomEnter = this.onRoomEnter.bind(this)
-    window.addEventListener('room/enter', this.onRoomEnter)
-    // this.storage = stg ? JSON.parse(stg) : { stats: {nisdos: 5, prestalo_very_long_name_yes_very_long: 3, coursio: 1, a:1,b:2,z:3,c:3,y:3,d:4,e:5,f:6,g:7,h:8} }
     this.storage = stg ? JSON.parse(stg) : { stats: {[document.location.pathname.split('/')[1]]: 0} }
 
     this.api('addIcon', {
@@ -49,18 +61,6 @@ XROOM_PLUGIN({
   },
 
   unregister () {
-    window.removeEventListener('room/enter', this.onRoomEnter)
     this.api('removeIcon')
-  },
-
-  onRoomEnter (event) {
-    const { roomId } = event.detail
-
-    this.storage.stats[roomId] = (this.storage.stats[roomId] || 0) + 1
-
-    localStorage.setItem('nisdos/phonebook', JSON.stringify(this.storage))
-    if (this.ui) {
-      this.ui.sync(this.storage)
-    }
-  },
+  }
 })
