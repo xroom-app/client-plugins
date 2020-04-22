@@ -78,7 +78,7 @@ XROOM_PLUGIN({
   },
 
   onRoomRead (event) {
-    this.isLocked = event.detail.access.lock
+    this.isLocked = event.detail.access ? event.detail.access.lock : false
     this.api('renderControls')
   },
 
