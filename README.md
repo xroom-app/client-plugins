@@ -55,6 +55,7 @@ XROOM_PLUGIN({
 | peer/exit         | Peer quit a room      | `{peerId}` 
 | peer/card         | Peer card updated     | `{peerId, card}` 
 | peer/muteSet      | Peer muted/unmuted   | `{peerId, camOn, micOn}` 
+| me/kicked         | Peer kicked you      | `{peerId}` 
 
 `ss/...`&ndash;events are 
 
