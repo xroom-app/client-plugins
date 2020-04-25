@@ -9,8 +9,8 @@ function onRoomExit () {
   this.inDaChat = false
 }
 
-function onStreamsChanged (data) {
-  this.videoStream = data.cameraStream
+function onStreamChanged (data) {
+  this.videoStream = data.stream
 }
 
 XROOM_PLUGIN({
@@ -43,9 +43,9 @@ XROOM_PLUGIN({
   },
 
   events: {
-    'room/enter': onRoomEnter,
+    'ss/onJoin': onRoomEnter,
     'room/exit': onRoomExit,
-    'streams/changed': onStreamsChanged,
+    'localStream/changed': onStreamChanged,
   },
 
   register () {

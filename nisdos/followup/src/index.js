@@ -41,7 +41,7 @@ XROOM_PLUGIN({
   },
 
   events: {
-    'room/enter': onRoomEnter,
+    'ss/onJoin': onRoomEnter,
     'room/exit': onRoomExit,
   },
 

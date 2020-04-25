@@ -66,25 +66,24 @@ class NisdosSoundRecoderIconSvg extends Component {
   }
 }
 
-function onRoomEnter (data) {
-  this.audioCompositeStream = this.composite(null, [data.cameraStream, data.screenStream, ...Object.values(data.remoteStreams)])
-  this.addIcon()
+function onRoomEnter () {
   this.inDaChat = true
-  this.addIcon()
-  this.api('renderControls')
+  // this.addIcon()
+  // this.api('renderControls')
 }
 
 function onRoomExit () {
-  this.inDaChat = null
+  this.inDaChat = false
   this.api('removeIcon')
   this.api('renderControls')
 }
 
-function onStreamsChanged (data) {
-  if (data.remoteStreams) {
-    this.audioCompositeStream = this.composite(null, [data.cameraStream, data.screenStream, ...Object.values(data.remoteStreams)])
-  } else {
-    this.audioCompositeStream = this.composite(null, [data.cameraStream, data.screenStream])
+async function onStreamsChanged () {
+  const { local, remote } = await this.api('getStreams')
+
+  if (local || remote) {
+    this.audioCompositeStream = this.composite(null, [local, ...Object.values(remote)])
+    console.log('Composition recomputed', !!local, Object.keys(remote).length)
   }
 }
 
@@ -125,9 +124,10 @@ XROOM_PLUGIN({
   },
 
   events: {
-    'room/enter': onRoomEnter,
+    'ss/onJoin': onRoomEnter,
     'room/exit': onRoomExit,
-    'streams/changed': onStreamsChanged,
+    'localStream/changed': onStreamsChanged,
+    'peer/trackAdded': onStreamsChanged,
   },
 
   register () {
@@ -136,6 +136,8 @@ XROOM_PLUGIN({
     } else if (window.MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
       this.mimeType = 'audio/webm'
     }
+
+    onStreamsChanged.bind(this)()
 
     this.api('addUI', { component:
       <UI

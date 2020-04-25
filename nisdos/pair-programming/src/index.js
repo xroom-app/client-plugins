@@ -115,7 +115,6 @@ class UI extends Component {
   }
 
   async onSyntaxChange (ev) {
-
     const value = ev.target.value
 
     await this.props.onModuleRequest(`mode-${value}`)
@@ -227,7 +226,7 @@ XROOM_PLUGIN({
   },
 
   events: {
-    'room/enter': onRoomEnter,
+    'ss/onJoin': onRoomEnter,
     'room/exit': onRoomExit,
     'data/in': onDataIn,
   },

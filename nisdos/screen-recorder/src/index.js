@@ -63,29 +63,23 @@ class NisdosScreenRecorderIconSvg extends Component {
   }
 }
 
-function onRoomEnter (data) {
-  if (data.screenStream) {
-    this.screenStream = data.screenStream
-  }
-  this.addIcon()
+function onRoomEnter () {
   this.inDaChat = true
   this.addIcon()
   this.api('renderControls')
 }
 
 function onRoomExit () {
-  this.inDaChat = null
+  this.inDaChat = false
 }
 
-function onStreamsChanged (data) {
-  if (data.screenStream) {
-    this.screenStream = data.screenStream
-  }
+function onStreamChanged (data) {
+  this.screenStream = data.stream
 }
 
 XROOM_PLUGIN({
 
-  inDaChat: null,
+  inDaChat: false,
   mimeType: null,
   countDownStep: 0,
   recordedBlobs: [],
@@ -124,13 +118,17 @@ XROOM_PLUGIN({
   },
 
   events: {
-    'room/enter': onRoomEnter,
+    'ss/onJoin': onRoomEnter,
     'room/exit': onRoomExit,
-    'streams/changed': onStreamsChanged,
+    'localStream/changed': onStreamChanged,
   },
 
-  register () {
+  register ({roomId}) {
     this.boundCountDown = this.countDown.bind(this)
+
+    if (roomId) {
+      this.screenStream = this.api('getStreams').local
+    }
 
     if (window.MediaRecorder.isTypeSupported('video/webm')) {
       this.mimeType = 'video/webm'

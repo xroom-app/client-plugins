@@ -35,12 +35,12 @@ XROOM_PLUGIN({
   },
 
   events: {
-    'room/enter': onRoomEnter,
+    'ss/onJoin': onRoomEnter,
     'room/exit': onRoomExit,
     'data/in': onDataIn,
   },
 
-  register () {
+  register ({roomId}) {
     this.api('appendScript', {src: '/plugins/nisdos/terminal/xterm.js'})
     this.api('appendStyle', {src: '/plugins/nisdos/terminal/xterm.css'})
 
@@ -51,6 +51,10 @@ XROOM_PLUGIN({
         ref={(ref) => { this.ui = ref} }
       />
     })
+
+    if (roomId) {
+      this.addIcon()
+    }
   },
 
   unregister () {

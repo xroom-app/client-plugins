@@ -28,7 +28,7 @@ XROOM_PLUGIN({
   events: {
     'ss/onReadRoom': onRoomRead,
     'ss/lockSet': onRoomLockSet,
-    'room/enter': onRoomEnter,
+    'ss/onJoin': onRoomEnter,
     'room/exit': onRoomExit,
   },
 

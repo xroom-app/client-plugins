@@ -1,8 +1,8 @@
 import React from 'react'
 import UI from './ui'
 
-function  onRoomEnter (data) {
-  const { roomId } = data
+function onRoomEnter (data) {
+  const roomId = data.roomId.indexOf('xroom.app/') ? data.roomId : data.roomId.replace('xroom.app/', '')
 
   this.storage.stats[roomId] = (this.storage.stats[roomId] || 0) + 1
 
@@ -30,7 +30,7 @@ XROOM_PLUGIN({
   },
 
   events: {
-    'room/enter': onRoomEnter,
+    'ss/onJoin': onRoomEnter,
   },
 
   isSupported () {
