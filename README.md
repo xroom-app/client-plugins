@@ -8,8 +8,9 @@
 
 #### index.js skeleton:
 
-```ts
+```
 XROOM_PLUGIN({
+    /* Three required methods */
     isSupported () {
       // called to check if plugin is supported in the current browser
       // must return a boolean
@@ -19,45 +20,52 @@ XROOM_PLUGIN({
     },
     unregister () {
       // called when plugin is unloaded
-    }
+    },
+
+    /* Optional stuff */
+    events: { ... },
+    translations: { ... },
 })
 ```
 
 
 ## Exposed API
-| Method            | Description           | Arguments                         
-| ---               | ---                   | ---                               
-| addIcon           | Add icon to UI        | `{title, onClick, svg}`           
-| addUI             | Add own UI            | `{component}`                     
-| removeIcon        | Remove icon from UI   | —                                 
-| renderControls    | Rerender UI, useful for dynamic icons | —                 
-| broadcastData     | Broadcasts RTC data   | Any data
-| setHotKeysEnable  | Hot keys on/off, useful if your plugin interacts with keyboard | Enable flag           
-| setRoomLock       | Lock/unlock the current room | Lock flag           
-| appendScript      | Load a script | `{src}`           
-| appendStyle       | Load a style file | `{src}`           
-| removeElement     | Remove an element from DOM | Element reference ID           
-| postToChat        | Post a message to chat | `{text, notLocal: false}`           
-| fileToChat        | Post a file to chat for everyone | `{file}`           
-| setLocalAP        | Set local audio processor | A processing AudioNode          
-| goToRoom          | Go to a new room | `{roomId, preview: false}`          
+| Method            | Description | Arguments | Returns    
+| ---               | --- | --- | ---
+| addIcon           | Add icon to UI | `{title, onClick, svg}`
+| addUI             | Add own UI | `{component}` | Reference to component in DOM
+| appendScript      | Load a script | `{src}` | Script ID
+| appendStyle       | Load a style file | `{src}` | Style ID
+| broadcastData     | Broadcast data to all peers with this plugin  | Any data
+| fileToChat        | Post a file to chat for everyone | `{file}`
+| getStreams        | Get media streams | — | `{local, remote: []}`
+| goToRoom          | Go to a new room | `{roomId, preview: false}`
+| postToChat        | Post a message to chat | `{text, notLocal: false}`
+| removeElement     | Remove an element from DOM | Element reference ID
+| removeIcon        | Remove icon from UI   | —
+| renderControls    | Rerender UI, useful for dynamic icons | —
+| setHotKeysEnable  | Hot keys on/off, useful if your plugin interacts with keyboard | Enable flag
+| setRoomLock       | Lock/unlock the current room | Lock flag
+| setLocalAP        | Set local audio processor | A processing AudioNode
+| setLocalStream    | Substitute local stream | Media stream
+| suggestPlugin     | Suggest this plugin to all peers | —
 
 ## Exposed events
 | Event             | Description           | Payload 
 | ---               | ---                   | --- 
-| ss/lockSet        | Room lock status changed | `{lock, peerId}` 
-| ss/onReadRoom     | Room pre-enter status update | `{id, type?, access?: {lock, password}}` 
-| room/enter        | You entered a room    | `{roomId, cameraStream, screenStream, remoteStreams}` 
-| room/exit         | You quit a room       | `{roomId}` 
-| streams/changed   | Media streams changed | `{cameraStream, screenStream, remoteStreams}` 
 | data/in           | Incoming rtc data via plugins data channel | `{pluginId, data}` 
-| peer/enter        | Peer entered a room   | `{peerId}` 
-| peer/exit         | Peer quit a room      | `{peerId}` 
-| peer/card         | Peer card updated     | `{peerId, card}` 
-| peer/muteSet      | Peer muted/unmuted   | `{peerId, camOn, micOn}` 
+| localStream/changed | Local stream changed | `{stream, ?videoOn, ?audioOn}` 
 | me/kicked         | Peer kicked you      | `{peerId}` 
+| peer/added        | Peer entered a room   | `{peerId, peerCount}` 
+| peer/card         | Peer card updated     | `{peerId, card}` 
+| peer/muteSet      | Peer muted/unmuted self  | `{peerId, camOn, micOn}` 
+| peer/removed      | Peer quit a room      | `{peerId, peerCount}` 
+| room/exit         | You quit a room       | `{roomId}` 
+| ss/lockSet        | Room lock status changed | Lock flag 
+| ss/onJoin         | You entered a room    | `{roomId, status, ?isLocked}` 
+| ss/onReadRoom     | Room pre-enter status update | `{id, ?type, ?access: {lock, password}, ?peerCount, ?hostCount}` 
 
-`ss/...`&ndash;events are 
+`ss/...`&ndash;events are automatically generate events based on signaling server commands.
 
 ## Using events
 Starting from XROOM v2 you can utilize automatic plugin event management. Simply define `this.events` object with
@@ -84,7 +92,7 @@ In case you need to access XROOM's audio context it is available as `this.audioC
 
 ## Message boxes
 Message boxes are exposed to plugins as `this.mbox`. Example usage: 
-```js 
+```
 /*
   key -- pressed button key
   value -- returned value
@@ -127,3 +135,6 @@ http-server --cors
 
 ## License
 MIT License
+
+## Version
+Version 2020-04-25
