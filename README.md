@@ -39,7 +39,7 @@ XROOM_PLUGIN({
 | appendStyle       | Load a style file | `{src}` | Style ID
 | broadcastData     | Broadcast data to all peers with this plugin  | Any data
 | fileToChat        | Post a file to chat for everyone | `{file}`
-| getStreams        | Get media streams | — | `{local, remote: []}`
+| getStreams        | Get media streams | — | `{local, remote: {}}`
 | goToRoom          | Go to a new room | `{roomId, preview: false}`
 | postToChat        | Post a message to chat | `{text, notLocal: false}`
 | removeElement     | Remove an element from DOM | Element reference ID
