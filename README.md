@@ -15,8 +15,9 @@ XROOM_PLUGIN({
       // called to check if plugin is supported in the current browser
       // must return a boolean
     },
-    register () {
+    register ({roomId}) {
       // called when plugin is loaded (both hot load and load on start)
+      // roomId will be not null when plugin started when already in a room
     },
     unregister () {
       // called when plugin is unloaded
