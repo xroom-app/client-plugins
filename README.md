@@ -55,17 +55,17 @@ XROOM_PLUGIN({
 | ---               | ---                   | --- 
 | data/in           | Incoming rtc data via plugins data channel | `{pluginId, data}` 
 | localStream/changed | Local stream changed | `{stream, ?videoOn, ?audioOn}` 
-| me/kicked         | Peer kicked you      | `{peerId}` 
 | peer/added        | Peer entered a room   | `{peerId, peerCount}` 
 | peer/card         | Peer card updated     | `{peerId, card}` 
 | peer/muteSet      | Peer muted/unmuted self  | `{peerId, camOn, micOn}` 
 | peer/removed      | Peer quit a room      | `{peerId, peerCount}` 
 | room/exit         | You quit a room       | `{roomId}` 
+| ss/kick           | Server kicked you on behalf of peerId | `{peerId}` 
 | ss/lockSet        | Room lock status changed | Lock flag 
 | ss/onJoin         | You entered a room    | `{roomId, status, ?isLocked}` 
-| ss/onReadRoom     | Room pre-enter status update | `{id, ?type, ?access: {lock, password}, ?peerCount, ?hostCount}` 
+| ss/onReadRoom     | Room pre-enter status updated | `{id, ?type, ?access: {lock, password}, ?peerCount, ?hostCount}` 
 
-`ss/...`&ndash;events are automatically generate events based on signaling server commands.
+`ss/...`&ndash;events are automatically generated events based on signaling server commands. We will add more to the documentation soon.
 
 ## Using events
 Starting from XROOM v2 you can utilize automatic plugin event management. Simply define `this.events` object with
