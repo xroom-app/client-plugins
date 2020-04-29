@@ -184,7 +184,7 @@ XROOM_PLUGIN({
 
       const ctx = canvas.getContext('2d', { alpha: false })
 
-      this.outputStream = canvas.captureStream(30)
+      this.outputStream = canvas.captureStream(25)
 
       const processVideo = () => {
         try {
@@ -196,7 +196,9 @@ XROOM_PLUGIN({
             cv.cvtColor(dst, gray, cv.COLOR_RGBA2GRAY, 0)
 
             // detect faces.
-            classifier.detectMultiScale(gray, faces, 1.12, 3, 0)
+          //  const x = window.performance.now()
+            classifier.detectMultiScale(gray, faces, 1.2, 3, 0)
+          //  console.log('dT', window.performance.now() - x)
 
             cv.imshow(canvas, dst)
 
