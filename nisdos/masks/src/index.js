@@ -81,7 +81,7 @@ XROOM_PLUGIN({
               }
             }
           } else {
-            self.printError('Failed to load ' + ROOT_URL + 'haarcascade_frontalface_default.xml' + ' status: ' + request.status)
+            console.log('Failed to load datafile. Status: ' + request.status)
           }
         }
       }
