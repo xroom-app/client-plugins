@@ -6,7 +6,7 @@ const ROOT_URL = '/plugins/nisdos/masks/'
 const masksData = [
   ['m1', -0.1,  0.1, 1.0, 1.0],
   ['m2', -0.4, -0.80, 1.8, 1.8],
-  ['m3',  0.0, -0.2, 1.0, 1.0],
+  ['m3',  0.0, -0.85, 1.2, 1.2],
 ]
 
 function onStreamChanged (data) {
