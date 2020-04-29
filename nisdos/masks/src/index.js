@@ -66,13 +66,20 @@ XROOM_PLUGIN({
 
       request.open('GET', ROOT_URL + 'haarcascade_frontalface_default.xml', true)
       request.responseType = 'arraybuffer'
-      request.onload = () => {
+      request.onload = async () => {
         if (request.readyState === 4) {
           if (request.status === 200) {
             let data = new Uint8Array(request.response)
             cv.FS_createDataFile('/', 'haarcascade_frontalface_default.xml', data, true, false, false)
             console.log('Mask: AI ready')
             this.cvLoaded = true
+
+            if (!this.videoStream) {
+              [ this.videoStream ] = await this.api('getLocalStream')
+              if (this.videoStream) {
+                this.camLoaded = true
+              }
+            }
           } else {
             self.printError('Failed to load ' + ROOT_URL + 'haarcascade_frontalface_default.xml' + ' status: ' + request.status)
           }
