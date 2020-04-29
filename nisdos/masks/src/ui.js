@@ -91,7 +91,7 @@ const styles = {
     cursor: 'pointer',
     width: '100px',
     height: '100px',
-    backgroundImage: 'linear-gradient(135deg, #ffffff 25%, #eee 25%, #ddd 50%, #ffffff 50%, #ffffff 75%, #ddd 75%, #ddd 100%)',
+    backgroundImage: 'linear-gradient(135deg, #ffffff 25%, #ddd 25%, #ddd 50%, #ffffff 50%, #ffffff 75%, #ddd 75%, #ddd 100%)',
     backgroundSize: '20.00px 20.00px',
     borderRadius: '8px',
     border: '2px solid transparent',
