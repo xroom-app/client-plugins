@@ -61,33 +61,6 @@ XROOM_PLUGIN({
 
     await this.api('appendScript', { src: '/plugins/nisdos/masks/opencv.js' })
 
-    cv['onRuntimeInitialized'] = () => {
-      const request = new XMLHttpRequest()
-
-      request.open('GET', ROOT_URL + 'haarcascade_frontalface_default.xml', true)
-      request.responseType = 'arraybuffer'
-      request.onload = async () => {
-        if (request.readyState === 4) {
-          if (request.status === 200) {
-            let data = new Uint8Array(request.response)
-            cv.FS_createDataFile('/', 'haarcascade_frontalface_default.xml', data, true, false, false)
-            console.log('Mask: AI ready')
-            this.cvLoaded = true
-
-            if (!this.videoStream) {
-              [ this.videoStream ] = await this.api('getLocalStream')
-              if (this.videoStream) {
-                this.camLoaded = true
-              }
-            }
-          } else {
-            console.log('Failed to load datafile. Status: ' + request.status)
-          }
-        }
-      }
-      request.send()
-    }
-
     this.api('addUI', {
       component: <UI
         api={this.api}
@@ -97,6 +70,37 @@ XROOM_PLUGIN({
         onMaskSelect={id => this.chooseMask(id)}
         ref={(ref) => { this.ui = ref} }
       />
+    })
+
+    await new Promise(resolve => {
+      cv['onRuntimeInitialized'] = () => {
+        const request = new XMLHttpRequest()
+
+        request.open('GET', ROOT_URL + 'haarcascade_frontalface_default.xml', true)
+        request.responseType = 'arraybuffer'
+        request.onload = async () => {
+          if (request.readyState === 4) {
+            if (request.status === 200) {
+              let data = new Uint8Array(request.response)
+              cv.FS_createDataFile('/', 'haarcascade_frontalface_default.xml', data, true, false, false)
+              console.log('Mask: AI ready')
+              this.cvLoaded = true
+
+              if (!this.videoStream) {
+                [ this.videoStream ] = await this.api('getLocalStream')
+                if (this.videoStream) {
+                  this.camLoaded = true
+                }
+              }
+            } else {
+              console.log('Failed to load datafile. Status: ' + request.status)
+            }
+          }
+        }
+        request.send()
+      }
+
+      resolve()
     })
   },
 
