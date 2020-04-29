@@ -98,9 +98,8 @@ XROOM_PLUGIN({
           }
         }
         request.send()
+        resolve()
       }
-
-      resolve()
     })
   },
 
