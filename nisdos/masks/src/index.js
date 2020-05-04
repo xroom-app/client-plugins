@@ -21,9 +21,9 @@ function onStreamChanged (data) {
 
       this.cvVideoBuffer.srcObject = this.videoStream
 
-      if (this.outputStream) {
-        this.api('setLocalStream', {stream: this.outputStream})
-      }
+      /*if (this.outputStream) {
+        this.api('setLocalVideo', {track: this.outputStream.getVideoTracks()[0]})
+      }*/
     }
   }
 }
@@ -54,12 +54,8 @@ XROOM_PLUGIN({
   },
 
   async register () {
-    this.addIcon()
-
     // a bit risky to leave it async
     this.loadMasks()
-
-    await this.api('appendScript', { src: '/plugins/nisdos/masks/opencv.js' })
 
     this.api('addUI', {
       component: <UI
@@ -71,6 +67,8 @@ XROOM_PLUGIN({
         ref={(ref) => { this.ui = ref} }
       />
     })
+
+    await this.api('appendScript', { src: '/plugins/nisdos/masks/opencv.js' })
 
     await new Promise(resolve => {
       cv['onRuntimeInitialized'] = () => {
@@ -101,6 +99,8 @@ XROOM_PLUGIN({
         resolve()
       }
     })
+
+    this.addIcon()
   },
 
   unregister () {
@@ -143,7 +143,7 @@ XROOM_PLUGIN({
 
     if (!id) {
       this.currentMask = null
-      this.api('setLocalStream', {reset: true})
+      this.api('setLocalVideo', {reset: true})
     } else {
       this.currentMask = masksData[id - 1]
 
@@ -154,7 +154,7 @@ XROOM_PLUGIN({
       this.cvVideoBuffer.srcObject = this.videoStream
 
       if (this.outputStream) {
-        this.api('setLocalStream', {stream: this.outputStream})
+        this.api('setLocalVideo', {track: this.outputStream.getVideoTracks()[0]})
       }
     }
   },
@@ -168,6 +168,7 @@ XROOM_PLUGIN({
       video.width = 320
       video.height = 240
       video.autoplay = true
+      video.muted = true
 
       this.cvVideoBuffer = video
 

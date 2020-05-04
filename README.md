@@ -48,7 +48,7 @@ XROOM_PLUGIN({
 | setHotKeysEnable  | Hot keys on/off, useful if your plugin interacts with keyboard | Enable flag
 | setRoomLock       | Lock/unlock the current room | Lock flag
 | setLocalAP        | Set local audio processor | A processing AudioNode
-| setLocalStream    | Substitute local stream | `{stream, reset}`
+| setLocalVideo     | Substitute local video | `{track, reset}`
 | suggestPlugin     | Suggest this plugin to all peers | —
 
 ## Exposed events
