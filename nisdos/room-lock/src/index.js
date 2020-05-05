@@ -1,8 +1,12 @@
 import React from 'react'
 
 function onRoomRead (data) {
+  const oldState = this.isLocked
   this.isLocked = data.access ? data.access.lock : false
-  this.api('renderControls')
+
+  if (oldState !== this.isLocked) {
+    this.api('renderControls')
+  }
 }
 
 function onRoomEnter (data) {
@@ -38,6 +42,7 @@ XROOM_PLUGIN({
       iconCaptionOff: 'Open',
       mbox: {
         enterFirst: 'Enter the room first',
+        recommendation: 'Installing this plugin in a locked room may cause wrong indication.',
       },
     },
     sv: {
@@ -45,6 +50,7 @@ XROOM_PLUGIN({
       iconCaptionOff: 'Upplåst',
       mbox: {
         enterFirst: 'Gå in i rummet först',
+        recommendation: 'Installing this plugin in a locked room may cause wrong indication.',
       },
     },
     ru: {
@@ -52,12 +58,17 @@ XROOM_PLUGIN({
       iconCaptionOff: 'Открыто',
       mbox: {
         enterFirst: 'Сначала войдите в комнату',
+        recommendation: 'Установка плагина сразу внутри закрытой комнаты может привести к неправильной индикации.',
       },
     },
   },
 
-  register () {
+  register ({roomId}) {
     this.addIcon()
+    if (roomId) {
+      this.inDaChat = true
+      this.mbox({text: this.i18n.t('mbox.recommendation')})
+    }
   },
 
   unregister () {
@@ -84,10 +95,10 @@ XROOM_PLUGIN({
   },
 
   toggleLock () {
-    if (!this.inDaChat) {
-      this.mbox({text: this.i18n.t('mbox.enterFirst')})
-    } else {
+    if (this.inDaChat) {
       this.api('setRoomLock', !this.isLocked)
+    } else {
+      this.mbox({text: this.i18n.t('mbox.enterFirst')})
     }
   }
 })
