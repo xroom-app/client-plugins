@@ -14,6 +14,12 @@ function onStreamChanged (data) {
     this.camLoaded = true
     this.videoStream = new MediaStream(data.stream.getVideoTracks())
 
+    const settings = this.videoStream.getVideoTracks()[0].getSettings()
+
+    if (settings && settings.width) {
+      this.aspectRatio = settings.height / settings.width
+    }
+
     if (this.cvLoaded) {
       if (!this.cvVideoBuffer) {
         this.prepare()
@@ -37,6 +43,7 @@ XROOM_PLUGIN({
   currentMask: null,
   cvVideoBuffer: null,
   outputStream: null,
+  aspectRatio: 0.75,
 
   translations: {
     en: {
@@ -166,7 +173,7 @@ XROOM_PLUGIN({
         canvas = document.createElement('canvas')
 
       video.width = 320
-      video.height = 240
+      video.height = video.width * this.aspectRatio
       video.autoplay = true
 
       this.cvVideoBuffer = video
@@ -176,8 +183,8 @@ XROOM_PLUGIN({
         faces = new cv.RectVector(),
         cap = new cv.VideoCapture(video),
         classifier = new cv.CascadeClassifier(),
-        src = new cv.Mat(video.height, video.width, cv.CV_8UC4),
-        dst = new cv.Mat(video.height, video.width, cv.CV_8UC4)
+        src = new cv.Mat(video.width * this.aspectRatio, video.width, cv.CV_8UC4),
+        dst = new cv.Mat(video.width * this.aspectRatio, video.width, cv.CV_8UC4)
 
       // load pre-trained classifiers
       classifier.load('haarcascade_frontalface_default.xml')
