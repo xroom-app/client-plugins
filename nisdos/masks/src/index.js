@@ -18,6 +18,13 @@ function onStreamChanged (data) {
 
     if (settings && settings.width) {
       this.aspectRatio = settings.height / settings.width
+      this.mats.src = new cv.Mat(320 * this.aspectRatio, 320, cv.CV_8UC4)
+      this.mats.dst = new cv.Mat(320 * this.aspectRatio, 320, cv.CV_8UC4)
+      console.log('Aspect ratio', this.aspectRatio)
+    } else {
+      this.mbox({text: 'This browser does not support fully support masks. Video may be squeezed.'})
+      this.mats.src = new cv.Mat(240, 320, cv.CV_8UC4)
+      this.mats.dst = new cv.Mat(240, 320, cv.CV_8UC4)
     }
 
     if (this.cvLoaded) {
@@ -26,6 +33,7 @@ function onStreamChanged (data) {
       }
 
       this.cvVideoBuffer.srcObject = this.videoStream
+      this.cvVideoBuffer.height = 320 * this.aspectRatio
 
       /*if (this.outputStream) {
         this.api('setLocalVideo', {track: this.outputStream.getVideoTracks()[0]})
@@ -44,6 +52,7 @@ XROOM_PLUGIN({
   cvVideoBuffer: null,
   outputStream: null,
   aspectRatio: 0.75,
+  mats: { src: null, dst: null },
 
   translations: {
     en: {
@@ -173,7 +182,7 @@ XROOM_PLUGIN({
         canvas = document.createElement('canvas')
 
       video.width = 320
-      video.height = video.width * this.aspectRatio
+      video.height = 320 * this.aspectRatio
       video.autoplay = true
 
       this.cvVideoBuffer = video
@@ -182,9 +191,7 @@ XROOM_PLUGIN({
         gray = new cv.Mat(),
         faces = new cv.RectVector(),
         cap = new cv.VideoCapture(video),
-        classifier = new cv.CascadeClassifier(),
-        src = new cv.Mat(video.width * this.aspectRatio, video.width, cv.CV_8UC4),
-        dst = new cv.Mat(video.width * this.aspectRatio, video.width, cv.CV_8UC4)
+        classifier = new cv.CascadeClassifier()
 
       // load pre-trained classifiers
       classifier.load('haarcascade_frontalface_default.xml')
@@ -195,19 +202,19 @@ XROOM_PLUGIN({
 
       const processVideo = () => {
         try {
-          if (this.currentMask) {
+          if (this.currentMask && this.mats.src) {
             // capture and put ground layer
-            cap.read(src)
-            src.copyTo(dst)
+            cap.read(this.mats.src)
+            this.mats.src.copyTo(this.mats.dst)
 
-            cv.cvtColor(dst, gray, cv.COLOR_RGBA2GRAY, 0)
+            cv.cvtColor(this.mats.dst, gray, cv.COLOR_RGBA2GRAY, 0)
 
             // detect faces.
           //  const x = window.performance.now()
             classifier.detectMultiScale(gray, faces, 1.2, 3, 0)
           //  console.log('dT', window.performance.now() - x)
 
-            cv.imshow(canvas, dst)
+            cv.imshow(canvas, this.mats.dst)
 
             if (faces.size()) {
               const f = faces.get(0)
