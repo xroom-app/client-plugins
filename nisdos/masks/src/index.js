@@ -12,7 +12,7 @@ const masksData = [
 function onStreamChanged (data) {
   if (data.videoOn) {
     this.camLoaded = true
-    this.videoStream = data.stream
+    this.videoStream = new MediaStream(data.stream.getVideoTracks())
 
     if (this.cvLoaded) {
       if (!this.cvVideoBuffer) {
@@ -168,7 +168,6 @@ XROOM_PLUGIN({
       video.width = 320
       video.height = 240
       video.autoplay = true
-      video.muted = true
 
       this.cvVideoBuffer = video
 
