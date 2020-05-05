@@ -11,7 +11,7 @@ class NisdosScreenRecorderIconSvg extends Component {
       blink: false,
     }
 
-    if (this.props.on) {
+    if (props.on) {
       this.start()
     }
   }
@@ -25,9 +25,7 @@ class NisdosScreenRecorderIconSvg extends Component {
   }
 
   start() {
-    if (this.timer) {
-      this.stop()
-    }
+    this.stop()
 
     this.timer = setInterval(() => {
       this.setState({blink: !this.state.blink})
@@ -37,15 +35,11 @@ class NisdosScreenRecorderIconSvg extends Component {
   }
 
   stop() {
-    if (this.timer) {
-      clearInterval(this.timer)
-      this.setState({blink: false})
-    }
-    this.timer = null
+    clearInterval(this.timer)
+    this.setState({blink: false})
   }
 
   render() {
-
     let { color, size } = this.props
     const { blink } = this.state
 
@@ -151,9 +145,7 @@ XROOM_PLUGIN({
 
   addIcon () {
     this.api('addIcon', {
-      title: () => {
-        return this.isRecording ? this.i18n.t('iconCaptionOn') : this.i18n.t('iconCaptionOff')
-      },
+      title: () => this.isRecording ? this.i18n.t('iconCaptionOn') : this.i18n.t('iconCaptionOff'),
       onClick: () => this.isRecording ? this.stopRecording() : this.preStartRecording(),
       svg: props => <NisdosScreenRecorderIconSvg {...props} on={this.isRecording}/>
     })
