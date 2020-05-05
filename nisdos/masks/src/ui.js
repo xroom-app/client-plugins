@@ -19,7 +19,7 @@ class UI extends Component {
 
   render () {
     const { isShown, selectedId } = this.state
-    const { i18n, onMaskSelect, masksData } = this.props
+    const { onMaskSelect, masksData } = this.props
 
     if (!isShown) {
       return null
@@ -82,13 +82,19 @@ const styles = {
     padding: '8px',
     borderRadius: '4px',
     border: '1px solid #eee',
+    maxWidth: 'calc(100vw - 16px)',
   },
   masks: {
     display: 'flex',
+    overflow: 'auto',
+    flexWrap: 'wrap',
+    justifyContent: 'space-evenly',
   },
   mask: {
+    display: 'inline-block',
     margin: '16px',
     cursor: 'pointer',
+    minWidth: '100px',
     width: '100px',
     height: '100px',
     backgroundImage: 'linear-gradient(135deg, #ffffff 25%, #ddd 25%, #ddd 50%, #ffffff 50%, #ffffff 75%, #ddd 75%, #ddd 100%)',
