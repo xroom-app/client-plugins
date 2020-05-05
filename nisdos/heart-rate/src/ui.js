@@ -36,8 +36,7 @@ class UI extends Component {
   }
 
   start () {
-
-    const { isInDaChat, getSystemStream } = this.props
+    const { isInDaChat, getSystemStream, i18n, mbox } = this.props
 
     const video = {
       facingMode: 'environment',
@@ -48,10 +47,10 @@ class UI extends Component {
     }, () => {
       const stream = getSystemStream()
 
-      if (stream) {
+      if (stream && stream.getVideoTracks().length) {
         this.setState({started: true}, () => this.init(stream))
       } else {
-        alert('It looks like all the cameras are blocked')
+        mbox({text: i18n.t('noCamera')})
       }
     })
   }

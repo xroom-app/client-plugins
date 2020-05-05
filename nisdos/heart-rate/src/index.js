@@ -25,6 +25,7 @@ XROOM_PLUGIN({
       btnStart: 'Start',
       btnClose: 'Close',
       btnTorch: 'Torch',
+      noCamera: 'It looks like all the cameras are blocked',
     },
     sv: {
       iconCaption: 'Puls',
@@ -32,6 +33,7 @@ XROOM_PLUGIN({
       btnStart: 'Starta',
       btnClose: 'Stäng',
       btnTorch: 'Lampa',
+      noCamera: 'Det känns som ingen kamera är tillgänglig',
     },
     ru: {
       iconCaption: 'Пульс',
@@ -39,6 +41,7 @@ XROOM_PLUGIN({
       btnStart: 'Начать',
       btnClose: 'Закрыть',
       btnTorch: 'Свет',
+      noCamera: 'Похоже, ни одна камера не доступна.',
     },
   },
 
@@ -54,6 +57,7 @@ XROOM_PLUGIN({
     this.api('addUI', { component:
       <UI
         i18n={this.i18n}
+        mbox={this.mbox}
         ref={(ref) => { this.ui = ref} }
         isInDaChat={() => this.inDaChat}
         getSystemStream={() => this.videoStream}
