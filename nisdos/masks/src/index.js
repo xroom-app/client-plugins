@@ -136,7 +136,13 @@ XROOM_PLUGIN({
 
 
   createMats() {
-    const settings = this.videoStream.getVideoTracks()[0].getSettings()
+    const tracks = this.videoStream.getVideoTracks()
+
+    if (!tracks.length) {
+      return
+    }
+
+    const settings = tracks[0].getSettings()
 
     if (settings && settings.width) {
       this.aspectRatio = settings.height / settings.width
