@@ -88,11 +88,11 @@ XROOM_PLUGIN({
               console.log('Mask: AI ready')
               this.cvLoaded = true
 
-              if (!this.videoStream) {
-                [ this.videoStream ] = await this.api('getLocalStream')
-                if (this.videoStream) {
-                  this.camLoaded = true
-                }
+              const [ sysStream ] = await this.api('getLocalStream')
+
+              if (!this.videoStream && sysStream) {
+                this.videoStream = new MediaStream(sysStream.getVideoTracks())
+                this.camLoaded = true
               }
 
               if (!this.mats.dst) {
