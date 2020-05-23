@@ -31,40 +31,43 @@ XROOM_PLUGIN({
 
 
 ## Exposed API
-| Method            | Description | Arguments | Returns    
-| ---               | --- | --- | ---
-| addIcon           | Add icon to UI | `{title, onClick, svg}`
-| addUI             | Add own UI | `{component}` | Reference to component in DOM
-| appendScript      | Load a script | `{src}` | Script ID
-| appendStyle       | Load a style file | `{src}` | Style ID
-| broadcastData     | Broadcast data to all peers with this plugin  | Any data
-| fileToChat        | Post a file to chat for everyone | `{file}`
-| getStreams        | Get media streams | — | `{local, remote: {}}`
-| goToRoom          | Go to a new room | `{roomId, preview: false}`
-| postToChat        | Post a message to chat | `{text, notLocal: false}`
-| removeElement     | Remove an element from DOM | Element reference ID
-| removeIcon        | Remove icon from UI   | —
-| renderControls    | Rerender UI, useful for dynamic icons | —
-| setHotKeysEnable  | Hot keys on/off, useful if your plugin interacts with keyboard | Enable flag
-| setRoomLock       | Lock/unlock the current room | Lock flag
-| setLocalAP        | Set local audio processor | A processing AudioNode
-| setLocalVideo     | Substitute local video | `{track, reset}`
-| suggestPlugin     | Suggest this plugin to all peers | —
+| Method              | Description | Arguments | Returns    
+| ---                 | --- | --- | ---
+| addIcon             | Add icon to UI | `{title, onClick, svg}`
+| addUI               | Add own UI | `{component}` | Reference to component in DOM
+| appendScript        | Load a script | `{src}` | Script ID
+| appendStyle         | Load a style file | `{src}` | Style ID
+| broadcastData       | Broadcast data to all peers with this plugin  | Any data
+| fileToChat          | Post a file to chat for everyone | `{file}`
+| getStreams          | Get media streams | — | `{local, remote: {}}`
+| goToRoom            | Go to a new room | `{roomId, preview: false}`
+| postToChat          | Post a message to chat | `{text, notLocal: false}`
+| removeElement       | Remove an element from DOM | Element reference ID
+| removeIcon          | Remove icon from UI   | —
+| renderControls      | Rerender UI, useful for dynamic icons | —
+| setHotKeysEnable    | Hot keys on/off, useful if your plugin interacts with keyboard | Enable flag
+| setRoomLock         | Lock/unlock the current room | Lock flag
+| setRoomPassword     | Set/reset room password | Password (null to reset)
+| setLocalAP          | Set local audio processor | A processing AudioNode
+| setLocalVideo       | Substitute local video | `{track, reset}`
+| suggestPlugin       | Suggest this plugin to all peers | —
 
 ## Exposed events
-| Event             | Description           | Payload 
-| ---               | ---                   | --- 
-| data/in           | Incoming rtc data via plugins data channel | `{pluginId, data}` 
+| Event               | Description           | Payload 
+| ---                 | ---                   | --- 
+| data/in             | Incoming rtc data via plugins data channel | `{pluginId, data}` 
 | localStream/changed | Local stream changed | `{stream, ?videoOn, ?audioOn}` 
-| peer/added        | Peer entered a room   | `{peerId, peerCount}` 
-| peer/card         | Peer card updated     | `{peerId, card}` 
-| peer/muteSet      | Peer muted/unmuted self  | `{peerId, camOn, micOn}` 
-| peer/removed      | Peer quit a room      | `{peerId, peerCount}` 
-| room/exit         | You quit a room       | `{roomId}` 
-| ss/kick           | Server kicked you on behalf of peerId | `{peerId}` 
-| ss/lockSet        | Room lock status changed | Lock flag 
-| ss/onJoin         | You entered a room    | `{roomId, status, ?isLocked}` 
-| ss/onReadRoom     | Room pre-enter status updated | `{id, ?type, ?access: {lock, password}, ?peerCount, ?hostCount}` 
+| peer/added          | Peer entered a room   | `{peerId, peerCount}` 
+| peer/card           | Peer card updated     | `{peerId, card}` 
+| peer/muteSet        | Peer muted/unmuted self  | `{peerId, camOn, micOn}` 
+| peer/removed        | Peer quit a room      | `{peerId, peerCount}` 
+| room/exit           | You quit a room       | `{roomId}` 
+| ss/kick             | Server kicked you on behalf of peerId | `{peerId}` 
+| ss/lockSet          | Room lock status changed | Lock flag 
+| ss/onJoin           | You entered a room    | `{roomId, status, ?isLocked}` 
+| ss/onReadRoom       | Room pre-enter status updated | `{id, ?type, ?access: {lock, password}, ?peerCount, ?hostCount}` 
+| ss/onPasswordSet    | New room password | Password string
+| ss/onPasswordReset  | Room password removed | —
 
 `ss/...`&ndash;events are automatically generated events based on signaling server commands. We will add more to the documentation soon.
 
