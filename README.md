@@ -66,8 +66,8 @@ XROOM_PLUGIN({
 | ss/lockSet          | Room lock status changed | Lock flag 
 | ss/onJoin           | You entered a room    | `{roomId, status, ?isLocked}` 
 | ss/onReadRoom       | Room pre-enter status updated | `{id, ?type, ?access: {lock, password}, ?peerCount, ?hostCount}` 
-| ss/onPasswordSet    | New room password | Password string
-| ss/onPasswordReset  | Room password removed | —
+| ss/passwordSet      | New room password | Password string
+| ss/passwordReset    | Room password removed | —
 
 `ss/...`&ndash;events are automatically generated events based on signaling server commands. We will add more to the documentation soon.
 
