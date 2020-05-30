@@ -68,7 +68,7 @@ function onRoomExit () {
 }
 
 function onStreamChanged (data) {
-  this.api('getLocalStream').then(([ localStream ]) => {
+  this.api('getLocalStream', {video: false}).then(([ localStream ]) => {
     this.screenStream = this.composite(data.stream, [localStream])
   })
 }
