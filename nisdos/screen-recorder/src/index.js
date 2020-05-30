@@ -68,7 +68,9 @@ function onRoomExit () {
 }
 
 function onStreamChanged (data) {
-  this.screenStream = data.stream
+  this.api('getLocalStream').then(([ localStream ]) => {
+    this.screenStream = this.composite(data.stream, [localStream])
+  })
 }
 
 XROOM_PLUGIN({
@@ -89,7 +91,7 @@ XROOM_PLUGIN({
       btnClose: 'Close',
       btnToChat: 'Send to chat',
       warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
-      warn2: 'Start screen sharing first',
+      warn2: 'Turn on the camera or start screen sharing first',
     },
     sv: {
       iconCaptionOn: 'Insp. på',
@@ -98,7 +100,7 @@ XROOM_PLUGIN({
       btnClose: 'Stänga',
       btnToChat: 'Skicka till chat',
       warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
-      warn2: 'Starta skärmdelningen först',
+      warn2: 'Starta kameran eller skärmdelningen först',
     },
     ru: {
       iconCaptionOn: 'Запись вкл.',
@@ -107,7 +109,7 @@ XROOM_PLUGIN({
       btnClose: 'Закрыть',
       btnToChat: 'Отправить в чат',
       warn1: 'Файлы исчезнут после закрытия окна.<br>Скачайте их, если они нужны!',
-      warn2: 'Сначала активируйте скриншеринг',
+      warn2: 'Сначала активируйте камеру или скриншеринг',
     },
   },
 
@@ -223,5 +225,28 @@ XROOM_PLUGIN({
     this.mediaRecorder.stop()
     this.isRecording = false
     this.api('renderControls')
+  },
+
+  composite (videoTrackStream = null, audioTrackStreams = []) {
+
+    const
+      ctx = new AudioContext(),
+      dest = ctx.createMediaStreamDestination()
+
+    audioTrackStreams.map(stream => {
+      if (stream && stream.getAudioTracks().length) {
+        ctx.createMediaStreamSource(stream).connect(dest)
+      }
+    })
+
+    if (videoTrackStream) {
+      const
+        videoTrack = videoTrackStream.getVideoTracks()[0],
+        mixedTracks = dest.stream.getAudioTracks()[0]
+
+      return new MediaStream([videoTrack, mixedTracks])
+    }
+
+    return dest.stream
   }
 })

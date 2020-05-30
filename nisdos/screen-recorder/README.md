@@ -1,1 +1,1 @@
-Plugin size: 18.7 kB
+Plugin size: 20.3 kB
