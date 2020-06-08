@@ -69,6 +69,8 @@ XROOM_PLUGIN({
 | ss/onReadRoom       | Room pre-enter status updated | `{id, ?type, ?access: {lock, password}, ?peerCount, ?hostCount}` 
 | ss/passwordSet      | New room password | Password string
 | ss/passwordReset    | Room password removed | —
+| chat/message        | New message in chat | `{ peerId, data, type }`, peerId = 'me' for local posts
+| chat/input          | Chat input changed | currentValue
 
 `ss/...`&ndash;events are automatically generated events based on signaling server commands. We will add more to the documentation soon.
 
