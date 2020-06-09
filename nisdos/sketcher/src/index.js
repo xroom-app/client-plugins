@@ -6,9 +6,15 @@ XROOM_PLUGIN({
   translations: {
     en: {
       iconCaption: 'Sketcher',
+      confirmErase: 'Are you sure you want to erase everything?',
+      yes: 'Yes',
+      no: 'No',
     },
     ru: {
       iconCaption: 'Рисовалка',
+      confirmErase: 'Are you sure you want to erase everything?',
+      yes: 'Yes',
+      no: 'No',
     },
   },
 
@@ -29,6 +35,8 @@ XROOM_PLUGIN({
     this.api('addUI', { component:
       <UI
         api={this.api}
+        mbox={this.mbox}
+        i18n={this.i18n}
         ref={(ref) => { this.ui = ref } }
       />
     })
