@@ -7,6 +7,7 @@ class UI extends Component {
     super(props)
 
     this.state = {
+      tool: 0,
       color: 'black',
       isShown: false,
     }
@@ -32,7 +33,7 @@ class UI extends Component {
   }
 
   render () {
-    const { isShown, color } = this.state
+    const { isShown, color, tool } = this.state
 
     if (!isShown) {
       return null
@@ -72,13 +73,19 @@ class UI extends Component {
             })
           }
 
-          <div onClick={() => this.draw.startRect()} style={styles.button}>
+          <div onClick={() => this.setState({tool: 0})} style={styles.button}>
+            <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
+              <path fill="333" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+            </svg>
+          </div>
+
+          <div onClick={() => this.setState({tool: 1})} style={styles.button}>
             <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
               <path fill="#333" d="M19,6H22V8H19V11H17V8H14V6H17V3H19V6M17,17V14H19V19H3V6H11V8H5V17H17Z" />
             </svg>
           </div>
 
-          <div onClick={() => this.draw.startText()} style={styles.button}>
+          <div onClick={() => this.setState({tool: 2})} style={styles.button}>
             <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
               <path fill="#333" d="M9.6,14L12,7.7L14.4,14M11,5L5.5,19H7.7L8.8,16H15L16.1,19H18.3L13,5H11Z" />
             </svg>
@@ -92,6 +99,7 @@ class UI extends Component {
             canvasHeight="100%"
             brushRadius={1}
             brushColor={color}
+            drawingTool={tool}
           />
         </div>
       </div>
@@ -105,7 +113,7 @@ const styles = {
     top: 0,
     left: 0,
     width: '100vw',
-    height: 'calc(100% - 83px)',
+    height: 'calc(100% - 99px)',
     backgroundColor: '#fff',
   },
   controls: {
@@ -127,7 +135,7 @@ const styles = {
 if (window.matchMedia('screen and (max-width: 480px)').matches) {
   styles.ui = {
     ...styles.ui,
-    height: 'calc(100% - 75px)',
+    height: 'calc(100% - 91px)',
   }
 }
 

@@ -68,6 +68,8 @@ export default class extends PureComponent {
     this.valuesChanged = true
     this.isDrawing = false
     this.isPressing = false
+    this.startPoint = [0, 0]
+    this.endPoint = [0, 0]
   }
 
   componentDidMount() {
@@ -148,14 +150,6 @@ export default class extends PureComponent {
     this.triggerOnChange()
   }
 
-  startRect = () => {
-
-  }
-
-  startText = () => {
-
-  }
-
   getSaveData = () => {
     // Construct and return the stringified saveData object
     return JSON.stringify({
@@ -207,18 +201,22 @@ export default class extends PureComponent {
   }
 
   simulateDrawingLines = ({ lines, immediate }) => {
+
+    console.log('simulateDrawingLines', lines)
+
     // Simulate live-drawing of the loaded lines
     // TODO use a generator
     let curTime = 0
     let timeoutGap = immediate ? 0 : this.props.loadTimeOffset
 
     lines.forEach(line => {
-      const { points, brushColor, brushRadius } = line
+      const { points, brushColor, brushRadius, type } = line
 
       // Draw all at once if immediate flag is set, instead of using setTimeout
       if (immediate) {
         // Draw the points
         this.drawPoints({
+          type,
           points,
           brushColor,
           brushRadius
@@ -259,32 +257,63 @@ export default class extends PureComponent {
 
     const { x, y } = this.getPointerPos(e)
 
-    if (e.touches && e.touches.length > 0) {
+    /*if (e.touches && e.touches.length > 0) {
       // on touch, set catenary position to touch pos
       this.lazy.update({ x, y }, { both: true })
-    }
+    }*/
 
-    // Ensure the initial down position gets added to our line
-    this.handlePointerMove(x, y)
+    //if (this.props.drawingTool === 0) {
+      // Ensure the initial down position gets added to our line
+      this.handlePointerMove(x, y)
+    //}
+
+    if (this.props.drawingTool === 1) {
+      this.startPoint = [x, y]
+    }
   }
 
   handleDrawMove = e => {
     e.preventDefault()
 
     const { x, y } = this.getPointerPos(e)
-    this.handlePointerMove(x, y)
+
+    if (this.props.drawingTool === 0) {
+      this.handlePointerMove(x, y)
+    }
   }
 
   handleDrawEnd = e => {
     e.preventDefault()
 
     // Draw to this end pos
-    this.handleDrawMove(e)
+    if (this.props.drawingTool === 0) {
+      this.handleDrawMove(e)
+    }
+
+    if (this.props.drawingTool === 1) {
+      const { x, y } = this.getPointerPos(e)
+      // this.endPoint = [x, y]
+      this.handlePointerMove(x, y)
+    }
 
     // Stop drawing & save the drawn line
     this.isDrawing = false
     this.isPressing = false
-    this.saveLine()
+
+    if (this.props.drawingTool === 0) {
+      this.saveLine()
+    }
+
+    if (this.props.drawingTool === 1) {
+      const { x, y } = this.getPointerPos(e)
+      // this.endPoint = [x, y]
+
+      this.points = [{x: this.startPoint[0], y: this.startPoint[1]}, {x, y}]
+
+      console.log('insert', this.points[0], this.points[1])
+
+      this.saveLine({type: 1, brushColor: this.props.brushColor, brushRadius: this.props.brushRadius})
+    }
   }
 
   handleCanvasResize = (entries, observer) => {
@@ -351,6 +380,7 @@ export default class extends PureComponent {
 
       // Draw current points
       this.drawPoints({
+        type: this.props.drawingTool,
         points: this.points,
         brushColor: this.props.brushColor,
         brushRadius: this.props.brushRadius
@@ -360,7 +390,7 @@ export default class extends PureComponent {
     this.mouseHasMoved = true
   }
 
-  drawPoints = ({ points, brushColor, brushRadius }) => {
+  drawPoints = ({ points, brushColor, brushRadius, type = 0 }) => {
     this.ctx.temp.lineJoin = 'round'
     this.ctx.temp.lineCap = 'round'
     this.ctx.temp.strokeStyle = brushColor
@@ -376,33 +406,44 @@ export default class extends PureComponent {
     let p1 = points[0]
     let p2 = points[1]
 
-    this.ctx.temp.moveTo(p2.x, p2.y)
-    this.ctx.temp.beginPath()
+    if (type === 0) {
+      this.ctx.temp.moveTo(p2.x, p2.y)
+      this.ctx.temp.beginPath()
 
-    for (var i = 1, len = points.length; i < len; i++) {
-      // we pick the point between pi+1 & pi+2 as the
-      // end point and p1 as our control point
-      var midPoint = midPointBtw(p1, p2)
-      this.ctx.temp.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y)
-      p1 = points[i]
-      p2 = points[i + 1]
+      for (var i = 1, len = points.length; i < len; i++) {
+        // we pick the point between pi+1 & pi+2 as the
+        // end point and p1 as our control point
+        var midPoint = midPointBtw(p1, p2)
+        this.ctx.temp.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y)
+        p1 = points[i]
+        p2 = points[i + 1]
+      }
+      // Draw last line as a straight line while
+      // we wait for the next point to be able to calculate
+      // the bezier control point
+      this.ctx.temp.lineTo(p1.x, p1.y)
     }
-    // Draw last line as a straight line while
-    // we wait for the next point to be able to calculate
-    // the bezier control point
-    this.ctx.temp.lineTo(p1.x, p1.y)
+
+    if (type === 1) {
+      console.log('drawing type=1', points)
+      this.ctx.temp.rect(p1.x, p1.y, p2.x - p1.x, p2.y - p1.y)
+    }
+
     this.ctx.temp.stroke()
   }
 
-  saveLine = ({ brushColor, brushRadius } = {}) => {
+  saveLine = ({ brushColor, brushRadius, type = 0 } = {}) => {
     if (this.points.length < 2) return
 
     // Save as new line
     this.lines.push({
+      type,
       points: [...this.points],
       brushColor: brushColor || this.props.brushColor,
       brushRadius: brushRadius || this.props.brushRadius
     })
+
+    console.log('saving type' ,type)
 
     // Reset points array
     this.points.length = 0
