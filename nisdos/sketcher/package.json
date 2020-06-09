@@ -16,6 +16,6 @@
     "react": "^16.13.1"
   },
   "dependencies": {
-    "react-canvas-draw": "^1.1.0"
+    "react-canvas-draw": "^1.1.1"
   }
 }
