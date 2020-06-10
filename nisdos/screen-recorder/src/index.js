@@ -67,10 +67,13 @@ function onRoomExit () {
   this.inDaChat = false
 }
 
-function onStreamChanged (data) {
-  this.api('getLocalStream', {video: false}).then(([ localStream ]) => {
-    this.screenStream = this.composite(data.stream, [localStream])
-  })
+async function onStreamChanged () {
+  const { local, remote } = await this.api('getStreams')
+
+  if (local || remote) {
+    this.audioCompositeStream = this.composite(local, [local, ...Object.values(remote)])
+    console.log('Composition recomputed', !!local, Object.keys(remote).length)
+  }
 }
 
 XROOM_PLUGIN({
@@ -119,11 +122,15 @@ XROOM_PLUGIN({
     'localStream/changed': onStreamChanged,
   },
 
-  register ({roomId}) {
+  async register ({roomId}) {
     this.boundCountDown = this.countDown.bind(this)
 
+    const [ sysStream ] = await this.api('getLocalStream')
+
     if (roomId) {
-      this.screenStream = this.api('getStreams').local
+      this.screenStream = this.composite(sysStream, this.api('getStreams').remote)
+    } else {
+      this.screenStream = sysStream
     }
 
     if (window.MediaRecorder.isTypeSupported('video/webm')) {
