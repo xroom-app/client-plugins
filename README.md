@@ -42,10 +42,13 @@ XROOM_PLUGIN({
 | getStreams          | Get media streams | — | `{local, remote: {}}`
 | getLocalStream      | Get local device stream | `{audio, video}` | `[stream]`
 | goToRoom            | Go to a new room | `{roomId, preview: false}`
+| kickPeer            | Kick a peer | peerId
+| listPeers           | List all room peers | — | Array of peers
 | postToChat          | Post a message to chat | `{text, notLocal: false}`
 | removeElement       | Remove an element from DOM | Element reference ID
 | removeIcon          | Remove icon from UI   | —
 | renderControls      | Rerender UI, useful for dynamic icons | —
+| sendPrivateMessage  | Send a text message to a peer | `{peerId, text}`
 | setHotKeysEnable    | Hot keys on/off, useful if your plugin interacts with keyboard | Enable flag
 | setRoomLock         | Lock/unlock the current room | Lock flag
 | setRoomPassword     | Set/reset room password | Password (null to reset)
