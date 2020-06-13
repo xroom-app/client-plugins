@@ -83,11 +83,15 @@ class UI extends Component {
 
         <fieldset style={styles.peerRows}>
           <legend>{ i18n.t('humans') }</legend>
+          <div style={styles.peerRow} key="self">
+            <span>1.</span>
+            <span style={styles.peerName}>{ i18n.t('you') }</span>
+          </div>
           {
             peers.filter(p => !p.isRobot).map((el, i) => {
               return (
                 <div style={styles.peerRow} key={i}>
-                  <span>{ i + 1 }.</span>
+                  <span>{ i + 2 }.</span>
                   <span style={styles.peerName}>{ el.card.name }</span>
                 </div>
               )

@@ -36,6 +36,7 @@ XROOM_PLUGIN({
       splitOn: 'on',
       robots: 'Robots',
       humans: 'Humans',
+      you: 'You',
       breakRoomOffer: 'Your breakout room:',
       mbox: {
         enterFirst: 'Enter the room first',
@@ -47,6 +48,7 @@ XROOM_PLUGIN({
       splitOn: 'на',
       robots: 'Роботы',
       humans: 'Люди',
+      you: 'Вы',
       breakRoomOffer: 'Ваша брейкаут-комната:',
       mbox: {
         enterFirst: 'Сначала войдите в комнату',
