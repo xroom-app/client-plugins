@@ -40,6 +40,7 @@ XROOM_PLUGIN({
       breakRoomOffer: 'Your breakout room:',
       mbox: {
         enterFirst: 'Enter the room first',
+        tooFewPeople: 'Too few people in the room',
       },
     },
     ru: {
@@ -52,6 +53,7 @@ XROOM_PLUGIN({
       breakRoomOffer: 'Ваша брейкаут-комната:',
       mbox: {
         enterFirst: 'Сначала войдите в комнату',
+        tooFewPeople: 'Недостаточно людей в комнате',
       },
     },
   },
@@ -69,6 +71,7 @@ XROOM_PLUGIN({
       <UI
         i18n={this.i18n}
         api={this.api}
+        mbox={this.mbox}
         ref={(ref) => { this.ui = ref} }
       />
     })

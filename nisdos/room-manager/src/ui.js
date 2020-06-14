@@ -35,10 +35,11 @@ class UI extends Component {
   onSplit = () => {
     const
       newRooms = [],
-      { api, i18n } = this.props,
+      { api, i18n, mbox } = this.props,
       { peers, splitCount } = this.state
 
-    if (peers.length < 2) {
+    if (peers.length < splitCount) {
+      mbox({text: i18n.t('mbox.tooFewPeople')})
       return
     }
 
@@ -58,6 +59,8 @@ class UI extends Component {
         api('sendMessage', {to: peerId, message: `${i18n.t('breakRoomOffer')} ${this.roomId}-${suffix}`})
       }
     }
+
+    this.toggle()
   }
 
   render () {
