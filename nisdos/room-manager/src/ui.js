@@ -51,7 +51,7 @@ class UI extends Component {
       const suffix = String(Math.random()).slice(2)
 
       for (const peerId of newRooms[r]) {
-        api('sendPrivateMessage', {peerId, text: `${i18n.t('breakRoomOffer')} ${this.roomId}-${suffix}`})
+        api('sendMessage', {to: peerId, message: `${i18n.t('breakRoomOffer')} ${this.roomId}-${suffix}`})
       }
     }
   }
