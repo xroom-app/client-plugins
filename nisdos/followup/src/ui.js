@@ -87,7 +87,7 @@ class UI extends Component {
     if (!this.state.inDaChat) {
       this.props.mbox({text: this.props.i18n.t('getIntoRoom')})
     } else {
-      this.props.api('fileToChat', {
+      this.props.api('sendFile', {
         file: new File([this.state.icsBlob], 'meeting.ics', {type: 'text/calendar'}),
       })
     }
