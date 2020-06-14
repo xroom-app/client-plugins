@@ -43,7 +43,7 @@ class UI extends Component {
     this.editor.selection.on('changeCursor', () => {
       if (this.props.getPdi()) return
       const pos = this.editor.selection.getCursor()
-      this.props.api('broadcastData', {cmd: 'gotoLine', args: [pos.row + 1, pos.column]})
+      this.props.api('sendData', {data: {cmd: 'gotoLine', args: [pos.row + 1, pos.column]}})
     })
 
     this.editor.selection.on('changeSelection', () => {
@@ -61,14 +61,14 @@ class UI extends Component {
       if (this.selDebounceTimer) clearTimeout(this.selDebounceTimer)
 
       this.selDebounceTimer = setTimeout(() => {
-        this.props.api('broadcastData', {cmd: 'select', args: ranges})
+        this.props.api('sendData', {data: {cmd: 'select', args: ranges}})
         this.selDebounceTimer = null
       }, 250)
     })
 
     this.editor.on('change', (delta) => {
       if (this.props.getPdi()) return
-      this.props.api('broadcastData', {cmd: 'change', args: [delta]})
+      this.props.api('sendData', {data: {cmd: 'change', args: [delta]}})
     })
   }
 
