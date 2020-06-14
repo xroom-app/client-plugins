@@ -21,6 +21,10 @@ class UI extends Component {
   }
 
   listPeers (peers) {
+    peers.unshift({
+      id: 'self',
+      card: { name: this.props.i18n.t('you') },
+    })
     this.setState({peers})
   }
 
@@ -48,7 +52,7 @@ class UI extends Component {
     // separate algorithms for further use
 
     for (const r in newRooms) {
-      const suffix = String(Math.random()).slice(2)
+      const suffix = String(Math.random()).slice(2, 8)
 
       for (const peerId of newRooms[r]) {
         api('sendMessage', {to: peerId, message: `${i18n.t('breakRoomOffer')} ${this.roomId}-${suffix}`})
@@ -83,15 +87,11 @@ class UI extends Component {
 
         <fieldset style={styles.peerRows}>
           <legend>{ i18n.t('humans') }</legend>
-          <div style={styles.peerRow} key="self">
-            <span>1.</span>
-            <span style={styles.peerName}>{ i18n.t('you') }</span>
-          </div>
           {
             peers.filter(p => !p.isRobot).map((el, i) => {
               return (
                 <div style={styles.peerRow} key={i}>
-                  <span>{ i + 2 }.</span>
+                  <span>{ i + 1 }.</span>
                   <span style={styles.peerName}>{ el.card.name }</span>
                 </div>
               )
