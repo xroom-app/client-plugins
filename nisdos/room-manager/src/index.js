@@ -61,12 +61,6 @@ XROOM_PLUGIN({
   async register ({roomId}) {
     this.addIcon()
 
-    if (roomId) {
-      this.inDaChat = true
-      this.ui.roomId = roomId
-      this.ui.listPeers(await this.api('listPeers'))
-    }
-
     this.api('addUI', { component:
       <UI
         i18n={this.i18n}
@@ -75,6 +69,12 @@ XROOM_PLUGIN({
         ref={(ref) => { this.ui = ref} }
       />
     })
+
+    if (roomId) {
+      this.inDaChat = true
+      this.ui.roomId = roomId
+      this.ui.listPeers(await this.api('listPeers'))
+    }
   },
 
   unregister () {
