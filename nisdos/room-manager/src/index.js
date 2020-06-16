@@ -59,8 +59,6 @@ XROOM_PLUGIN({
   },
 
   async register ({roomId}) {
-    this.addIcon()
-
     await this.api('addUI', { component:
       <UI
         i18n={this.i18n}
@@ -75,6 +73,8 @@ XROOM_PLUGIN({
       this.ui.roomId = roomId
       this.ui.listPeers(await this.api('listPeers'))
     }
+
+    this.addIcon()
   },
 
   unregister () {
