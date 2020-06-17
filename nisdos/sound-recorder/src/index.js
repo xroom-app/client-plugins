@@ -68,14 +68,10 @@ class NisdosSoundRecoderIconSvg extends Component {
 
 function onRoomEnter () {
   this.inDaChat = true
-  // this.addIcon()
-  // this.api('renderControls')
 }
 
 function onRoomExit () {
   this.inDaChat = false
-  this.api('removeIcon')
-  this.api('renderControls')
 }
 
 async function onStreamsChanged () {

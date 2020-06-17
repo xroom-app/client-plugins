@@ -67,7 +67,7 @@ function onRoomExit () {
   this.inDaChat = false
 }
 
-async function onStreamChanged () {
+async function onStreamsChanged () {
   const { local, remote } = await this.api('getStreams')
 
   if (local || remote) {
@@ -119,31 +119,26 @@ XROOM_PLUGIN({
   events: {
     'ss/onJoin': onRoomEnter,
     'room/exit': onRoomExit,
-    'localStream/changed': onStreamChanged,
+    'localStream/changed': onStreamsChanged,
+    'peer/trackAdded': onStreamsChanged,
   },
 
   async register ({roomId}) {
     this.boundCountDown = this.countDown.bind(this)
 
-    const [ sysStream ] = await this.api('getLocalStream')
-
-    if (roomId) {
-      this.screenStream = this.composite(sysStream, this.api('getStreams').remote)
-    } else {
-      this.screenStream = sysStream
-    }
-
     if (window.MediaRecorder.isTypeSupported('video/webm')) {
       this.mimeType = 'video/webm'
     }
 
-    this.api('addUI', { component:
+    await this.api('addUI', { component:
       <UI
         i18n={this.i18n}
         api={this.api}
         ref={(ref) => { this.ui = ref} }
       />
     })
+
+    onStreamsChanged.bind(this)()
 
     this.addIcon()
   },
@@ -189,12 +184,12 @@ XROOM_PLUGIN({
     this.countDownStep = 3
     this.recordedBlobs = []
 
-    if (!this.screenStream) {
+    if (!this.audioCompositeStream) {
       return this.mbox({text: this.i18n.t('warn2')})
     }
 
     try {
-      this.mediaRecorder = new MediaRecorder(this.screenStream, { mimeType: this.mimeType })
+      this.mediaRecorder = new MediaRecorder(this.audioCompositeStream, { mimeType: this.mimeType })
     } catch (e) {
       console.error('MediaRecorder:', e)
       return
