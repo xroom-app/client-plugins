@@ -45,7 +45,7 @@ XROOM_PLUGIN({
     },
     ru: {
       iconCaption: 'Комната',
-      btnSplitRoom: 'Разбить room',
+      btnSplitRoom: 'Разбить комнату',
       splitOn: 'на',
       robots: 'Роботы',
       humans: 'Люди',
