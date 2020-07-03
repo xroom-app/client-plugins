@@ -87,6 +87,14 @@ class UI extends Component {
 
           <div onClick={() => this.setState({tool: 2})} style={styles.button}>
             <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
+              <path fill="none" stroke="#333" strokeWidth="1.97675" d="M 17.97679,13.853333 A 7.182672,6.8464398 0 0 1 13.542807,20.178619 7.182672,6.8464398 0 0 1 5.7152018,18.694497 7.182672,6.8464398 0 0 1 4.1581943,11.233314 7.182672,6.8464398 0 0 1 10.794118,7.0068936" />
+              <rect fill="#333" y="3" x="17" height="8" width="2" />
+              <rect fill="#333" y="6" x="14" height="2" width="8" />
+            </svg>
+          </div>
+
+          <div onClick={() => this.setState({tool: 3})} style={styles.button}>
+            <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
               <path fill="#333" d="M9.6,14L12,7.7L14.4,14M11,5L5.5,19H7.7L8.8,16H15L16.1,19H18.3L13,5H11Z" />
             </svg>
           </div>
