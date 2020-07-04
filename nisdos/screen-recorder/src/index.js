@@ -67,10 +67,13 @@ function onRoomExit () {
   this.inDaChat = false
 }
 
-function onStreamChanged (data) {
-  this.api('getLocalStream', {video: false}).then(([ localStream ]) => {
-    this.screenStream = this.composite(data.stream, [localStream])
-  })
+async function onStreamsChanged () {
+  const { local, remote } = await this.api('getStreams')
+
+  if (local || remote) {
+    this.audioCompositeStream = this.composite(local, [local, ...Object.values(remote)])
+    console.log('Composition recomputed', !!local, Object.keys(remote).length)
+  }
 }
 
 XROOM_PLUGIN({
@@ -116,27 +119,26 @@ XROOM_PLUGIN({
   events: {
     'ss/onJoin': onRoomEnter,
     'room/exit': onRoomExit,
-    'localStream/changed': onStreamChanged,
+    'localStream/changed': onStreamsChanged,
+    'peer/trackAdded': onStreamsChanged,
   },
 
-  register ({roomId}) {
+  async register ({roomId}) {
     this.boundCountDown = this.countDown.bind(this)
-
-    if (roomId) {
-      this.screenStream = this.api('getStreams').local
-    }
 
     if (window.MediaRecorder.isTypeSupported('video/webm')) {
       this.mimeType = 'video/webm'
     }
 
-    this.api('addUI', { component:
+    await this.api('addUI', { component:
       <UI
         i18n={this.i18n}
         api={this.api}
         ref={(ref) => { this.ui = ref} }
       />
     })
+
+    onStreamsChanged.bind(this)()
 
     this.addIcon()
   },
@@ -182,12 +184,12 @@ XROOM_PLUGIN({
     this.countDownStep = 3
     this.recordedBlobs = []
 
-    if (!this.screenStream) {
+    if (!this.audioCompositeStream) {
       return this.mbox({text: this.i18n.t('warn2')})
     }
 
     try {
-      this.mediaRecorder = new MediaRecorder(this.screenStream, { mimeType: this.mimeType })
+      this.mediaRecorder = new MediaRecorder(this.audioCompositeStream, { mimeType: this.mimeType })
     } catch (e) {
       console.error('MediaRecorder:', e)
       return
@@ -241,10 +243,14 @@ XROOM_PLUGIN({
 
     if (videoTrackStream) {
       const
+        tracks = [],
         videoTrack = videoTrackStream.getVideoTracks()[0],
         mixedTracks = dest.stream.getAudioTracks()[0]
 
-      return new MediaStream([videoTrack, mixedTracks])
+      videoTrack && tracks.push(videoTrack)
+      mixedTracks && tracks.push(mixedTracks)
+
+      return new MediaStream(tracks)
     }
 
     return dest.stream

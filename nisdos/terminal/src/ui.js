@@ -20,30 +20,30 @@ class UI extends Component {
       this.term.open(document.getElementById('plugin-nisdos-terminal'))
       this.term.write('Terminal v1.0, awaiting connection...')
 
-      this.props.api('broadcastData', {cmd: 'init', args: []})
+      this.props.api('sendData', {data: {cmd: 'init', args: []}})
       this.term._core._onKey._listeners.push(({key, domEvent}) => {
 
         switch (domEvent.keyCode) {
           case 8:
             // backspace
             this.term.write('\b \b')
-            this.props.api('broadcastData', {cmd: 'key', args: ['\b']})
+            this.props.api('sendData', {data: {cmd: 'key', args: ['\b']}})
             break
 
           case 46:
             // delete
             this.term.write(' \b')
-            this.props.api('broadcastData', {cmd: 'key', args: ['\x2E']})
+            this.props.api('sendData', {data: {cmd: 'key', args: ['\x2E']}})
             break
 
           case 13:
             this.term.write('\n\r')
-            this.props.api('broadcastData', {cmd: 'line', args: [' ']})
+            this.props.api('sendData', {data: {cmd: 'line', args: [' ']}})
             break
 
           default:
             this.term.write(key)
-            this.props.api('broadcastData', {cmd: 'key', args: [key]})
+            this.props.api('sendData', {data: {cmd: 'key', args: [key]}})
           //  console.log('keyCode', domEvent.keyCode)
         }
       })

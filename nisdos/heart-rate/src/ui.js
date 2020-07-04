@@ -76,6 +76,7 @@ class UI extends Component {
     this.video.play()
 
     setTimeout(() => {
+      // TODO: make sure this.video is not null
       width = this.video.videoWidth
       height = this.video.videoHeight
 

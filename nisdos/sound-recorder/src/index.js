@@ -68,14 +68,10 @@ class NisdosSoundRecoderIconSvg extends Component {
 
 function onRoomEnter () {
   this.inDaChat = true
-  // this.addIcon()
-  // this.api('renderControls')
 }
 
 function onRoomExit () {
   this.inDaChat = false
-  this.api('removeIcon')
-  this.api('renderControls')
 }
 
 async function onStreamsChanged () {
@@ -225,10 +221,14 @@ XROOM_PLUGIN({
 
     if (videoTrackStream) {
       const
+        tracks = [],
         videoTrack = videoTrackStream.getVideoTracks()[0],
         mixedTracks = dest.stream.getAudioTracks()[0]
 
-      return new MediaStream([videoTrack, mixedTracks])
+      videoTrack && tracks.push(videoTrack)
+      mixedTracks && tracks.push(mixedTracks)
+
+      return new MediaStream(tracks)
     }
 
     return dest.stream
