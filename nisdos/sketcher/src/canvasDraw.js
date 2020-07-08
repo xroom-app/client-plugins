@@ -228,6 +228,9 @@ export default class extends PureComponent {
         if (type === 2) {
           this.drawCircle(points[0], points[1], brushColor)
         }
+        if (type === 3) {
+          this.drawArrow(points[0], points[1], brushColor)
+        }
         // Save line with the drawn points
         this.points = points
         this.saveLine({ brushColor, brushRadius, type })
@@ -273,7 +276,7 @@ export default class extends PureComponent {
       this.handlePointerMove(x, y)
     //}
 
-    if ([1, 2].includes(this.props.drawingTool)) {
+    if ([1, 2, 3, 4].includes(this.props.drawingTool)) {
       this.startPoint = {x, y}
     }
   }
@@ -294,6 +297,9 @@ export default class extends PureComponent {
     if (this.props.drawingTool === 2) {
       this.drawCircle(this.startPoint, {x, y});
     }
+    if (this.props.drawingTool === 3) {
+      this.drawArrow(this.startPoint, {x, y});
+    }
   }
 
   handleDrawEnd = e => {
@@ -305,7 +311,7 @@ export default class extends PureComponent {
       this.saveLine()
     }
 
-    if (this.isDrawing && [1, 2].includes(this.props.drawingTool)) {
+    if (this.isDrawing && [1, 2, 3].includes(this.props.drawingTool)) {
       const { x, y } = this.getPointerPos(e)
 
       this.points = [this.startPoint, {x, y}]
@@ -444,12 +450,51 @@ export default class extends PureComponent {
   drawCircle = (startPoint, endPoint, brushColor = this.props.brushColor) => {
     const width = this.canvas.temp.width
     const height = this.canvas.temp.height
-    const radius = Math.hypot(endPoint.x - startPoint.x, endPoint.y - startPoint.y)
+    // const radius = Math.hypot(endPoint.x - startPoint.x, endPoint.y - startPoint.y)
 
     this.ctx.temp.clearRect(0, 0, width, height);
     this.ctx.temp.strokeStyle = brushColor;
     this.ctx.temp.beginPath();
-    this.ctx.temp.arc(startPoint.x, startPoint.y, radius, 0, 2 * Math.PI);
+    // this.ctx.temp.arc(startPoint.x, startPoint.y, radius, 0, 2 * Math.PI);
+    this.ctx.temp.ellipse(
+      startPoint.x,
+      startPoint.y,
+      Math.abs(endPoint.x - startPoint.x),
+      Math.abs(endPoint.y - startPoint.y),
+      0,
+      0,
+      2 * Math.PI
+    );
+    this.ctx.temp.stroke();
+  }
+
+  drawArrow = (startPoint, endPoint, brushColor = this.props.brushColor) => {
+    const width = this.canvas.temp.width
+    const height = this.canvas.temp.height
+
+    this.ctx.temp.clearRect(0, 0, width, height);
+    this.ctx.temp.strokeStyle = brushColor;
+    this.ctx.temp.fillStyle = brushColor;
+    this.ctx.temp.beginPath();
+    this.ctx.temp.moveTo(startPoint.x, startPoint.y)
+    this.ctx.temp.lineTo(endPoint.x, endPoint.y)
+    this.ctx.temp.stroke();
+
+    const arrowLength = 20;
+    const arrowAngle = 0.3;
+    const angle = Math.atan2(endPoint.y - startPoint.y, endPoint.x - startPoint.x);
+    this.ctx.temp.beginPath();
+    this.ctx.temp.moveTo(endPoint.x, endPoint.y)
+    this.ctx.temp.lineTo(
+      endPoint.x-arrowLength*Math.cos(angle - arrowAngle),
+      endPoint.y-arrowLength*Math.sin(angle-arrowAngle)
+    )
+    this.ctx.temp.lineTo(
+      endPoint.x-arrowLength*Math.cos(angle + arrowAngle),
+      endPoint.y-arrowLength*Math.sin(angle+arrowAngle)
+    )
+    this.ctx.temp.lineTo(endPoint.x, endPoint.y)
+    this.ctx.temp.fill();
     this.ctx.temp.stroke();
   }
 
