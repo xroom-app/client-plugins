@@ -48,7 +48,6 @@ XROOM_PLUGIN({
 | sendData            | Send data to peer(s) with this plugin | `{data, to}`
 | sendFile            | Post a file to chat | `{file, to}`
 | sendMessage         | Post a message to chat | `{message, to}`
-| setHotKeysEnable    | Hot keys on/off, useful if your plugin interacts with keyboard | Enable flag
 | setRoomLock         | Lock/unlock the current room | Lock flag
 | setRoomPassword     | Set/reset room password | Password (null to reset)
 | setLocalAP          | Set local audio processor | A processing AudioNode
