@@ -135,7 +135,7 @@ const styles = {
     top: 0,
     left: 0,
     width: '100vw',
-    height: 'calc(100% - 99px)',
+    height: '100%',
     backgroundColor: '#fff',
   },
   controls: {
