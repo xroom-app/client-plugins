@@ -1,5 +1,22 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import CanvasDraw from './canvasDraw'
+
+const toolIcons = [
+  <path fill="#333" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />,
+  <path fill="#333" d="M19,6H22V8H19V11H17V8H14V6H17V3H19V6M17,17V14H19V19H3V6H11V8H5V17H17Z" />,
+  <Fragment>
+    <path fill="none" stroke="#333" strokeWidth="1.97675" d="M 17.97679,13.853333 A 7.182672,6.8464398 0 0 1 13.542807,20.178619 7.182672,6.8464398 0 0 1 5.7152018,18.694497 7.182672,6.8464398 0 0 1 4.1581943,11.233314 7.182672,6.8464398 0 0 1 10.794118,7.0068936" />
+    <rect fill="#333" y="3" x="17" height="8" width="2" />
+    <rect fill="#333" y="6" x="14" height="2" width="8" />
+  </Fragment>,
+  <Fragment>
+    <rect width="2" height="8" x="17" y="3" />
+    <rect fill="#333" width="8" height="2" x="14" y="6" />
+    <path d="M 5.5735473,18.850937 13.974937,10.991939" fill="none" stroke="#333" strokeWidth="1.99692" />
+    <path transform="rotate(167.5,-2.4527899,0.53806368)" d="m -5.1658267,-16.921792 -2.413727,-4.158403 4.8081461,-0.01115 z" fill="#333" />
+  </Fragment>,
+  <path fill="#333" d="M9.6,14L12,7.7L14.4,14M11,5L5.5,19H7.7L8.8,16H15L16.1,19H18.3L13,5H11Z" />
+]
 
 class UI extends Component {
 
@@ -74,50 +91,17 @@ class UI extends Component {
           </div>
 
           {
-            colors.map(x => {
-              return <div onClick={() => this.setState({color: x})} style={{...styles.button, ...colorStyle(x, x === color ? '#fff' : 'transparent')}} />
-            })
+            colors.map(x => <div onClick={() => this.setState({color: x})} style={{...styles.button, ...colorStyle(x, x === color ? '#fff' : 'transparent')}} />)
           }
-
-          <div onClick={() => this.setState({tool: 0})} style={{...styles.button, backgroundColor: this.state.tool === 0 ? "#B0B0B0" : "#FFFFFF"}}>
-            <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
-              <path fill="333" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-            </svg>
-          </div>
-
-          <div onClick={() => this.setState({tool: 1})} style={{...styles.button, backgroundColor: this.state.tool === 1 ? "#B0B0B0" : "#FFFFFF"}}>
-            <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
-              <path fill="#333" d="M19,6H22V8H19V11H17V8H14V6H17V3H19V6M17,17V14H19V19H3V6H11V8H5V17H17Z" />
-            </svg>
-          </div>
-
-          <div onClick={() => this.setState({tool: 2})} style={{...styles.button, backgroundColor: this.state.tool === 2 ? "#B0B0B0" : "#FFFFFF"}}>
-            <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
-              <path fill="none" stroke="#333" strokeWidth="1.97675" d="M 17.97679,13.853333 A 7.182672,6.8464398 0 0 1 13.542807,20.178619 7.182672,6.8464398 0 0 1 5.7152018,18.694497 7.182672,6.8464398 0 0 1 4.1581943,11.233314 7.182672,6.8464398 0 0 1 10.794118,7.0068936" />
-              <rect fill="#333" y="3" x="17" height="8" width="2" />
-              <rect fill="#333" y="6" x="14" height="2" width="8" />
-            </svg>
-          </div>
-
-          <div onClick={() => this.setState({tool: 3})} style={{...styles.button, backgroundColor: this.state.tool === 3 ? "#B0B0B0" : "#FFFFFF"}}>
-            <svg
-              style={{width: '32px', height: '32px'}}
-              viewBox="0 0 24 24" >
-              <rect width="2" height="8" x="17" y="3" />
-              <rect fill="#333" width="8" height="2" x="14" y="6" />
-              <path d="M 5.5735473,18.850937 13.974937,10.991939" fill="none" stroke="#333" strokeWidth="1.99692" />
-              <path
-                transform="rotate(167.5,-2.4527899,0.53806368)"
-                d="m -5.1658267,-16.921792 -2.413727,-4.158403 4.8081461,-0.01115 z"
-                fill="#333" />
-            </svg>
-          </div>
-
-          <div onClick={() => this.setState({tool: 4})} style={{...styles.button, backgroundColor: this.state.tool === 4 ? "#B0B0B0" : "#FFFFFF"}}>
-            <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
-              <path fill="#333" d="M9.6,14L12,7.7L14.4,14M11,5L5.5,19H7.7L8.8,16H15L16.1,19H18.3L13,5H11Z" />
-            </svg>
-          </div>
+          {
+            toolIcons.map((svg, i) =>
+              <div key={i} onClick={() => this.setState({tool: i})} style={{...styles.button, backgroundColor: tool === i ? "#ddd" : "#fff"}}>
+                <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
+                  { svg }
+                </svg>
+              </div>
+            )
+          }
 
           <div onClick={this.saveImage} style={styles.save}>
             Save
