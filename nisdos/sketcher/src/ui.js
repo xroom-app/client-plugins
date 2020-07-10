@@ -50,8 +50,11 @@ class UI extends Component {
   }
 
   saveImage = () => {
-    var image = this.draw.canvas.drawing.toDataURL("image/png").replace("image/png", "image/octet-stream");
-    window.location.href = image;
+    const link = document.createElement('a')
+
+    link.setAttribute('download', 'sketch.png')
+    link.setAttribute('href', this.draw.canvas.drawing.toDataURL('image/png').replace('image/png', 'image/octet-stream'))
+    link.click()
   }
 
   render () {
@@ -72,7 +75,6 @@ class UI extends Component {
     }
 
     const colors = ['black', 'blue', 'green', 'red', 'yellow']
-
 
     return (
       <div style={styles.ui}>
@@ -152,9 +154,9 @@ const styles = {
     borderRadius: '4px',
   },
   save: {
-    cursor: "pointer",
+    cursor: 'pointer',
     height: '32px',
-    margin: "0px 10px 0px auto",
+    margin: '0 10px 0 auto',
   },
   canvas: {
     width: '100%',
@@ -166,7 +168,7 @@ const styles = {
 if (window.matchMedia('screen and (max-width: 480px)').matches) {
   styles.ui = {
     ...styles.ui,
-    height: 'calc(100% - 91px)',
+    height: '100%',
   }
 }
 
