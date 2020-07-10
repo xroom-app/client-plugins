@@ -90,6 +90,12 @@ class UI extends Component {
             </svg>
           </div>
 
+          <div onClick={() => this.draw.redo()} style={styles.button}>
+            <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
+            <path fill="#333" d="m 11.97,8 c 2.65,0 5.05,1 6.9,2.6 L 22.47,7 v 9 h -9 l 3.62,-3.62 C 15.7,11.22 13.93,10.5 11.97,10.5 8.43,10.5 5.42,12.81 4.37,16 L 2,15.22 C 3.39,11.03 7.32,8 11.97,8 Z" />
+            </svg>
+          </div>
+
           {
             colors.map(x => <div onClick={() => this.setState({color: x})} style={{...styles.button, ...colorStyle(x, x === color ? '#fff' : 'transparent')}} />)
           }
@@ -104,7 +110,9 @@ class UI extends Component {
           }
 
           <div onClick={this.saveImage} style={styles.save}>
-            Save
+            <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
+              <path d="M8,13H10.55V10H13.45V13H16L12,17L8,13M19.35,10.04C21.95,10.22 24,12.36 24,15A5,5 0 0,1 19,20H6A6,6 0 0,1 0,14C0,10.91 2.34,8.36 5.35,8.04C6.6,5.64 9.11,4 12,4C15.64,4 18.67,6.59 19.35,10.04M19,18A3,3 0 0,0 22,15C22,13.45 20.78,12.14 19.22,12.04L17.69,11.93L17.39,10.43C16.88,7.86 14.62,6 12,6C9.94,6 8.08,7.14 7.13,8.97L6.63,9.92L5.56,10.03C3.53,10.24 2,11.95 2,14A4,4 0 0,0 6,18H19Z" />
+            </svg>
           </div>
 
         </div>
@@ -143,17 +151,16 @@ const styles = {
     height: '32px',
     borderRadius: '4px',
   },
+  save: {
+    cursor: "pointer",
+    height: '32px',
+    margin: "0px 10px 0px auto",
+  },
   canvas: {
     width: '100%',
     height: '100%',
     cursor: 'crosshair',
   },
-  save: {
-    cursor: "pointer",
-    margin: "0px 10px 0px auto",
-    fontWeight: "bold",
-    fontSize: "24px",
-  }
 }
 
 if (window.matchMedia('screen and (max-width: 480px)').matches) {

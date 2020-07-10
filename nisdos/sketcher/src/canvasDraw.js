@@ -63,6 +63,7 @@ export default class extends PureComponent {
 
     this.points = []
     this.lines = []
+    this.redoHistory = []
 
     this.mouseHasMoved = true
     this.valuesChanged = true
@@ -144,10 +145,24 @@ export default class extends PureComponent {
   }
 
   undo = () => {
-    const lines = this.lines.slice(0, -1)
+    const lines = [...this.lines];
+    const splice = lines.splice(-1, 1);
+
+    this.redoHistory = [...this.redoHistory, ...splice];
     this.clear()
     this.simulateDrawingLines({ lines, immediate: true })
     this.triggerOnChange()
+  }
+
+  redo = () => {
+    if (this.redoHistory.length > 0) {
+      const splice = this.redoHistory.splice(-1, 1)
+      const lines = [...this.lines, ...splice];
+
+      this.clear()
+      this.simulateDrawingLines({ lines, immediate: true })
+      this.triggerOnChange()
+    }
   }
 
   getSaveData = () => {
@@ -323,7 +338,9 @@ export default class extends PureComponent {
     this.isDrawing = false
     this.isPressing = false
 
-    }
+    // Reset redo array
+    this.redoHistory.length = 0
+  }
 
   handleCanvasResize = (entries, observer) => {
     const saveData = this.getSaveData()
