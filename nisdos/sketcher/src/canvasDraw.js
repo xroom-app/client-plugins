@@ -145,10 +145,10 @@ export default class extends PureComponent {
   }
 
   undo = () => {
-    const lines = [...this.lines];
-    const splice = lines.splice(-1, 1);
+    const lines = [...this.lines]
+    const splice = lines.splice(-1, 1)
 
-    this.redoHistory = [...this.redoHistory, ...splice];
+    this.redoHistory = [...this.redoHistory, ...splice]
     this.clear()
     this.simulateDrawingLines({ lines, immediate: true })
     this.triggerOnChange()
@@ -157,7 +157,7 @@ export default class extends PureComponent {
   redo = () => {
     if (this.redoHistory.length > 0) {
       const splice = this.redoHistory.splice(-1, 1)
-      const lines = [...this.lines, ...splice];
+      const lines = [...this.lines, ...splice]
 
       this.clear()
       this.simulateDrawingLines({ lines, immediate: true })
@@ -298,7 +298,7 @@ export default class extends PureComponent {
 
   handleDrawMove = e => {
     e.preventDefault()
-    if (!this.isDrawing) return;
+    if (!this.isDrawing) return
 
     const { x, y } = this.getPointerPos(e)
 
@@ -310,10 +310,10 @@ export default class extends PureComponent {
       this.drawRect(this.startPoint, {x, y})
     }
     if (this.props.drawingTool === 2) {
-      this.drawCircle(this.startPoint, {x, y});
+      this.drawCircle(this.startPoint, {x, y})
     }
     if (this.props.drawingTool === 3) {
-      this.drawArrow(this.startPoint, {x, y});
+      this.drawArrow(this.startPoint, {x, y})
     }
   }
 
@@ -459,10 +459,10 @@ export default class extends PureComponent {
     const width = this.canvas.temp.width
     const height = this.canvas.temp.height
 
-    this.ctx.temp.clearRect(0, 0, width, height);
-    this.ctx.temp.strokeStyle = brushColor;
-    this.ctx.temp.beginPath();
-    this.ctx.temp.strokeRect(startPoint.x, startPoint.y, endPoint.x - startPoint.x, endPoint.y - startPoint.y);
+    this.ctx.temp.clearRect(0, 0, width, height)
+    this.ctx.temp.strokeStyle = brushColor
+    this.ctx.temp.beginPath()
+    this.ctx.temp.strokeRect(startPoint.x, startPoint.y, endPoint.x - startPoint.x, endPoint.y - startPoint.y)
   }
 
   drawCircle = (startPoint, endPoint, brushColor = this.props.brushColor) => {
@@ -470,10 +470,10 @@ export default class extends PureComponent {
     const height = this.canvas.temp.height
     // const radius = Math.hypot(endPoint.x - startPoint.x, endPoint.y - startPoint.y)
 
-    this.ctx.temp.clearRect(0, 0, width, height);
-    this.ctx.temp.strokeStyle = brushColor;
-    this.ctx.temp.beginPath();
-    // this.ctx.temp.arc(startPoint.x, startPoint.y, radius, 0, 2 * Math.PI);
+    this.ctx.temp.clearRect(0, 0, width, height)
+    this.ctx.temp.strokeStyle = brushColor
+    this.ctx.temp.beginPath()
+    // this.ctx.temp.arc(startPoint.x, startPoint.y, radius, 0, 2 * Math.PI)
     this.ctx.temp.ellipse(
       startPoint.x,
       startPoint.y,
@@ -482,26 +482,26 @@ export default class extends PureComponent {
       0,
       0,
       2 * Math.PI
-    );
-    this.ctx.temp.stroke();
+    )
+    this.ctx.temp.stroke()
   }
 
   drawArrow = (startPoint, endPoint, brushColor = this.props.brushColor) => {
     const width = this.canvas.temp.width
     const height = this.canvas.temp.height
 
-    this.ctx.temp.clearRect(0, 0, width, height);
-    this.ctx.temp.strokeStyle = brushColor;
-    this.ctx.temp.fillStyle = brushColor;
-    this.ctx.temp.beginPath();
+    this.ctx.temp.clearRect(0, 0, width, height)
+    this.ctx.temp.strokeStyle = brushColor
+    this.ctx.temp.fillStyle = brushColor
+    this.ctx.temp.beginPath()
     this.ctx.temp.moveTo(startPoint.x, startPoint.y)
     this.ctx.temp.lineTo(endPoint.x, endPoint.y)
-    this.ctx.temp.stroke();
+    this.ctx.temp.stroke()
 
-    const arrowLength = 20;
-    const arrowAngle = 0.3;
-    const angle = Math.atan2(endPoint.y - startPoint.y, endPoint.x - startPoint.x);
-    this.ctx.temp.beginPath();
+    const arrowLength = 20
+    const arrowAngle = 0.3
+    const angle = Math.atan2(endPoint.y - startPoint.y, endPoint.x - startPoint.x)
+    this.ctx.temp.beginPath()
     this.ctx.temp.moveTo(endPoint.x, endPoint.y)
     this.ctx.temp.lineTo(
       endPoint.x-arrowLength*Math.cos(angle - arrowAngle),
@@ -512,8 +512,8 @@ export default class extends PureComponent {
       endPoint.y-arrowLength*Math.sin(angle+arrowAngle)
     )
     this.ctx.temp.lineTo(endPoint.x, endPoint.y)
-    this.ctx.temp.fill();
-    this.ctx.temp.stroke();
+    this.ctx.temp.fill()
+    this.ctx.temp.stroke()
   }
 
   saveLine = ({ brushColor, brushRadius, type = 0 } = {}) => {
