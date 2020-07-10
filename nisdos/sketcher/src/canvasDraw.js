@@ -438,10 +438,11 @@ export default class extends PureComponent {
     this.ctx.temp.moveTo(p2.x, p2.y)
     this.ctx.temp.beginPath()
 
-    for (var i = 1, len = points.length; i < len; i++) {
+    for (let i = 1, len = points.length; i < len; i++) {
       // we pick the point between pi+1 & pi+2 as the
       // end point and p1 as our control point
-      var midPoint = midPointBtw(p1, p2)
+      const midPoint = midPointBtw(p1, p2)
+
       this.ctx.temp.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y)
       p1 = points[i]
       p2 = points[i + 1]
