@@ -4,11 +4,11 @@ import UI from './ui'
 const github = 'https://github.com/punarinta/xroom-plugins/tree/master/nisdos/followup'
 
 function onRoomEnter () {
-  this.ui.onRoomEnter()
+  this.ui && this.ui.onRoomEnter()
 }
 
 function onRoomExit () {
-  this.ui.onRoomExit()
+  this.ui && this.ui.onRoomExit()
 }
 
 XROOM_PLUGIN({
