@@ -127,6 +127,7 @@ export default class extends PureComponent {
 
   componentWillUnmount = () => {
     this.canvasObserver.unobserve(this.canvasContainer)
+    this.props.updateSaveData(this.getSaveData())
   }
 
   drawImage = () => {
@@ -217,35 +218,37 @@ export default class extends PureComponent {
 
   simulateDrawingLines = ({ lines, immediate }) => {
 
-    console.log('simulateDrawingLines', lines)
-
     // Simulate live-drawing of the loaded lines
     // TODO use a generator
     let curTime = 0
     let timeoutGap = immediate ? 0 : this.props.loadTimeOffset
+
+    const render = line => {
+      const { points, brushColor, brushRadius, type } = line
+      if (type === 0) {
+        this.drawPoints({
+          points,
+          brushColor,
+          brushRadius
+        })
+      }
+      if (type === 1) {
+        this.drawRect(points[0], points[1], brushColor)
+      }
+      if (type === 2) {
+        this.drawCircle(points[0], points[1], brushColor)
+      }
+      if (type === 3) {
+        this.drawArrow(points[0], points[1], brushColor)
+      }
+    }
 
     lines.forEach(line => {
       const { points, brushColor, brushRadius, type } = line
 
       // Draw all at once if immediate flag is set, instead of using setTimeout
       if (immediate) {
-        // Draw the points
-        if (type === 0) {
-        this.drawPoints({
-          points,
-          brushColor,
-          brushRadius
-        })
-        }
-        if (type === 1) {
-          this.drawRect(points[0], points[1], brushColor)
-        }
-        if (type === 2) {
-          this.drawCircle(points[0], points[1], brushColor)
-        }
-        if (type === 3) {
-          this.drawArrow(points[0], points[1], brushColor)
-        }
+        render(line)
         // Save line with the drawn points
         this.points = points
         this.saveLine({ brushColor, brushRadius, type })
@@ -256,11 +259,7 @@ export default class extends PureComponent {
       for (let i = 1; i < points.length; i++) {
         curTime += timeoutGap
         window.setTimeout(() => {
-          this.drawPoints({
-            points: points.slice(0, i + 1),
-            brushColor,
-            brushRadius
-          })
+          render(line)
         }, curTime)
       }
 
@@ -268,7 +267,7 @@ export default class extends PureComponent {
       window.setTimeout(() => {
         // Save this line with its props instead of this.props
         this.points = points
-        this.saveLine({ brushColor, brushRadius })
+        this.saveLine({ brushColor, brushRadius, type })
       }, curTime)
     })
   }

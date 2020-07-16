@@ -27,6 +27,7 @@ class UI extends Component {
       tool: 0,
       color: 'black',
       isShown: false,
+      saveData: "",
     }
 
     this.draw = null
@@ -124,6 +125,8 @@ class UI extends Component {
             canvasWidth="100%"
             canvasHeight="100%"
             brushRadius={1}
+            saveData={this.state.saveData}
+            updateSaveData={saveData => this.setState({saveData})}
             brushColor={color}
             drawingTool={tool}
           />
