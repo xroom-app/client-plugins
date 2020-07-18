@@ -8,8 +8,12 @@ function onRoomRead (data) {
 
   if (oldState !== this.isLocked) {
     this.api('renderControls')
-    this.ui.setLock(this.isLocked)
-    this.ui.setPassword(this.password)
+    if (this.ui) {
+      this.ui.setLock(this.isLocked)
+      this.ui.setPassword(this.password)
+    } else {
+      this.mbox({text: 'Cannot create interface. Do you run an ad blocker?'})
+    }
   }
 }
 
