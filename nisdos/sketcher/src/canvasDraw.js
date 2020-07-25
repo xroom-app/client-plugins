@@ -68,9 +68,14 @@ export default class extends PureComponent {
     this.mouseHasMoved = true
     this.valuesChanged = true
     this.isDrawing = false
+    this.isTyping = false
     this.isPressing = false
     this.startPoint = {x: 0, y: 0}
     this.endPoint = [0, 0]
+    this.textTimeout = null
+    this.state = {
+      tempText: ""
+    }
   }
 
   componentDidMount() {
@@ -123,6 +128,10 @@ export default class extends PureComponent {
       // Signal this.loop function that values changed
       this.valuesChanged = true
     }
+
+    if (this.props.drawingTool === 4 && prevProps.drawingTool !== this.props.drawingTool) {
+      this.setState({tempText: ""})
+    }
   }
 
   componentWillUnmount = () => {
@@ -149,6 +158,7 @@ export default class extends PureComponent {
     const lines = [...this.lines]
     const splice = lines.splice(-1, 1)
 
+    // console.log('-----------UNDO----------', lines);
     this.redoHistory = [...this.redoHistory, ...splice]
     this.clear()
     this.simulateDrawingLines({ lines, immediate: true })
@@ -241,17 +251,19 @@ export default class extends PureComponent {
       if (type === 3) {
         this.drawArrow(points[0], points[1], brushColor)
       }
+      if (type === 4) {
+        this.drawText(line.text, points[0], brushColor)
+      }
     }
 
     lines.forEach(line => {
-      const { points, brushColor, brushRadius, type } = line
+      const { points, brushColor, brushRadius, type, text } = line
 
       // Draw all at once if immediate flag is set, instead of using setTimeout
       if (immediate) {
         render(line)
         // Save line with the drawn points
-        this.points = points
-        this.saveLine({ brushColor, brushRadius, type })
+        this.saveLine({ brushColor, brushRadius, type, points, text })
         return
       }
 
@@ -266,8 +278,7 @@ export default class extends PureComponent {
       curTime += timeoutGap
       window.setTimeout(() => {
         // Save this line with its props instead of this.props
-        this.points = points
-        this.saveLine({ brushColor, brushRadius, type })
+        this.saveLine({ brushColor, brushRadius, type, points, text })
       }, curTime)
     })
   }
@@ -290,6 +301,11 @@ export default class extends PureComponent {
       this.handlePointerMove(x, y)
     //}
 
+    if (this.props.drawingTool === 4) {
+      this.points = [this.startPoint, {x, y}]
+      this.isTyping = true
+      this.inputRef.focus()
+    }
     if ([1, 2, 3, 4].includes(this.props.drawingTool)) {
       this.startPoint = {x, y}
     }
@@ -305,7 +321,7 @@ export default class extends PureComponent {
       this.handlePointerMove(x, y)
     }
 
-    if (this.props.drawingTool === 1) {
+    if ([1, 5].includes(this.props.drawingTool)) {
       this.drawRect(this.startPoint, {x, y})
     }
     if (this.props.drawingTool === 2) {
@@ -323,6 +339,11 @@ export default class extends PureComponent {
     if (this.props.drawingTool === 0) {
       this.handleDrawMove(e)
       this.saveLine()
+    }
+
+    if (this.isTyping && this.props.drawingTool === 4) {
+      this.state.tempText && this.saveLine({type: this.props.drawingTool, brushColor: this.props.brushColor, brushRadius: this.props.brushRadius})
+      this.setState({tempText: ""})
     }
 
     if (this.isDrawing && [1, 2, 3].includes(this.props.drawingTool)) {
@@ -454,25 +475,25 @@ export default class extends PureComponent {
     this.ctx.temp.stroke()
   }
 
-  drawRect = (startPoint, endPoint, brushColor = this.props.brushColor) => {
+  drawRect = (startPoint, endPoint, brushColor = this.props.brushColor, brushRadius = this.props.brushRadius) => {
     const width = this.canvas.temp.width
     const height = this.canvas.temp.height
 
     this.ctx.temp.clearRect(0, 0, width, height)
     this.ctx.temp.strokeStyle = brushColor
+    this.ctx.temp.lineWidth = brushRadius
     this.ctx.temp.beginPath()
     this.ctx.temp.strokeRect(startPoint.x, startPoint.y, endPoint.x - startPoint.x, endPoint.y - startPoint.y)
   }
 
-  drawCircle = (startPoint, endPoint, brushColor = this.props.brushColor) => {
+  drawCircle = (startPoint, endPoint, brushColor = this.props.brushColor, brushRadius = this.props.brushRadius) => {
     const width = this.canvas.temp.width
     const height = this.canvas.temp.height
-    // const radius = Math.hypot(endPoint.x - startPoint.x, endPoint.y - startPoint.y)
 
     this.ctx.temp.clearRect(0, 0, width, height)
     this.ctx.temp.strokeStyle = brushColor
+    this.ctx.temp.lineWidth = brushRadius
     this.ctx.temp.beginPath()
-    // this.ctx.temp.arc(startPoint.x, startPoint.y, radius, 0, 2 * Math.PI)
     this.ctx.temp.ellipse(
       startPoint.x,
       startPoint.y,
@@ -485,13 +506,14 @@ export default class extends PureComponent {
     this.ctx.temp.stroke()
   }
 
-  drawArrow = (startPoint, endPoint, brushColor = this.props.brushColor) => {
+  drawArrow = (startPoint, endPoint, brushColor = this.props.brushColor, brushRadius = this.props.brushRadius) => {
     const width = this.canvas.temp.width
     const height = this.canvas.temp.height
 
     this.ctx.temp.clearRect(0, 0, width, height)
     this.ctx.temp.strokeStyle = brushColor
     this.ctx.temp.fillStyle = brushColor
+    this.ctx.temp.lineWidth = brushRadius
     this.ctx.temp.beginPath()
     this.ctx.temp.moveTo(startPoint.x, startPoint.y)
     this.ctx.temp.lineTo(endPoint.x, endPoint.y)
@@ -515,16 +537,41 @@ export default class extends PureComponent {
     this.ctx.temp.stroke()
   }
 
-  saveLine = ({ brushColor, brushRadius, type = 0 } = {}) => {
-    if (this.points.length < 2) return
+  drawText = (text = this.state.tempText, startPoint = this.startPoint, brushColor = this.props.brushColor) => {
+    const width = this.canvas.temp.width
+    const height = this.canvas.temp.height
+
+    this.ctx.temp.clearRect(0, 0, width, height)
+    this.ctx.temp.font = "48px serif"
+    this.ctx.temp.fillStyle = brushColor
+    this.ctx.temp.fillText(text, startPoint.x, startPoint.y)
+  }
+
+  onChange = e => this.setState({tempText: e.target.value}, this.drawText)
+
+  onKeyDown = e => {
+    if (this.isTyping) {
+      e.stopPropagation()
+      if (["Enter", "Escape"].includes(e.key)) {
+        this.handleDrawEnd(e)
+        this.isTyping = false
+      }
+    }
+  }
+  
+  saveLine = ({ brushColor, brushRadius, type = 0, points = this.points, text = this.state.tempText } = {}) => {
+    if (type === 4 && text.length === 0) return
+    if (type !== 4 && points.length < 2) return
 
     // Save as new line
-    this.lines.push({
+    const line = {
       type,
-      points: [...this.points],
+      points: [...points],
       brushColor: brushColor || this.props.brushColor,
       brushRadius: brushRadius || this.props.brushRadius
-    })
+    }
+    if (type === 4) line.text = text
+    this.lines.push(line)
 
     // Reset points array
     this.points.length = 0
@@ -621,6 +668,13 @@ export default class extends PureComponent {
           }
         }}
       >
+        <input
+          onChange={this.onChange}
+          onKeyUp={this.onKeyDown}
+          value={this.state.tempText}
+          ref={ref => this.inputRef = ref || null}
+          style={{border: 'none', position: 'absolute', color: 'transparent'}}
+        />
         {canvasTypes.map(({ name, zIndex }) => {
           const isInterface = name === 'interface'
           return (
@@ -641,6 +695,7 @@ export default class extends PureComponent {
               onTouchMove={isInterface ? this.handleDrawMove : undefined}
               onTouchEnd={isInterface ? this.handleDrawEnd : undefined}
               onTouchCancel={isInterface ? this.handleDrawEnd : undefined}
+              // onKeyDown={isInterface ? this.handleKeyUp : undefined}
             />
           )
         })}

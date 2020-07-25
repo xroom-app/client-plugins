@@ -9,12 +9,40 @@ XROOM_PLUGIN({
       confirmErase: 'Are you sure you want to erase everything?',
       yes: 'Yes',
       no: 'No',
+      color: {
+        black: 'Black',
+        blue: 'Blue',
+        green: 'Green',
+        red: 'Red',
+        yellow: 'Yellow',
+      },
+      tool: {
+        0: 'Pencil',
+        1: 'Rectangle',
+        2: 'Ellips',
+        3: 'Arrow',
+        4: 'Text',
+      }
     },
     ru: {
       iconCaption: 'Рисовалка',
       confirmErase: 'Are you sure you want to erase everything?',
       yes: 'Yes',
       no: 'No',
+      color: {
+        black: 'Черный',
+        blue: 'Синий',
+        green: 'Зелёный',
+        red: 'Красный',
+        yellow: 'Жёлтый',
+      },
+      tool: {
+        0: 'Карандаш',
+        1: 'Прямоугольник',
+        2: 'Эллипс',
+        3: 'Стрелка',
+        4: 'Текст',
+      }
     },
   },
 
