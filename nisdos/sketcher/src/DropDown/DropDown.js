@@ -2,9 +2,12 @@ import React from 'react'
 import styles from './styles.module.css'
 
 const DropDownOption = ({option, onClick, isCurrent}) => (
-  <div className={styles.option + " " + (isCurrent ? styles.option__current : '')} onClick={() => onClick && onClick(option.key)}>
-    {option.icon && <svg className={styles.option__icon} viewBox="0 0 24 24">{option.icon}</svg>}
-    {option.value}
+  <div className={styles.option + ' ' + (isCurrent ? styles.option__current : '')} onClick={() => onClick && onClick(option.key)}>
+    {
+    	option.icon &&
+				<svg className={styles.option__icon} viewBox="0 0 24 24">{ option.icon }</svg>
+    }
+    <span className={styles.option__caption}>{ option.value }</span>
   </div>
 )
 
@@ -28,14 +31,14 @@ class DropDown extends React.Component {
 			this.props.options.length > 1 && this.setState({isOpen: !this.state.isOpen});
 		} else {
 			this.setState({isOpen: false})
-		}	  
+		}
 	}
 
 	render() {
 		const { isOpen } = this.state
 		const { options, current, onClick, style, size } = this.props
     const currentOption = options.find(i => i.key === current)
-		
+
 		return (
       <div
         ref={this.container}

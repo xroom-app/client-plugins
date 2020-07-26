@@ -1,6 +1,5 @@
 .drop_down {
 	position: relative;
-	display: block;
 	border: 1px solid #ccc;
 	border-radius: 4px;
 	line-height: 32px;
@@ -75,8 +74,25 @@
 .option__current {
 	background-color: #eee;
 }
+
 .option__icon {
 	width: 32px;
 	height: 32px;
 	margin-right: 10px;
+}
+
+@media (max-width: 480px) {
+	.option__caption {
+		display: none;
+	}
+
+	.option__icon {
+		margin-right: 0;
+	}
+
+	.option {
+		padding: 0;
+		margin: auto;
+		justify-content: center;
+	}
 }
