@@ -321,7 +321,7 @@ export default class extends PureComponent {
       this.handlePointerMove(x, y)
     }
 
-    if ([1, 5].includes(this.props.drawingTool)) {
+    if (this.props.drawingTool === 1) {
       this.drawRect(this.startPoint, {x, y})
     }
     if (this.props.drawingTool === 2) {
@@ -334,6 +334,7 @@ export default class extends PureComponent {
 
   handleDrawEnd = e => {
     e.preventDefault()
+    const { x, y } = this.getPointerPos(e)
 
     // Draw to this end pos
     if (this.props.drawingTool === 0) {
@@ -341,13 +342,14 @@ export default class extends PureComponent {
       this.saveLine()
     }
 
+    this.handleDrawMove(e)
+
     if (this.isTyping && this.props.drawingTool === 4) {
       this.state.tempText && this.saveLine({type: this.props.drawingTool, brushColor: this.props.brushColor, brushRadius: this.props.brushRadius})
       this.setState({tempText: ""})
     }
 
     if (this.isDrawing && [1, 2, 3].includes(this.props.drawingTool)) {
-      const { x, y } = this.getPointerPos(e)
 
       this.points = [this.startPoint, {x, y}]
 
@@ -489,16 +491,18 @@ export default class extends PureComponent {
   drawCircle = (startPoint, endPoint, brushColor = this.props.brushColor, brushRadius = this.props.brushRadius) => {
     const width = this.canvas.temp.width
     const height = this.canvas.temp.height
+    const xRadius = (endPoint.x - startPoint.x)/2
+    const yRadius = (endPoint.y - startPoint.y)/2
 
     this.ctx.temp.clearRect(0, 0, width, height)
     this.ctx.temp.strokeStyle = brushColor
     this.ctx.temp.lineWidth = brushRadius
     this.ctx.temp.beginPath()
     this.ctx.temp.ellipse(
-      startPoint.x,
-      startPoint.y,
-      Math.abs(endPoint.x - startPoint.x),
-      Math.abs(endPoint.y - startPoint.y),
+      startPoint.x + xRadius,
+      startPoint.y + yRadius,
+      Math.abs(xRadius),
+      Math.abs(yRadius),
       0,
       0,
       2 * Math.PI
