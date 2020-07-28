@@ -129,8 +129,9 @@ export default class extends PureComponent {
       this.valuesChanged = true
     }
 
-    if (this.props.drawingTool === 4 && prevProps.drawingTool !== this.props.drawingTool) {
-      this.setState({tempText: ""})
+    if (prevProps.drawingTool !== this.props.drawingTool) {
+      this.points = []
+      this.props.drawingTool === 4 && this.setState({tempText: ""})
     }
   }
 
@@ -336,16 +337,16 @@ export default class extends PureComponent {
     e.preventDefault()
     const { x, y } = this.getPointerPos(e)
 
+    this.handleDrawMove(e)
+
     // Draw to this end pos
     if (this.props.drawingTool === 0) {
-      this.handleDrawMove(e)
       this.saveLine()
     }
 
-    this.handleDrawMove(e)
-
     if (this.isTyping && this.props.drawingTool === 4) {
       this.state.tempText && this.saveLine({type: this.props.drawingTool, brushColor: this.props.brushColor, brushRadius: this.props.brushRadius})
+      this.points = [this.startPoint, {x, y}]
       this.setState({tempText: ""})
     }
 

@@ -64,6 +64,7 @@ class UI extends Component {
       size: 1,
       isShown: false,
       saveData: "",
+      keys: [],
     }
 
     this.draw = null
@@ -72,6 +73,13 @@ class UI extends Component {
 
   toggle () {
     const { isShown } = this.state
+    if (!isShown) {
+      document.addEventListener("keydown", this.handleKeyDown)
+      document.addEventListener("keyup", this.handleKeyUp)
+    } else {
+      document.removeEventListener("keydown", this.handleKeyDown)
+      document.removeEventListener("keyup", this.handleKeyUp)
+    }
     this.setState({isShown: !isShown})
   }
 
@@ -92,6 +100,31 @@ class UI extends Component {
     link.setAttribute('download', 'sketch.png')
     link.setAttribute('href', this.draw.canvas.drawing.toDataURL('image/png').replace('image/png', 'image/octet-stream'))
     link.click()
+  }
+
+  handleKeyDown = e => {
+    const { keys } = this.state
+
+    if (e.key === 'Control') {
+      keys.push('Control')
+      this.setState({keys})
+    }
+    if (keys.includes('Control')) {
+      if (e.key === 'z') {
+        this.draw.undo()
+      }
+      if (['Z', 'y'].includes(e.key)) {
+        this.draw.redo()
+      }
+    }
+  }
+
+  handleKeyUp = e => {
+    const { keys } = this.state
+    if (e.key === 'Control') {
+      keys.splice(keys.indexOf('Control'), 1)
+      this.setState({keys})
+    }
   }
 
   render () {
