@@ -61,10 +61,14 @@ export default class extends PureComponent {
 
     this.catenary = new Catenary()
 
-    this.points = []
     this.lines = []
     this.redoHistory = []
+    for (var i = 0; i < props.tabs; i++) {
+      this.lines[i] = []
+      this.redoHistory[i] = []
+    }
 
+    this.points = []
     this.mouseHasMoved = true
     this.valuesChanged = true
     this.isDrawing = false
@@ -133,11 +137,27 @@ export default class extends PureComponent {
       this.points = []
       this.props.drawingTool === 4 && this.setState({tempText: ""})
     }
+
+    if (prevProps.currentTab !== this.props.currentTab) {
+      const lines = [...this.lines[this.props.currentTab]]
+      this.clear()
+      this.simulateDrawingLines({lines, immediate: true})
+    }
+
+    if (this.props.tabs > prevProps.tabs) {
+      this.lines[this.props.tabs-1] = []
+      this.redoHistory[this.props.tabs-1] = []
+    }
   }
 
   componentWillUnmount = () => {
     this.canvasObserver.unobserve(this.canvasContainer)
     this.props.updateSaveData(this.getSaveData())
+  }
+
+  removeTab = removedTab => {
+    this.lines.splice(removedTab, 1)
+    this.redoHistory.splice(removedTab, 1)
   }
 
   drawImage = () => {
@@ -156,20 +176,22 @@ export default class extends PureComponent {
   }
 
   undo = () => {
-    const lines = [...this.lines]
+    const { currentTab } = this.props
+    const lines = [...this.lines[currentTab]]
     const splice = lines.splice(-1, 1)
 
-    // console.log('-----------UNDO----------', lines);
-    this.redoHistory = [...this.redoHistory, ...splice]
+    this.redoHistory[currentTab] = [...this.redoHistory[currentTab], ...splice]
     this.clear()
     this.simulateDrawingLines({ lines, immediate: true })
     this.triggerOnChange()
   }
 
   redo = () => {
-    if (this.redoHistory.length > 0) {
-      const splice = this.redoHistory.splice(-1, 1)
-      const lines = [...this.lines, ...splice]
+    const { currentTab } = this.props
+    if (this.redoHistory[currentTab].length > 0) {
+      const { currentTab } = this.props
+      const splice = this.redoHistory[currentTab].splice(-1, 1)
+      const lines = [...this.lines[currentTab], ...splice]
 
       this.clear()
       this.simulateDrawingLines({ lines, immediate: true })
@@ -335,6 +357,7 @@ export default class extends PureComponent {
 
   handleDrawEnd = e => {
     e.preventDefault()
+    const { currentTab } = this.props
     const { x, y } = this.getPointerPos(e)
 
     this.handleDrawMove(e)
@@ -362,7 +385,7 @@ export default class extends PureComponent {
     this.isPressing = false
 
     // Reset redo array
-    this.redoHistory.length = 0
+    this.redoHistory[currentTab].length = 0
   }
 
   handleCanvasResize = (entries, observer) => {
@@ -576,7 +599,7 @@ export default class extends PureComponent {
       brushRadius: brushRadius || this.props.brushRadius
     }
     if (type === 4) line.text = text
-    this.lines.push(line)
+    this.lines[this.props.currentTab].push(line)
 
     // Reset points array
     this.points.length = 0
@@ -598,7 +621,7 @@ export default class extends PureComponent {
   }
 
   clear = () => {
-    this.lines = []
+    this.lines[this.props.currentTab] = []
     this.valuesChanged = true
     this.ctx.drawing.clearRect(
       0,

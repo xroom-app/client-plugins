@@ -65,6 +65,8 @@ class UI extends Component {
       isShown: false,
       saveData: "",
       keys: [],
+      tabs: 3,
+      currentTab: 0,
     }
 
     this.draw = null
@@ -127,8 +129,19 @@ class UI extends Component {
     }
   }
 
+  removeTab = (e, removedTab) => {
+    e.stopPropagation()
+    let { tabs, currentTab } = this.state
+
+    tabs--
+    if (currentTab === removedTab && currentTab > 0) currentTab--
+
+    this.draw.removeTab(removedTab)
+    this.setState({currentTab, tabs})
+  }
+
   render () {
-    const { isShown, color, tool, size, saveData } = this.state
+    const { isShown, color, tool, size, saveData, tabs, currentTab } = this.state
 
     if (!isShown) {
       return null
@@ -185,6 +198,21 @@ class UI extends Component {
           </div>
         </div>
 
+        <div style={styles.tabs}>
+          {Array.from(Array(tabs).keys()).map(tab =>
+            <div
+              onClick={() => this.setState({currentTab: tab})}
+              style={tab === currentTab ? {...styles.tab, ...styles.current_tab} : styles.tab}
+            >
+              {this.props.i18n.t('tab')} {tab+1}
+              {tabs > 1 && <span style={styles.remove_tab} onClick={e => this.removeTab(e, tab)}>&times;</span>}
+            </div>
+          )}
+          <svg style={styles.add_tab} viewBox="0 0 24 24" onClick={() => this.setState({tabs: tabs+1})}>
+            <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+          </svg>
+        </div>
+
         <div style={styles.canvas}>
           <CanvasDraw
             ref={ref => this.draw = ref}
@@ -195,6 +223,8 @@ class UI extends Component {
             updateSaveData={data => this.setState({saveData: data})}
             brushColor={color}
             drawingTool={tool}
+            tabs={tabs}
+            currentTab={currentTab}
           />
         </div>
       </div>
@@ -213,7 +243,6 @@ const styles = {
   },
   controls: {
     padding: '3px 2px',
-    borderBottom: '1px solid #aaa',
     display: 'flex',
     justifyContent: 'space-between'
   },
@@ -227,6 +256,37 @@ const styles = {
     cursor: 'pointer',
     height: '32px',
     margin: '0 0 0 auto',
+  },
+  tabs: {
+    padding: '3px 4px 0',
+    borderBottom: '1px solid #aaa',
+    display: 'flex',
+  },
+  tab: {
+    border: '1px solid #aaa',
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
+    borderBottom: 'none',
+    background: '#eee',
+    padding: '2px 10px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  current_tab: {
+    boxShadow: '0px 1px 0px 0px #fff',
+    background: '#fff',
+  },
+  add_tab: {
+    width: 24,
+    height: 24,
+    fill: '#ccc',
+    cursor: 'pointer',
+  },
+  remove_tab: {
+    fontSize: 20,
+    lineHeight: '16px',
+    marginLeft: 5,
   },
   canvas: {
     width: '100%',
