@@ -48,7 +48,7 @@ XROOM_PLUGIN({
 | sendData            | Send data to peer(s) with this plugin | `{data: string, to: string}`
 | sendFile            | Post a file to chat | `{file, to: string}`
 | sendMessage         | Post a message to chat | `{message: string, to: string}`
-| setFaceVis          | Set peer container visibility | `{peerId: string, off: boolean}`
+| setPeerVis          | Set peer container visibility | `{peerId: string, off: boolean}`
 | setRoomLock         | Lock/unlock the current room | Lock flag
 | setRoomPassword     | Set/reset room password | Password (null to reset)
 | setLocalAP          | Set local audio processor | A processing AudioNode
