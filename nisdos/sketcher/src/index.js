@@ -22,7 +22,8 @@ XROOM_PLUGIN({
         2: 'Ellips',
         3: 'Arrow',
         4: 'Text',
-      }
+      },
+      tab: 'Tab',
     },
     ru: {
       iconCaption: 'Рисовалка',
@@ -42,7 +43,8 @@ XROOM_PLUGIN({
         2: 'Эллипс',
         3: 'Стрелка',
         4: 'Текст',
-      }
+      },
+      tab: 'Вкладка',
     },
   },
 
