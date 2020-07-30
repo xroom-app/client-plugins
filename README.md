@@ -33,26 +33,28 @@ XROOM_PLUGIN({
 ## Exposed API
 | Method              | Description | Arguments | Returns    
 | ---                 | --- | --- | ---
-| addIcon             | Add icon to UI | `{title, onClick, svg}`
-| addUI               | Add own UI | `{component}` | Reference to component in DOM
-| appendScript        | Load a script | `{src}` | Script ID
-| appendStyle         | Load a style file | `{src}` | Style ID
-| getStreams          | Get media streams | — | `{local, remote: {}}`
-| getLocalStream      | Get local device stream | `{audio, video}` | `[stream]`
-| goToRoom            | Go to a new room | `{roomId, preview: false}`
+| addIcon             | Add icon to UI | `{title: string, onClick: function, svg: Component}`
+| addUI               | Add own UI | `{component: Component}` | Reference to component in DOM
+| appendScript        | Load a script | `{src: string}` | Script ID
+| appendStyle         | Load a style file | `{src: string}` | Style ID
+| getStreams          | Get media streams | — | `{local: MediaStream, remote: Record<string, MediaStream>}`
+| getLocalStream      | Get local device stream | `{audio: boolean, video: boolean}` | `[MediaStream]`
+| goToRoom            | Go to a new room | `{roomId: string, preview: boolean}`
 | kickPeer            | Kick a peer | peerId
 | listPeers           | List all room peers | — | Array of peers
 | removeElement       | Remove an element from DOM | Element reference ID
 | removeIcon          | Remove icon from UI | —
 | renderControls      | Rerender UI, useful for dynamic icons | —
-| sendData            | Send data to peer(s) with this plugin | `{data, to}`
-| sendFile            | Post a file to chat | `{file, to}`
-| sendMessage         | Post a message to chat | `{message, to}`
+| sendData            | Send data to peer(s) with this plugin | `{data: string, to: string}`
+| sendFile            | Post a file to chat | `{file, to: string}`
+| sendMessage         | Post a message to chat | `{message: string, to: string}`
+| setFaceVis          | Set peer container visibility | `{peerId: string, off: boolean}`
 | setRoomLock         | Lock/unlock the current room | Lock flag
 | setRoomPassword     | Set/reset room password | Password (null to reset)
 | setLocalAP          | Set local audio processor | A processing AudioNode
-| setLocalVideo       | Substitute local video | `{track, reset}`
+| setLocalVideo       | Substitute local video | `{track: MediaStreamTrack, reset: boolean}`
 | suggestPlugin       | Suggest this plugin to all peers | —
+| updateCard          | Update own user card elements | `{name: string}`
 
 ## Exposed events
 | Event               | Description           | Payload 
