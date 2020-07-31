@@ -36,6 +36,14 @@ const tools = i18n => [
     key: 4,
     icon: <path fill="#333" d="M9.6,14L12,7.7L14.4,14M11,5L5.5,19H7.7L8.8,16H15L16.1,19H18.3L13,5H11Z" />,
     value: i18n.t('tool.' + 4)
+  },
+  {
+    key: 5,
+    icon: (<Fragment>
+      <path fill="none" d="M 10,7 H 4 v 11 h 14 v -8" stroke="#333333" strokeWidth="2"strokeDasharray="8,4" />
+      <path fill="#333333" strokeWidth="0.4" d="m 17.98,1.2 c -0.204,0 -0.408,0.08 -0.564,0.236 L 12.96,5.892 c -0.312,0.308 -0.312,0.816 0,1.132 L 13.936,8 H 17 l 3.488,-3.492 c 0.316,-0.308 0.316,-0.816 0,-1.132 l -1.94,-1.94 C 18.392,1.28 18.184,1.2 17.98,1.2"/>
+    </Fragment>),
+    value: i18n.t('tool.' + 5)
   }
 ]
 

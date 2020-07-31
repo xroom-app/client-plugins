@@ -226,7 +226,7 @@ export default class extends PureComponent {
       height === this.props.canvasHeight
     ) {
       this.simulateDrawingLines({
-        lines,
+        lines: lines[this.props.currentTab],
         immediate
       })
     } else {
@@ -236,7 +236,7 @@ export default class extends PureComponent {
       const scaleAvg = (scaleX + scaleY) / 2
 
       this.simulateDrawingLines({
-        lines: lines.map(line => ({
+        lines: lines[this.props.currentTab].map(line => ({
           ...line,
           points: line.points.map(p => ({
             x: p.x * scaleX,
@@ -266,16 +266,19 @@ export default class extends PureComponent {
         })
       }
       if (type === 1) {
-        this.drawRect(points[0], points[1], brushColor)
+        this.drawRect(points[0], points[1], brushColor, brushRadius)
       }
       if (type === 2) {
-        this.drawCircle(points[0], points[1], brushColor)
+        this.drawCircle(points[0], points[1], brushColor, brushRadius)
       }
       if (type === 3) {
-        this.drawArrow(points[0], points[1], brushColor)
+        this.drawArrow(points[0], points[1], brushColor, brushRadius)
       }
       if (type === 4) {
         this.drawText(line.text, points[0], brushColor)
+      }
+      if (type === 5) {
+        this.erase(points)
       }
     }
 
@@ -329,7 +332,7 @@ export default class extends PureComponent {
       this.isTyping = true
       this.inputRef.focus()
     }
-    if ([1, 2, 3, 4].includes(this.props.drawingTool)) {
+    if ([1, 2, 3, 4, 5].includes(this.props.drawingTool)) {
       this.startPoint = {x, y}
     }
   }
@@ -353,6 +356,9 @@ export default class extends PureComponent {
     if (this.props.drawingTool === 3) {
       this.drawArrow(this.startPoint, {x, y})
     }
+    if (this.props.drawingTool === 5) {
+      this.drawEraser(this.startPoint, {x, y})
+    }
   }
 
   handleDrawEnd = e => {
@@ -373,7 +379,7 @@ export default class extends PureComponent {
       this.setState({tempText: ""})
     }
 
-    if (this.isDrawing && [1, 2, 3].includes(this.props.drawingTool)) {
+    if (this.isDrawing && [1, 2, 3, 5].includes(this.props.drawingTool)) {
 
       this.points = [this.startPoint, {x, y}]
 
@@ -483,6 +489,7 @@ export default class extends PureComponent {
 
     this.ctx.temp.moveTo(p2.x, p2.y)
     this.ctx.temp.beginPath()
+    this.ctx.temp.setLineDash([])
 
     for (let i = 1, len = points.length; i < len; i++) {
       // we pick the point between pi+1 & pi+2 as the
@@ -509,6 +516,7 @@ export default class extends PureComponent {
     this.ctx.temp.strokeStyle = brushColor
     this.ctx.temp.lineWidth = brushRadius
     this.ctx.temp.beginPath()
+    this.ctx.temp.setLineDash([])
     this.ctx.temp.strokeRect(startPoint.x, startPoint.y, endPoint.x - startPoint.x, endPoint.y - startPoint.y)
   }
 
@@ -522,6 +530,7 @@ export default class extends PureComponent {
     this.ctx.temp.strokeStyle = brushColor
     this.ctx.temp.lineWidth = brushRadius
     this.ctx.temp.beginPath()
+    this.ctx.temp.setLineDash([])
     this.ctx.temp.ellipse(
       startPoint.x + xRadius,
       startPoint.y + yRadius,
@@ -543,6 +552,7 @@ export default class extends PureComponent {
     this.ctx.temp.fillStyle = brushColor
     this.ctx.temp.lineWidth = brushRadius
     this.ctx.temp.beginPath()
+    this.ctx.temp.setLineDash([])
     this.ctx.temp.moveTo(startPoint.x, startPoint.y)
     this.ctx.temp.lineTo(endPoint.x, endPoint.y)
     this.ctx.temp.stroke()
@@ -575,6 +585,24 @@ export default class extends PureComponent {
     this.ctx.temp.fillText(text, startPoint.x, startPoint.y)
   }
 
+  drawEraser = (startPoint, endPoint) => {
+    const width = this.canvas.temp.width
+    const height = this.canvas.temp.height
+
+    this.ctx.temp.clearRect(0, 0, width, height)
+    this.ctx.temp.strokeStyle = 'black'
+    this.ctx.temp.lineWidth = 1
+    this.ctx.temp.beginPath()
+    this.ctx.temp.setLineDash([5, 10])
+    this.ctx.temp.strokeRect(startPoint.x, startPoint.y, endPoint.x - startPoint.x, endPoint.y - startPoint.y)
+  }
+
+  erase = (points) => {
+    const eraseWidth = points[1].x - points[0].x
+    const eraseHeight = points[1].y - points[0].y
+    this.ctx.drawing.clearRect(points[0].x, points[0].y, eraseWidth, eraseHeight)
+  }
+
   onChange = e => this.setState({tempText: e.target.value}, this.drawText)
 
   onKeyDown = e => {
@@ -601,14 +629,18 @@ export default class extends PureComponent {
     if (type === 4) line.text = text
     this.lines[this.props.currentTab].push(line)
 
-    // Reset points array
-    this.points.length = 0
-
     const width = this.canvas.temp.width
     const height = this.canvas.temp.height
 
-    // Copy the line to the drawing canvas
-    this.ctx.drawing.drawImage(this.canvas.temp, 0, 0, width, height)
+    if (type === 5) {
+      this.erase(points)
+    } else {
+      // Copy the line to the drawing canvas
+      this.ctx.drawing.drawImage(this.canvas.temp, 0, 0, width, height)
+    }
+
+    // Reset points array
+    this.points.length = 0
 
     // Clear the temporary line-drawing canvas
     this.ctx.temp.clearRect(0, 0, width, height)
