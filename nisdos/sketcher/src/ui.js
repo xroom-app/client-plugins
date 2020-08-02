@@ -211,9 +211,10 @@ class UI extends Component {
             <div
               onClick={() => this.setState({currentTab: tab})}
               style={tab === currentTab ? {...styles.tab, ...styles.current_tab} : styles.tab}
+              contentEditable={true}
             >
-              {this.props.i18n.t('tab')} {tab+1}
-              {tabs > 1 && <span style={styles.remove_tab} onClick={e => this.removeTab(e, tab)}>&times;</span>}
+              { this.props.i18n.t('tab') } { tab+1 }
+              { tabs > 1 && <span style={styles.remove_tab} onClick={e => this.removeTab(e, tab)}>&times;</span> }
             </div>
           )}
           <svg style={styles.add_tab} viewBox="0 0 24 24" onClick={() => this.setState({tabs: tabs+1})}>

@@ -63,7 +63,7 @@ export default class extends PureComponent {
 
     this.lines = []
     this.redoHistory = []
-    for (var i = 0; i < props.tabs; i++) {
+    for (let i = 0; i < props.tabs; i++) {
       this.lines[i] = []
       this.redoHistory[i] = []
     }
@@ -78,7 +78,7 @@ export default class extends PureComponent {
     this.endPoint = [0, 0]
     this.textTimeout = null
     this.state = {
-      tempText: ""
+      tempText: ''
     }
   }
 
@@ -135,7 +135,7 @@ export default class extends PureComponent {
 
     if (prevProps.drawingTool !== this.props.drawingTool) {
       this.points = []
-      this.props.drawingTool === 4 && this.setState({tempText: ""})
+      this.props.drawingTool === 4 && this.setState({tempText: ''})
     }
 
     if (prevProps.currentTab !== this.props.currentTab) {
@@ -376,7 +376,7 @@ export default class extends PureComponent {
     if (this.isTyping && this.props.drawingTool === 4) {
       this.state.tempText && this.saveLine({type: this.props.drawingTool, brushColor: this.props.brushColor, brushRadius: this.props.brushRadius})
       this.points = [this.startPoint, {x, y}]
-      this.setState({tempText: ""})
+      this.setState({tempText: ''})
     }
 
     if (this.isDrawing && [1, 2, 3, 5].includes(this.props.drawingTool)) {
@@ -580,7 +580,7 @@ export default class extends PureComponent {
     const height = this.canvas.temp.height
 
     this.ctx.temp.clearRect(0, 0, width, height)
-    this.ctx.temp.font = "48px serif"
+    this.ctx.temp.font = '48px serif'
     this.ctx.temp.fillStyle = brushColor
     this.ctx.temp.fillText(text, startPoint.x, startPoint.y)
   }
@@ -608,13 +608,13 @@ export default class extends PureComponent {
   onKeyDown = e => {
     if (this.isTyping) {
       e.stopPropagation()
-      if (["Enter", "Escape"].includes(e.key)) {
+      if (['Enter', 'Escape'].includes(e.key)) {
         this.handleDrawEnd(e)
         this.isTyping = false
       }
     }
   }
-  
+
   saveLine = ({ brushColor, brushRadius, type = 0, points = this.points, text = this.state.tempText } = {}) => {
     if (type === 4 && text.length === 0) return
     if (type !== 4 && points.length < 2) return
