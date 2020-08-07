@@ -33,6 +33,8 @@ XROOM_PLUGIN({
     en: {
       iconCaption: 'Manage',
       btnSplitRoom: 'Split room',
+      btnConfirmSplitRoom: 'Send invites',
+      btnCancelSplitRoom: 'Cancel',
       splitOn: 'on',
       robots: 'Robots',
       humans: 'Humans',
@@ -46,6 +48,8 @@ XROOM_PLUGIN({
     ru: {
       iconCaption: 'Комната',
       btnSplitRoom: 'Разбить комнату',
+      btnConfirmSplitRoom: 'Разослать приглашения',
+      btnCancelSplitRoom: 'Отмена',
       splitOn: 'на',
       robots: 'Роботы',
       humans: 'Люди',

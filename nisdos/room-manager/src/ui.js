@@ -9,6 +9,11 @@ class UI extends Component {
       peers: [],
       splitCount: 2,
       isShown: false,
+      tempRooms: [],
+      draggableItem: {
+        roomId: '',
+        peerIndex: '',
+      },
     }
 
     this.roomId = null
@@ -35,7 +40,7 @@ class UI extends Component {
   onSplit = () => {
     const
       newRooms = [],
-      { api, i18n, mbox } = this.props,
+      { i18n, mbox } = this.props,
       { peers, splitCount } = this.state
 
     if (peers.length < splitCount) {
@@ -47,25 +52,88 @@ class UI extends Component {
     for (let n = 0; n < splitCount; n++) newRooms.push([])
 
     for (let n = 0; n < peers.length; n++) {
-      newRooms[n % splitCount].push(peers[n].id)
+      newRooms[n % splitCount].push(peers[n])
     }
 
-    // separate algorithms for further use
+    this.setState({tempRooms: newRooms})
+  }
 
-    for (const r in newRooms) {
+  onDragStart = (evt, peerIndex, roomId) => {
+    this.setState({draggableItem: {roomId, peerIndex}})
+    this.togglePointerEvents(false)
+    evt.target.style.opacity = 0.5
+  }
+  
+  onDragEnd = evt => {
+    this.togglePointerEvents(true)
+    evt.target.style.opacity = 1
+  }
+
+  togglePointerEvents = isOn =>
+    document.querySelectorAll('.peer_row').forEach(el =>
+      el.style.pointerEvents = isOn ? 'auto' : 'none'
+    )
+
+  toggleDashedBorder = (evt, isOn) => evt.target.closest('fieldset').style.borderStyle = isOn ? 'dashed' : 'solid'
+
+  onDrop = (evt, roomId) => {
+    let { tempRooms, draggableItem } = this.state
+
+    const splice = tempRooms[draggableItem.roomId].splice(draggableItem.peerIndex, 1)
+    tempRooms[roomId].push(splice[0])
+    this.setState({ tempRooms, draggableItem: {} })
+    this.togglePointerEvents(true)
+    this.toggleDashedBorder(evt, false)
+  }
+
+  confirmSplit = () => {
+    const { api, i18n } = this.props
+    for (const r in this.state.tempRooms) {
       const suffix = String(Math.random()).slice(2, 8)
 
-      for (const peerId of newRooms[r]) {
-        api('sendMessage', {to: peerId, message: `${i18n.t('breakRoomOffer')} ${this.roomId}-${suffix}`})
+      for (const peer of this.state.tempRooms[r]) {
+        api('sendMessage', {to: peer.id, message: `${i18n.t('breakRoomOffer')} ${this.roomId}-${suffix}`})
       }
     }
 
     this.toggle()
   }
+  
+  changeRoomCount = isAdding => this.setState({
+      splitCount: isAdding ? ++this.state.splitCount : --this.state.splitCount
+    }, this.onSplit)
+
+  renderPeerList = (peers, isRobots = false, draggable = false, roomId = null) =>
+    peers.filter(p => isRobots ^ !p.isRobot).length > 0 &&
+      <fieldset
+        style={styles.peerRows}
+        onDrop={evt => this.onDrop(evt, roomId)}
+        onDragEnter={evt => this.toggleDashedBorder(evt, true)}
+        onDragLeave={evt => this.toggleDashedBorder(evt, false)}
+      >
+        <legend>{ this.props.i18n.t(isRobots ? 'robots' : 'humans') } {roomId !== null && roomId + 1}</legend>
+        {
+          peers.filter(p => isRobots ^ !p.isRobot).map((el, peerIndex) => {
+            return (
+              <div
+                draggable={draggable && peers.length > 1}
+                onDragStart={evt => this.onDragStart(evt, peerIndex, roomId)}
+                onDragEnd={this.onDragEnd}
+                style={styles.peerRow}
+                className="peer_row"
+                key={peerIndex}
+              >
+                <span>{ peerIndex + 1 }.</span>
+                <span style={styles.peerName}>{ el.card.name }</span>
+              </div>
+            )
+          })
+        }
+      </fieldset>
 
   render () {
     const { i18n } = this.props
-    const { isShown, peers } = this.state
+    const { isShown, peers, tempRooms } = this.state
 
     if (!isShown) {
       return null
@@ -74,48 +142,52 @@ class UI extends Component {
     return (
       <div style={styles.dialog}>
 
-        <fieldset style={styles.peerRows}>
-          <legend>{ i18n.t('robots') }</legend>
-          {
-            peers.filter(p => p.isRobot).map((el, i) => {
-              return (
-                <div style={styles.peerRow} key={i}>
-                  <span>{ i + 1 }.</span>
-                  <span style={styles.peerName}>{ el.card.name }</span>
-                </div>
-              )
-            })
-          }
-        </fieldset>
+        {this.renderPeerList(peers, true)}
 
-        <fieldset style={styles.peerRows}>
-          <legend>{ i18n.t('humans') }</legend>
-          {
-            peers.filter(p => !p.isRobot).map((el, i) => {
-              return (
-                <div style={styles.peerRow} key={i}>
-                  <span>{ i + 1 }.</span>
-                  <span style={styles.peerName}>{ el.card.name }</span>
-                </div>
-              )
-            })
-          }
-        </fieldset>
-
-        <div style={styles.split}>
-          <button style={styles.splitButton} onClick={this.onSplit}>
-            { i18n.t('btnSplitRoom') }
-          </button>
-          <span style={styles.splitCountSpan}>{ i18n.t('splitOn') }</span>
-          <input
-            type="number"
-            style={styles.splitCount}
-            defaultValue={2}
-            min={2}
-            onChange={this.onSplitCountChanged}
-          />
-        </div>
-
+        {tempRooms.length > 0
+          ? 
+            <>
+              {tempRooms.map((room, roomId) => this.renderPeerList(room, false, true, roomId))}
+              <div style={styles.row}>
+                <button style={styles.cancel} onClick={() => this.setState({tempRooms: []})}>
+                { i18n.t('btnCancelSplitRoom') }
+                </button>
+                <button
+                  style={styles.changeCountButton}
+                  disabled={tempRooms.length < 3}
+                  onClick={() => this.changeRoomCount(false)}
+                >-</button>
+                <button
+                  style={styles.changeCountButton}
+                  disabled={tempRooms.length === peers.length}
+                  onClick={() => this.changeRoomCount(true)}
+                >+</button>
+              </div>
+              <div style={styles.row}>
+                <button style={styles.sendInviteButton} onClick={this.confirmSplit}>
+                  { i18n.t('btnConfirmSplitRoom') }
+                </button>
+              </div>
+            </>
+          : 
+            <>
+              {this.renderPeerList(peers)}
+              <div style={styles.split}>
+                <button style={styles.splitButton} onClick={this.onSplit}>
+                  { i18n.t('btnSplitRoom') }
+                </button>
+                <span style={styles.splitCountSpan}>{ i18n.t('splitOn') }</span>
+                <input
+                  type="number"
+                  style={styles.splitCount}
+                  defaultValue={2}
+                  min={2}
+                  max={peers.length}
+                  onChange={this.onSplitCountChanged}
+                />
+              </div>
+            </>
+        }
       </div>
     )
   }
@@ -139,6 +211,7 @@ const styles = {
     borderRadius: '4px',
     marginBottom: '16px',
     minHeight: '33px',
+    userSelect: 'none',
   },
   peerRow: {
 
@@ -152,6 +225,21 @@ const styles = {
   splitButton: {
     height: '30px',
     cursor: 'pointer',
+  },
+  row: {
+    display: 'flex',
+    marginBottom: 10,
+  },
+  cancel: {
+    marginRight: 'auto',
+  },
+  changeCountButton: {
+    marginLeft: 5,
+  },
+  sendInviteButton: {
+    height: '30px',
+    cursor: 'pointer',
+    width: '100%',
   },
   splitCount: {
     width: '40px',
