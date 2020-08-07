@@ -63,7 +63,7 @@ class UI extends Component {
     this.togglePointerEvents(false)
     evt.target.style.opacity = 0.5
   }
-  
+
   onDragEnd = evt => {
     this.togglePointerEvents(true)
     evt.target.style.opacity = 1
@@ -98,7 +98,7 @@ class UI extends Component {
 
     this.toggle()
   }
-  
+
   changeRoomCount = isAdding => this.setState({
       splitCount: isAdding ? ++this.state.splitCount : --this.state.splitCount
     }, this.onSplit)
@@ -145,7 +145,7 @@ class UI extends Component {
         {this.renderPeerList(peers, true)}
 
         {tempRooms.length > 0
-          ? 
+          ?
             <>
               {tempRooms.map((room, roomId) => this.renderPeerList(room, false, true, roomId))}
               <div style={styles.row}>
@@ -169,7 +169,7 @@ class UI extends Component {
                 </button>
               </div>
             </>
-          : 
+          :
             <>
               {this.renderPeerList(peers)}
               <div style={styles.split}>
@@ -214,7 +214,8 @@ const styles = {
     userSelect: 'none',
   },
   peerRow: {
-
+    textAlign: 'left',
+    cursor: 'grab',
   },
   peerName: {
     marginLeft: '8px',
