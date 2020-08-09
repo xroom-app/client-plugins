@@ -60,8 +60,14 @@ class UI extends Component {
   }
 
   onShare = () => {
-    this.props.api('sendMessage', {to: null, message: `Book me here: https://calendly.com/${this.state.extId}`})
-    this.props.mbox({text: 'Sent to everyone in the chat'})
+    const { isInDaChat, api, mbox } = this.props
+
+    if (isInDaChat()) {
+      api('sendMessage', {to: null, message: `Book me here: https://calendly.com/${this.state.extId}`})
+      mbox({text: 'Sent to everyone in the chat'})
+    } else {
+      mbox({text: 'Enter a room first'})
+    }
   }
 
   render () {

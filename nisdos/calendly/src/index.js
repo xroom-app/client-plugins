@@ -1,13 +1,32 @@
 import React from 'react'
 import UI from './ui'
 
+function onRoomEnter () {
+  this.inDaChat = true
+}
+
+function onRoomExit () {
+  this.inDaChat = false
+}
+
 XROOM_PLUGIN({
+  inDaChat: false,
   calendlyScriptRef: null,
 
-  register () {
+  events: {
+    'ss/onJoin': onRoomEnter,
+    'room/exit': onRoomExit,
+  },
+
+  register ({roomId}) {
+
+    if (roomId) {
+      this.inDaChat = true
+    }
 
     this.api('addUI', {
       component: <UI
+        isInDaChat={() => this.inDaChat}
         api={this.api}
         mbox={this.mbox}
         ref={(ref) => { this.ui = ref} }
