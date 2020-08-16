@@ -580,7 +580,7 @@ export default class extends PureComponent {
     const height = this.canvas.temp.height
 
     this.ctx.temp.clearRect(0, 0, width, height)
-    this.ctx.temp.font = '48px serif'
+    this.ctx.temp.font = '24px sans'
     this.ctx.temp.fillStyle = brushColor
     this.ctx.temp.fillText(text, startPoint.x, startPoint.y)
   }
