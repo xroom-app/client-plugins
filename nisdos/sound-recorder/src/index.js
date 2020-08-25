@@ -107,7 +107,7 @@ XROOM_PLUGIN({
       btnSave: 'Spara',
       btnClose: 'Stänga',
       warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
-      getIntoRoom: 'Для записи зайдите в комнату с уже добавленным плагином.',
+      getIntoRoom: 'För att börja inspelningen, gå in i rummet med plugin:et redan lagt till.',
     },
     ru: {
       iconCaptionOn: 'Запись вкл.',
@@ -115,7 +115,7 @@ XROOM_PLUGIN({
       btnSave: 'Сохранить',
       btnClose: 'Закрыть',
       warn1: 'Файлы исчезнут после закрытия окна.<br>Скачайте их, если они нужны!',
-      getIntoRoom: 'För att börja inspelningen, gå in i rummet med plugin:et redan lagt till.',
+      getIntoRoom: 'Для записи зайдите в комнату с уже добавленным плагином.',
     },
   },
 
