@@ -55,10 +55,12 @@ XROOM_PLUGIN({
   },
 
   register () {
+    this.ctx = this.audioContext
     onStreamsChanged.bind(this)()
 
     this.api('addUI', { component:
       <UI
+        api={this.api}
         i18n={this.i18n}
         ref={(ref) => { this.ui = ref} }
       />
@@ -87,7 +89,6 @@ XROOM_PLUGIN({
   },
 
   composite (stream = null) {
-    this.ctx = new (window.AudioContext || window.webkitAudioContext)(),
     this.source = this.ctx.createMediaStreamSource(stream)
   }
 })

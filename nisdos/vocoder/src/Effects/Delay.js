@@ -27,40 +27,40 @@ class Delay {
     this.feedbackNode.connect(this.delayNode)
 
     this.delayNode.connect(this.bypassNode)
-    this.bypassNode.connect(this.masterNode);
-    this.source.connect(this.masterNode);
+    this.bypassNode.connect(this.masterNode)
+    this.source.connect(this.masterNode)
 
-    !isMute && this.connect()
+    // !isMute && this.connect()
   }
 
   /**
    * Get title
    * @return {string} The title of effect
    */
-  getTitle = "delay";
+  getTitle = 'delay'
 
   /**
    * Get time
    * @return {number} The time interval between echoes
    */
-  gettime = () => this.delayNode.delayTime.value;
+  gettime = () => this.delayNode.delayTime.value
 
   /**
    * Get feedback
    * @return {string} The fading level
    */
-  getfeedback = () => this.feedbackNode.gain.value;
+  getfeedback = () => this.feedbackNode.gain.value
 
   /**
    * Get title
    * @return {string} The volume of delayed audio
    */
-  getvolume = () => this.bypassNode.gain.value;
+  getvolume = () => this.bypassNode.gain.value
 
   /**
    * Get controls. Used to render ui that controls effect properties
    * @return {Object[]} controls Objects that describe controls used to change effect properties
-   * @param {string} controls[].type Control input type: "range", "number" or other
+   * @param {string} controls[].type Control input type: 'range', 'number' or other
    * @param {string} controls[].label Control title
    * @param {number} controls[].min Min value of controlled effect propertie
    * @param {number} controls[].max Max value of controlled effect propertie
@@ -70,8 +70,8 @@ class Delay {
    */
   getControls = [
     {
-      type: "range",
-      label: "time",
+      type: 'range',
+      label: 'time',
       min: 0,
       max: 1,
       step: 0.1,
@@ -79,8 +79,8 @@ class Delay {
       callback: (evt) => (this.delayNode.delayTime.value = +evt.target.value),
     },
     {
-      type: "range",
-      label: "feedback",
+      type: 'range',
+      label: 'feedback',
       min: 0,
       max: 1,
       step: 0.1,
@@ -88,33 +88,40 @@ class Delay {
       callback: (evt) => (this.feedbackNode.gain.value = +evt.target.value),
     },
     {
-      type: "range",
-      label: "volume",
+      type: 'range',
+      label: 'volume',
       min: 0,
       max: 1,
       step: 0.1,
       default: 0.5,
       callback: (evt) => (this.bypassNode.gain.value = +evt.target.value),
     },
-  ];
+  ]
 
   /**
-   * Connects audio nodes to audio destination, "unmute"
+   * Connects audio nodes to audio destination, 'unmute'
    */
   connect() {
     this.masterNode.connect(this.ctx.destination)
   }
 
   /**
-   * Connects audio nodes to audio destination, "unmute"
+   * @returns {GainNode}
+   */
+  getProcessor() {
+    return this.masterNode
+  }
+
+  /**
+   * Connects audio nodes to audio destination, 'unmute'
    */
   disconnect() {
     try {
-      this.masterNode.disconnect(this.ctx.destination)
-    } catch(e) {
-      console.log('e', e);
+      this.masterNode.disconnect(/*this.ctx.destination*/)
+    } catch (e) {
+      console.log('disconnect() error', e)
     }
   }
 }
 
-export default Delay;
+export default Delay
