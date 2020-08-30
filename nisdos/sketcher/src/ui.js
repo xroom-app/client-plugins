@@ -159,50 +159,54 @@ class UI extends Component {
       <div style={styles.ui}>
         <div style={styles.controls}>
 
-          <DropDown
-            options={getColors(this.props.i18n)}
-            current={color}
-            onClick={color => this.setState({color})}
-            style={styles.button}
-            size="big"
-          />
-          <DropDown
-            options={getSizes()}
-            current={size}
-            onClick={size => this.setState({size})}
-            style={styles.button}
-            size="small"
-          />
-          <DropDown
-            options={tools(this.props.i18n)}
-            current={tool}
-            onClick={tool => this.setState({tool})}
-            style={styles.button}
-            size="big"
-          />
-
-          <div onClick={() => this.draw.undo()} style={styles.margin}>
-            <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
-              <path fill="#333" d="M12.5,8C9.85,8 7.45,9 5.6,10.6L2,7V16H11L7.38,12.38C8.77,11.22 10.54,10.5 12.5,10.5C16.04,10.5 19.05,12.81 20.1,16L22.47,15.22C21.08,11.03 17.15,8 12.5,8Z" />
-            </svg>
+          <div style={styles.controls__block}>
+            <DropDown
+              options={getColors(this.props.i18n)}
+              current={color}
+              onClick={color => this.setState({color})}
+              style={styles.button}
+              size="big"
+            />
+            <DropDown
+              options={getSizes()}
+              current={size}
+              onClick={size => this.setState({size})}
+              style={styles.button}
+              size="small"
+            />
+            <DropDown
+              options={tools(this.props.i18n)}
+              current={tool}
+              onClick={tool => this.setState({tool})}
+              style={styles.button}
+              size="big"
+            />
           </div>
 
-          <div onClick={() => this.draw.redo()} style={styles.button}>
-            <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
-            <path fill="#333" d="m 11.97,8 c 2.65,0 5.05,1 6.9,2.6 L 22.47,7 v 9 h -9 l 3.62,-3.62 C 15.7,11.22 13.93,10.5 11.97,10.5 8.43,10.5 5.42,12.81 4.37,16 L 2,15.22 C 3.39,11.03 7.32,8 11.97,8 Z" />
-            </svg>
-          </div>
+          <div style={styles.controls__block}>
+            <div onClick={() => this.draw.undo()} style={styles.margin}>
+              <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
+                <path fill="#333" d="M12.5,8C9.85,8 7.45,9 5.6,10.6L2,7V16H11L7.38,12.38C8.77,11.22 10.54,10.5 12.5,10.5C16.04,10.5 19.05,12.81 20.1,16L22.47,15.22C21.08,11.03 17.15,8 12.5,8Z" />
+              </svg>
+            </div>
 
-          <div onClick={this.saveImage} style={styles.button}>
-            <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
-              <path fill="#333" d="M8,13H10.55V10H13.45V13H16L12,17L8,13M19.35,10.04C21.95,10.22 24,12.36 24,15A5,5 0 0,1 19,20H6A6,6 0 0,1 0,14C0,10.91 2.34,8.36 5.35,8.04C6.6,5.64 9.11,4 12,4C15.64,4 18.67,6.59 19.35,10.04M19,18A3,3 0 0,0 22,15C22,13.45 20.78,12.14 19.22,12.04L17.69,11.93L17.39,10.43C16.88,7.86 14.62,6 12,6C9.94,6 8.08,7.14 7.13,8.97L6.63,9.92L5.56,10.03C3.53,10.24 2,11.95 2,14A4,4 0 0,0 6,18H19Z" />
-            </svg>
-          </div>
+            <div onClick={() => this.draw.redo()} style={styles.button}>
+              <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
+              <path fill="#333" d="m 11.97,8 c 2.65,0 5.05,1 6.9,2.6 L 22.47,7 v 9 h -9 l 3.62,-3.62 C 15.7,11.22 13.93,10.5 11.97,10.5 8.43,10.5 5.42,12.81 4.37,16 L 2,15.22 C 3.39,11.03 7.32,8 11.97,8 Z" />
+              </svg>
+            </div>
 
-          <div onClick={this.handleErase} style={styles.button}>
-            <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
-              <path fill="#333" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-            </svg>
+            <div onClick={this.saveImage} style={styles.button}>
+              <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
+                <path fill="#333" d="M8,13H10.55V10H13.45V13H16L12,17L8,13M19.35,10.04C21.95,10.22 24,12.36 24,15A5,5 0 0,1 19,20H6A6,6 0 0,1 0,14C0,10.91 2.34,8.36 5.35,8.04C6.6,5.64 9.11,4 12,4C15.64,4 18.67,6.59 19.35,10.04M19,18A3,3 0 0,0 22,15C22,13.45 20.78,12.14 19.22,12.04L17.69,11.93L17.39,10.43C16.88,7.86 14.62,6 12,6C9.94,6 8.08,7.14 7.13,8.97L6.63,9.92L5.56,10.03C3.53,10.24 2,11.95 2,14A4,4 0 0,0 6,18H19Z" />
+              </svg>
+            </div>
+
+            <div onClick={this.handleErase} style={styles.button}>
+              <svg style={{width: '32px', height: '32px'}} viewBox="0 0 24 24">
+                <path fill="#333" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+              </svg>
+            </div>
           </div>
         </div>
 
@@ -252,6 +256,15 @@ const styles = {
   },
   controls: {
     padding: '3px 2px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    position: 'fixed',
+    background: '#fff',
+    zIndex: 100,
+    top: 650,
+  },
+  controls__block: {
     display: 'flex',
     justifyContent: 'space-between'
   },
