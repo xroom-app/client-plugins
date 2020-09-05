@@ -60,7 +60,7 @@ XROOM_PLUGIN({
 ## Exposed events
 | Event               | Description           | Payload 
 | ---                 | ---                   | --- 
-| data/in             | Incoming rtc data via plugins data channel | `{pluginId, data}` 
+| data/in             | Incoming rtc data via plugins data channel | `{pluginId, data, peerId}` 
 | localStream/changed | Local stream changed | `{stream, ?videoOn, ?audioOn}` 
 | peer/added          | Peer entered a room   | `{peerId, peerCount}` 
 | peer/card           | Peer card updated     | `{peerId, card}` 
