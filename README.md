@@ -151,4 +151,4 @@ http-server --cors
 MIT License
 
 ## Version
-Version 2020-04-25
+Version 2020-09-05
