@@ -95,6 +95,7 @@ XROOM_PLUGIN({
       btnToChat: 'Send to chat',
       warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
       warn2: 'Turn on the camera or start screen sharing first',
+      recNotify: '📢 I have started recording video.',
     },
     sv: {
       iconCaptionOn: 'Insp. på',
@@ -104,6 +105,7 @@ XROOM_PLUGIN({
       btnToChat: 'Skicka till chat',
       warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
       warn2: 'Starta kameran eller skärmdelningen först',
+      recNotify: '📢 Jag har börjat en inspelning',
     },
     ru: {
       iconCaptionOn: 'Запись вкл.',
@@ -113,6 +115,7 @@ XROOM_PLUGIN({
       btnToChat: 'Отправить в чат',
       warn1: 'Файлы исчезнут после закрытия окна.<br>Скачайте их, если они нужны!',
       warn2: 'Сначала активируйте камеру или скриншеринг',
+      recNotify: '📢 Я начал запись видео.',
     },
   },
 
@@ -209,6 +212,7 @@ XROOM_PLUGIN({
     document.body.appendChild(iDiv)
 
     this.countDown()
+    this.api('sendMessage', {message: this.i18n.t('recNotify'), to: null})
   },
 
   startRecording () {
