@@ -48,7 +48,6 @@ class NisdosSoundRecoderIconSvg extends Component {
   }
 
   render() {
-
     let { color, size } = this.props
     const { blink } = this.state
 
@@ -100,6 +99,7 @@ XROOM_PLUGIN({
       btnClose: 'Close',
       warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
       getIntoRoom: 'To start recording enter this room with a plugin already added.',
+      recNotify: '📢 I have started recording audio.',
     },
     sv: {
       iconCaptionOn: 'Insp. på',
@@ -108,6 +108,7 @@ XROOM_PLUGIN({
       btnClose: 'Stänga',
       warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
       getIntoRoom: 'För att börja inspelningen, gå in i rummet med plugin:et redan lagt till.',
+      recNotify: '📢 Jag har börjat en inspelning',
     },
     ru: {
       iconCaptionOn: 'Запись вкл.',
@@ -116,6 +117,7 @@ XROOM_PLUGIN({
       btnClose: 'Закрыть',
       warn1: 'Файлы исчезнут после закрытия окна.<br>Скачайте их, если они нужны!',
       getIntoRoom: 'Для записи зайдите в комнату с уже добавленным плагином.',
+      recNotify: '📢 Я начал запись аудио.',
     },
   },
 
@@ -170,6 +172,8 @@ XROOM_PLUGIN({
   },
 
   startRecording (stream) {
+    this.api('sendMessage', {message: this.i18n.t('recNotify'), to: null})
+
     this.recordedBlobs = []
 
     let options = { mimeType: this.mimeType }
