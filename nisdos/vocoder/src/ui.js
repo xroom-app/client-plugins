@@ -28,7 +28,7 @@ class UI extends Component {
 
   addEffect = effect => {
     const effectClass = effectsList[effect]
-    const effectInstance = new effectClass(this.ctx, this.source, this.state.isMute)
+    const effectInstance = new effectClass(this.ctx, this.source, () => this.forceUpdate())
     const effects = [...this.state.effects]
     effects.push(effectInstance)
     this.setState({effects})
@@ -76,7 +76,7 @@ class UI extends Component {
       <div style={styles.ui}>
         <div style={styles.box}>
           <div style={styles.header}>{i18n.t('iconCaption')}</div>
-          <svg viewBox="0 0 24 24" style={styles.ui_close} onClick={this.close}>>
+          <svg viewBox="0 0 24 24" style={styles.ui_close} onClick={this.close}>
             <title>Close</title>
             <path fill="#fff" d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z" />
           </svg>
@@ -92,8 +92,10 @@ class UI extends Component {
                       &times;
                   </span>
                 </div>
-                {effect.getControls.map(control =>
-                  control.type === "range" && (
+                {effect.getControls.map(control => {
+                  if (typeof control.isShown === 'function' && !control.isShown()) return
+
+                  if (control.type === "range") return (
                     <div style={styles.effect_control}>
                       <label style={styles.effect_control__label}>{i18n.t(`${effect.getTitle}.${control.label}`)}</label>
                       <input
@@ -107,7 +109,21 @@ class UI extends Component {
                       />
                     </div>
                   )
-                )}
+                  if (control.type === "file") return (
+                    <div style={styles.effect_control__file}>
+                      <label style={styles.effect_control__label}>{i18n.t(`${effect.getTitle}.${control.label}`)}</label>
+                      <input
+                        type="file"
+                        onChange={control.callback}
+                      />
+                    </div>
+                  )
+                  if (control.type === "button") return (
+                    <div>
+                      <button style={styles.effect_control__button} onClick={control.callback}>{i18n.t(`${effect.getTitle}.${control.label}`)}</button>
+                    </div>
+                  )
+                })}
               </div>
             ))}
             <div style={styles.select_container}>
@@ -179,6 +195,18 @@ const styles = {
   effect_control: {
     display: 'flex',
     justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  effect_control__file: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginTop: 10,
+  },
+  effect_control__button: {
+    marginTop: 10,
+    width: '50%',
   },
   effect_control__input: {
     maxWidth: 120,

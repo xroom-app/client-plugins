@@ -21,6 +21,19 @@ XROOM_PLUGIN({
         label: 'Distortion',
         gain: 'Gain',
       },
+      pitch: {
+        label: 'Pitch',
+        pitch: 'Pitch',
+      },
+      background: {
+        label: 'Background',
+        background: 'Background',
+        volume: 'Volume',
+        file: 'File',
+        start: 'Start',
+        stop: 'Stop',
+        pause: 'Pause',
+      },
       delay: {
         label: 'Delay',
         time: 'Time',
@@ -39,6 +52,19 @@ XROOM_PLUGIN({
       distortion: {
         label: 'Искажение',
         gain: 'Уровень',
+      },
+      pitch: {
+        label: 'Pitch',
+        pitch: 'Pitch',
+      },
+      background: {
+        label: 'Фоновая музыка',
+        background: 'Фоновая музыка',
+        volume: 'Громкость',
+        file: 'файл',
+        start: 'Старт',
+        stop: 'Стоп',
+        pause: 'Пауза',
       },
       delay: {
         label: 'Эхо',
@@ -90,5 +116,6 @@ XROOM_PLUGIN({
 
   composite (stream = null) {
     this.source = this.ctx.createMediaStreamSource(stream)
+    this.source.connect(this.ctx.destination)
   }
 })
