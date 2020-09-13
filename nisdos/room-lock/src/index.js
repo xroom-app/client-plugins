@@ -104,6 +104,9 @@ XROOM_PLUGIN({
   },
 
   register ({roomId}) {
+    return this.mbox({html: 'We have moved the lock plugin into the core, please uninstall it.<br/><br/>Lock control is now at "More" → "Locking"'})
+
+
     this.addIcon()
     if (roomId) {
       this.inDaChat = true
