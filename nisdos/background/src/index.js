@@ -121,8 +121,8 @@ XROOM_PLUGIN({
         video = document.createElement('video'),
         canvas = document.createElement('canvas')
 
-      video.width = 320
-      video.height = 320 * this.aspectRatio
+      video.width = 480
+      video.height = 480 * this.aspectRatio
       video.autoplay = true
       video.srcObject = this.videoStream
 
