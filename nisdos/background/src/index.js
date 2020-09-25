@@ -12,7 +12,6 @@ function onStreamChanged (data) {
 XROOM_PLUGIN({
   net: null,
   videoStream: null,
-  tfLoaded: false,
   camLoaded: false,
   outputStream: null,
   aspectRatio: 0.75,
@@ -22,13 +21,11 @@ XROOM_PLUGIN({
   translations: {
     en: {
       iconCaption: 'Background',
-      notLoaded: 'Not loaded yet. Strange.',
       modeNormal: 'As is',
       modeBlur: 'Blurred',
     },
     ru: {
       iconCaption: 'Фон',
-      notLoaded: 'Ещё не загрузилось. Странно.',
       modeNormal: 'Как есть',
       modeBlur: 'Размытый',
     },
