@@ -2,7 +2,7 @@ import React from 'react'
 import UI from './ui'
 
 function onStreamChanged (data) {
-  if (data.videoOn) {
+  if (data.videoOn && this.tfLoaded) {
     this.videoStream = new MediaStream(data.stream.getVideoTracks())
     this.camLoaded = true
     this.prepare()
@@ -12,6 +12,7 @@ function onStreamChanged (data) {
 XROOM_PLUGIN({
   net: null,
   videoStream: null,
+  tfLoaded: false,
   camLoaded: false,
   outputStream: null,
   aspectRatio: 0.75,
@@ -49,7 +50,10 @@ XROOM_PLUGIN({
     await this.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.2' })
     await this.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.0' })
 
-    this.cvLoaded = true
+    tf.enableProdMode()
+    await tf.ready()
+
+    this.tfLoaded = true
 
     const [ sysStream ] = await this.api('getLocalStream')
 
