@@ -147,7 +147,7 @@ XROOM_PLUGIN({
 
   async perform () {
     const
-      edgeBlurAmount = 2,
+      edgeBlurAmount = 5,
       backgroundBlurAmount = 6,
       segmentation = await this.net.segmentPerson(this.videoElem)
 
