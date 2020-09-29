@@ -1,6 +1,8 @@
 import React from 'react'
 import UI from './ui'
 
+const X_SIZE = 480
+
 function onStreamChanged (data) {
   if (data.videoOn && this.tfLoaded) {
     this.videoStream = new MediaStream(data.stream.getVideoTracks())
@@ -10,6 +12,7 @@ function onStreamChanged (data) {
 }
 
 XROOM_PLUGIN({
+  ctx: null,
   net: null,
   videoStream: null,
   tfLoaded: false,
@@ -18,17 +21,22 @@ XROOM_PLUGIN({
   aspectRatio: 0.75,
   videoElem: null,
   canvasElem: null,
+  bgPixels: null,
 
   translations: {
     en: {
       iconCaption: 'Background',
       modeNormal: 'As is',
       modeBlur: 'Blurred',
+      modeColorPop: 'Color pop',
+      modeImage: 'Image (demo)',
     },
     ru: {
       iconCaption: 'Фон',
       modeNormal: 'Как есть',
       modeBlur: 'Размытый',
+      modeColorPop: '"Color pop"',
+      modeImage: 'Картинка (demo)',
     },
   },
 
@@ -85,10 +93,22 @@ XROOM_PLUGIN({
     })
   },
 
-  selectMode (mode) {
+  async selectMode (mode) {
     this.mode = mode
 
-    if (mode === 1) {
+    if (mode === 3) {
+      this.bgPixels = await new Promise(resolve => {
+        const im = new Image()
+        im.src = '/plugins/nisdos/background/bg-01.jpg'
+        im.onload = () => {
+          this.ctx.drawImage(im, 0, 0, X_SIZE, X_SIZE * this.aspectRatio)
+          resolve(this.ctx.getImageData(0, 0, X_SIZE, X_SIZE * this.aspectRatio)?.data)
+        }
+        im.onerror = () => resolve(null)
+      })
+    }
+
+    if (mode > 0) {
       if (this.outputStream) {
         this.api('setLocalVideo', {track: this.outputStream.getVideoTracks()[0]})
         this.perform()
@@ -125,12 +145,15 @@ XROOM_PLUGIN({
         video = document.createElement('video'),
         canvas = document.createElement('canvas')
 
-      video.width = 480
-      video.height = 480 * this.aspectRatio
+      video.width = X_SIZE
+      video.height = X_SIZE * this.aspectRatio
       video.autoplay = true
       video.srcObject = this.videoStream
+      canvas.width = X_SIZE
+      canvas.height = X_SIZE * this.aspectRatio
 
-      canvas.getContext('2d', { alpha: false })
+      this.ctx = canvas.getContext('2d')
+      this.ctx.imageSmoothingEnabled = false
 
       this.outputStream = canvas.captureStream(25)
       this.videoElem = video
@@ -151,10 +174,45 @@ XROOM_PLUGIN({
       backgroundBlurAmount = 6,
       segmentation = await this.net.segmentPerson(this.videoElem)
 
-    bodyPix.drawBokehEffect(this.canvasElem, this.videoElem, segmentation, backgroundBlurAmount, edgeBlurAmount)
+    switch (this.mode) {
+      case 1:
+        bodyPix.drawBokehEffect(this.canvasElem, this.videoElem, segmentation, backgroundBlurAmount, edgeBlurAmount)
+        break
+
+      case 2:
+        this.ctx.drawImage(this.videoElem, 0, 0, X_SIZE, X_SIZE * this.aspectRatio)
+        const imageData2 = this.ctx.getImageData(0, 0, X_SIZE, X_SIZE * this.aspectRatio)
+        const pixel2 = imageData2.data
+        for (let p = 0; p < pixel2.length; p += 4) {
+          if (segmentation.data[p / 4] === 0) {
+            const gray = ((0.3 * pixel2[p]) + (0.59 * pixel2[p + 1]) + (0.11 * pixel2[p + 2]))
+            pixel2[p] = gray
+            pixel2[p + 1] = gray
+            pixel2[p + 2] = gray
+          }
+        }
+        this.ctx.putImageData(imageData2, 0, 0)
+        break
+
+      case 3:
+        this.ctx.drawImage(this.videoElem, 0, 0, X_SIZE, X_SIZE * this.aspectRatio)
+        const imageData = this.ctx.getImageData(0, 0, X_SIZE, X_SIZE * this.aspectRatio)
+        const pixel = imageData.data
+        for (let p = 0; p < pixel.length; p += 4) {
+          if (segmentation.data[p / 4] === 0) {
+            if (this.bgPixels) {
+              pixel[p] = this.bgPixels[p]
+              pixel[p + 1] = this.bgPixels[p + 1]
+              pixel[p + 2] = this.bgPixels[p + 2]
+            }
+          }
+        }
+        this.ctx.putImageData(imageData, 0, 0)
+        break
+    }
 
     window.requestAnimationFrame(() => {
-      if (this.mode === 1) {
+      if (this.mode > 0) {
         this.t0 = Date.now()
         this.perform()
       }

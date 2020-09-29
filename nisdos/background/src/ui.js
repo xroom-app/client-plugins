@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+const modeNameCodes = ['modeNormal', 'modeBlur', 'modeColorPop', 'modeImage']
+
 class UI extends Component {
   constructor (props) {
     super(props)
@@ -16,7 +18,6 @@ class UI extends Component {
     this.setState({isShown: !isShown})
   }
 
-
   render () {
     const { isShown, selectedId } = this.state
     const { onModeSelect, i18n } = this.props
@@ -29,26 +30,20 @@ class UI extends Component {
       <div style={styles.ui} onClick={() => this.setState({isShown: false})}>
         <div style={styles.box}>
           <div style={styles.modes}>
-            <div
-              key={0}
-              style={{...styles.mode, ...(selectedId === 0 ? styles.selectedMode : {})}}
-              onClick={() => {
-                onModeSelect(0)
-                this.setState({selectedId: 0})
-              }}
-            >
-              { i18n.t('modeNormal') }
-            </div>
-            <div
-              key={1}
-              style={{...styles.mode, ...(selectedId === 1 ? styles.selectedMode : {})}}
-              onClick={() => {
-                onModeSelect(1)
-                this.setState({selectedId: 1})
-              }}
-            >
-              { i18n.t('modeBlur') }
-            </div>
+            {
+              [0, 1, 2, 3].map((el, i) =>
+                <div
+                  key={i}
+                  style={{...styles.mode, ...(selectedId === i ? styles.selectedMode : {})}}
+                  onClick={() => {
+                    onModeSelect(i)
+                    this.setState({selectedId: i})
+                  }}
+                >
+                  { i18n.t(modeNameCodes[i]) }
+                </div>
+              )
+            }
           </div>
         </div>
       </div>
