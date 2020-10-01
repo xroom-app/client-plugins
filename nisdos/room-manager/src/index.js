@@ -3,8 +3,10 @@ import UI from './ui'
 
 async function onRoomEnter ({roomId}) {
   this.inDaChat = true
-  this.ui.roomId = roomId
-  this.ui.listPeers(await this.api('listPeers'))
+  if (this.ui) {
+    this.ui.roomId = roomId
+    this.ui.listPeers(await this.api('listPeers'))
+  }
 }
 
 function onRoomExit () {
@@ -71,6 +73,9 @@ XROOM_PLUGIN({
         ref={(ref) => { this.ui = ref} }
       />
     })
+
+    // give some time to the UI
+    await new Promise(resolve => setTimeout(resolve, 100))
 
     if (roomId) {
       this.inDaChat = true
