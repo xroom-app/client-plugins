@@ -38,13 +38,17 @@ function onRoomLockSet (data) {
 function onPasswordSet (data) {
   this.password = data
   this.api('renderControls')
-  this.ui.setPassword(data)
+  if (this.ui) {
+    this.ui.setPassword(data)
+  }
 }
 
 function onPasswordReset () {
   this.password = null
   this.api('renderControls')
-  this.ui.setPassword(null)
+  if (this.ui) {
+    this.ui.setPassword(null)
+  }
 }
 
 const
