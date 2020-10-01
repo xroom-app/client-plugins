@@ -76,6 +76,10 @@ XROOM_PLUGIN({
 
   unregister () {
     this.api('removeIcon')
+
+    if (this.mode) {
+      this.api('setLocalVideo', {reset: true})
+    }
   },
 
   isSupported () {
