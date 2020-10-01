@@ -30,7 +30,9 @@ function onRoomExit () {
 function onRoomLockSet (data) {
   this.isLocked = data
   this.api('renderControls')
-  this.ui.setLock(data)
+  if (this.ui) {
+    this.ui.setLock(data)
+  }
 }
 
 function onPasswordSet (data) {
