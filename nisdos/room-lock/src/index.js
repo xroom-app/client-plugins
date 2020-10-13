@@ -144,7 +144,9 @@ XROOM_PLUGIN({
       title: () => this.i18n.t(this.isLocked ? 'iconCaptionOn' : 'iconCaptionOff'),
       onClick: () => {
         if (this.inDaChat) {
-          this.ui.open()
+          if (this.ui) {
+            this.ui.open()
+          }
         } else {
           this.mbox({text: this.i18n.t('mbox.enterFirst')})
         }
