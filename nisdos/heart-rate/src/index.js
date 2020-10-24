@@ -21,7 +21,7 @@ XROOM_PLUGIN({
   translations: {
     en: {
       iconCaption: 'Pulse',
-      useHint: 'Press "start" and put your finger on the camera',
+      useHint: 'Press "start" and put your finger on the camera. Make sure you are in a well lit environment.',
       btnStart: 'Start',
       btnClose: 'Close',
       btnTorch: 'Torch',
@@ -30,7 +30,7 @@ XROOM_PLUGIN({
     },
     sv: {
       iconCaption: 'Puls',
-      useHint: 'Tryck på "starta" och lägg ett finger på kameran',
+      useHint: 'Tryck på "starta" och lägg ett finger på kameran. Se till att du befinner dig i en väl upplyst omgivning.',
       btnStart: 'Starta',
       btnClose: 'Stäng',
       btnTorch: 'Lampa',
