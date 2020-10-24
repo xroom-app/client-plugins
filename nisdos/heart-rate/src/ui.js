@@ -3,7 +3,6 @@ import React, { Component, Fragment } from 'react'
 let width, height, hist = [], videoContext, graphContext
 
 class UI extends Component {
-
   constructor(props) {
     super(props)
 
@@ -11,6 +10,7 @@ class UI extends Component {
       isShown: false,
       started: false,
       torchOn: false,
+      torchSupported: false,
     }
 
     this.localStream = null
@@ -35,16 +35,22 @@ class UI extends Component {
     this.setState({isShown: false})
   }
 
-  start () {
-    const { isInDaChat, getSystemStream, i18n, mbox } = this.props
+  async start () {
+    const video = {}
+    const { getSystemStream, i18n, mbox } = this.props
+    const mediaDeviceInfos = (await navigator.mediaDevices.enumerateDevices()).filter(mediaDeviceInfo => mediaDeviceInfo.kind === 'videoinput' && mediaDeviceInfo.label.includes('back'))
 
-    const video = {
-      facingMode: 'environment',
+    if (mediaDeviceInfos.length) {
+      // await mbox({text: mediaDeviceInfos[0].label})
+      video.deviceId = mediaDeviceInfos[0].deviceId
+    } else {
+      video.facingMode = 'environment'
     }
 
-    window.navigator.mediaDevices.getUserMedia({ video, audio: false }).then(stream => {
+    navigator.mediaDevices.getUserMedia({video}).then(stream => {
       this.setState({started: true}, () => this.init(stream))
-    }, () => {
+    }, async (err) => {
+      await mbox({text: `${i18n.t('cameraFallback')} (${err.name})`})
       const stream = getSystemStream()
 
       if (stream && stream.getVideoTracks().length) {
@@ -56,13 +62,12 @@ class UI extends Component {
   }
 
   toggleTorch () {
-
     const torchOn = !this.state.torchOn
 
     if (this.localStream) {
       const track = this.localStream.getVideoTracks()[0]
 
-      track.applyConstraints({
+      track && track.applyConstraints({
         advanced: [{torch: torchOn}]
       }).catch(() => null)
     }
@@ -70,30 +75,45 @@ class UI extends Component {
     this.setState({torchOn})
   }
 
-  init (stream) {
+  async init (stream) {
+    // check if torch is supported
+
+    if (stream && typeof window.ImageCapture !== 'undefined') {
+      const track = stream.getVideoTracks()[0]
+      const imageCapture = new ImageCapture(track)
+      const photoCapabilities = await imageCapture.getPhotoCapabilities()
+
+      // this.props.mbox({text: 'Caps: ' + JSON.stringify(track.getCapabilities())})
+
+      if (photoCapabilities) {
+        // this.setState({torchSupported: photoCapabilities.fillLightMode && photoCapabilities.fillLightMode.includes('flash')})
+        // this.setState({torchSupported: true})
+      }
+    }
+
     this.localStream = stream
     this.video.srcObject = stream
     this.video.play()
 
+    videoContext = this.videoCanvas.getContext('2d')
+    graphContext = this.graphCanvas.getContext('2d')
+
     setTimeout(() => {
-      // TODO: make sure this.video is not null
-      width = this.video.videoWidth
-      height = this.video.videoHeight
-
-      videoContext = this.videoCanvas.getContext('2d')
-      graphContext = this.graphCanvas.getContext('2d')
-
-      window.requestAnimationFrame(this.draw)
+      if (this.video) {
+        width = this.video.videoWidth
+        height = this.video.videoHeight
+        window.requestAnimationFrame(this.draw)
+      }
     }, 300)
   }
 
   draw () {
-
     if (!this.state.isShown) {
       return
     }
 
     const frame = this.readFrame()
+
     if (frame) {
       this.getIntensity(frame.data)
     }
@@ -113,7 +133,6 @@ class UI extends Component {
   }
 
   getIntensity (data) {
-
     let sum = 0
     const len = data.length
 
@@ -179,9 +198,8 @@ class UI extends Component {
   }
 
   render () {
-
     const { i18n } = this.props
-    const { isShown, started } = this.state
+    const { isShown, started, torchSupported } = this.state
 
     if (!isShown) {
       return null
@@ -190,7 +208,14 @@ class UI extends Component {
     return (
       <div style={styles.ui}>
         <div style={styles.box}>
-          <video ref={c => this.video = c} height="100" style={{display: 'none'}} muted/>
+          <video
+            autoPlay
+            playsInline
+            ref={c => this.video = c}
+            height="100"
+            style={{position: 'fixed', zIndex: -1}}
+            muted
+          />
           <div style={styles.firstRow}>
             {
               started ?
@@ -211,7 +236,7 @@ class UI extends Component {
           <div style={styles.buttons}>
             <button onClick={this.start} style={styles.button}>{ i18n.t('btnStart') }</button>
             {
-            //  started && <button onClick={this.toggleTorch} style={styles.button}>{ i18n.t('btnTorch') }</button>
+              started && torchSupported && <button onClick={this.toggleTorch} style={styles.button}>{ i18n.t('btnTorch') + ` ${this.state.torchOn ? '+' : '-'}` }</button>
             }
             <button onClick={this.close} style={styles.button}>{ i18n.t('btnClose') }</button>
           </div>
@@ -242,6 +267,7 @@ const styles = {
     justifyContent: 'center',
     display: 'flex',
     flexDirection: 'column',
+    borderRadius: '6px',
   },
   firstRow: {
     marginTop: '8px',
@@ -272,6 +298,12 @@ const styles = {
   },
   button: {
     marginTop: '8px',
+    padding: '8px 16px',
+    border: 'none',
+    borderRadius: '6px',
+    background: '#ddd',
+    outline: 'none',
+    cursor: 'pointer',
   },
 }
 
