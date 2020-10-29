@@ -198,77 +198,50 @@ class UI extends Component {
   }
 
   render () {
-    const { i18n } = this.props
+    const { i18n, ui } = this.props
     const { isShown, started, torchSupported } = this.state
-
-    if (!isShown) {
-      return null
-    }
+    const { Dialog, Button } = ui
 
     return (
-      <div style={styles.ui}>
-        <div style={styles.box}>
-          <video
-            autoPlay
-            playsInline
-            ref={c => this.video = c}
-            height="100"
-            style={{position: 'fixed', zIndex: -1}}
-            muted
-          />
-          <div style={styles.firstRow}>
-            {
-              started ?
-                <Fragment>
-                  <canvas ref={c => this.videoCanvas = c} style={styles.videoCanvas} />
-                  <div style={styles.bpmBox}>
-                    <span ref={c => this.bpm = c} style={styles.bpm}>⏳</span>
-                    <span> bpm</span>
-                  </div>
-                </Fragment>
-                :
-                <div style={{textAlign: 'center'}}>{ i18n.t('useHint') }</div>
-            }
-
-          </div>
-          <canvas ref={c => this.graphCanvas = c} width="320" height="30" style={styles.graphCanvas} />
-
-          <div style={styles.buttons}>
-            <button onClick={this.start} style={styles.button}>{ i18n.t('btnStart') }</button>
-            {
-              started && torchSupported && <button onClick={this.toggleTorch} style={styles.button}>{ i18n.t('btnTorch') + ` ${this.state.torchOn ? '+' : '-'}` }</button>
-            }
-            <button onClick={this.close} style={styles.button}>{ i18n.t('btnClose') }</button>
-          </div>
+      <Dialog noClose opened={isShown}>
+        <video
+          autoPlay
+          playsInline
+          ref={c => this.video = c}
+          height="100"
+          style={{position: 'fixed', zIndex: -1}}
+          muted
+        />
+        <div style={styles.firstRow}>
+          {
+            started ?
+              <Fragment>
+                <canvas ref={c => this.videoCanvas = c} style={styles.videoCanvas} />
+                <div style={styles.bpmBox}>
+                  <span ref={c => this.bpm = c} style={styles.bpm}>⏳</span>
+                  <span> bpm</span>
+                </div>
+              </Fragment>
+              :
+              <div style={{textAlign: 'center'}}>{ i18n.t('useHint') }</div>
+          }
 
         </div>
-      </div>
+        <canvas ref={c => this.graphCanvas = c} width="320" height="30" style={styles.graphCanvas} />
+
+        <div style={styles.buttons}>
+          <Button primary onClick={this.start}>{ i18n.t('btnStart') }</Button>
+          {
+            started && torchSupported && <Button secondary onClick={this.toggleTorch}>{ i18n.t('btnTorch') + ` ${this.state.torchOn ? '+' : '-'}` }</Button>
+          }
+          <Button secondary onClick={this.close}>{ i18n.t('btnClose') }</Button>
+        </div>
+      </Dialog>
     )
   }
 }
 
 const styles = {
-  ui: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100vw',
-    height: '100%',
-    background: 'transparent',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  box: {
-    width: '360px',
-    maxWidth: '100vw',
-    padding: '16px',
-    background: '#fff',
-    justifyContent: 'center',
-    display: 'flex',
-    flexDirection: 'column',
-    borderRadius: '6px',
-  },
   firstRow: {
     marginTop: '8px',
     display: 'flex',
@@ -295,15 +268,6 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-  },
-  button: {
-    marginTop: '8px',
-    padding: '8px 16px',
-    border: 'none',
-    borderRadius: '6px',
-    background: '#ddd',
-    outline: 'none',
-    cursor: 'pointer',
   },
 }
 
