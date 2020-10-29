@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime'
 import React from 'react'
 import UI from './ui'
 
@@ -15,8 +16,8 @@ function onStreamChanged (data) {
 
 XROOM_PLUGIN({
   inDaChat: false,
+  scriptRef: null,
   videoStream: null,
-  adapterScriptRef: null,
 
   translations: {
     en: {
@@ -62,8 +63,11 @@ XROOM_PLUGIN({
         this.videoStream = new MediaStream(sysStream.getVideoTracks())
       }
 
+      this.scriptRef = id
+
       this.api('addUI', { component:
           <UI
+            ui={this.uiLibrary}
             i18n={this.i18n}
             mbox={this.mbox}
             ref={(ref) => { this.ui = ref} }
@@ -78,7 +82,7 @@ XROOM_PLUGIN({
 
   unregister () {
     this.api('removeIcon')
-    this.api('removeElement', this.adapterScriptRef)
+    this.api('removeElement', this.scriptRef)
   },
 
   isSupported () {
