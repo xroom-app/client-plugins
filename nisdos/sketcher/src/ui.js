@@ -249,6 +249,7 @@ const styles = {
     width: '100vw',
     height: '100%',
     backgroundColor: '#fff',
+    color: '#000',
   },
   controls: {
     padding: '3px 2px',
