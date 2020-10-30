@@ -203,7 +203,7 @@ class UI extends Component {
     const { Dialog, Button } = ui
 
     return (
-      <Dialog noClose opened={isShown}>
+      <Dialog opened={isShown}>
         <video
           autoPlay
           playsInline
