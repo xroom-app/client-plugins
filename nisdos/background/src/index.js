@@ -85,7 +85,12 @@ XROOM_PLUGIN({
   },
 
   isSupported () {
-    return window.navigator.mediaDevices && window.navigator.mediaDevices.getUserMedia && window.WebAssembly
+    return (
+      window.navigator.mediaDevices &&
+      window.navigator.mediaDevices.getUserMedia &&
+      window.WebAssembly &&
+      !window.matchMedia('(max-width: 480px)').matches
+    )
   },
 
   addIcon () {
