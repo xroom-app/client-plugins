@@ -122,8 +122,20 @@ const [key, value] = await this.mbox({
 })
 ```
 
-## Theme access
-Theme is exposed to plugins as `this.style`. Example usage: t.b.d
+## Core UI components
+Starting from Themes v2 core UI components are available for all the plugins. The library is exposed as `this.uiLib`. 
+Here's a usage example:
+```js
+const { Dialog, Button } = this.uiLib
+
+return (
+ <Dialog>
+   <Button primary>Hello</Button>
+ </Dialog>
+)
+```
+
+UI components manual will be added soon. Until then please refer to the examples in this repository.
 
 ## Developing locally
 To be able to develop and test your code locally open the plugin manager on xroom.app, click Add on "Add new plugin" 

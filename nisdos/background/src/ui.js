@@ -2,76 +2,51 @@ import React, { Component } from 'react'
 
 const modeNameCodes = ['modeNormal', 'modeBlur', 'modeColorPop', 'modeImage']
 
-class UI extends Component {
+export default class extends Component {
   constructor (props) {
     super(props)
     this.state = {
       selectedId: 0,
-      isShown: false,
     }
+
+    this.dialog = null
     this.toggleShow = this.toggleShow.bind(this)
   }
 
   toggleShow () {
-    const { isShown } = this.state
-
-    this.setState({isShown: !isShown})
+    this.dialog && this.dialog.toggle()
   }
 
   render () {
-    const { isShown, selectedId } = this.state
-    const { onModeSelect, i18n } = this.props
+    const { selectedId } = this.state
+    const { onModeSelect, i18n, ui } = this.props
 
-    if (!isShown) {
-      return null
-    }
+    const { Dialog, brandColor } = ui
 
     return (
-      <div style={styles.ui} onClick={() => this.setState({isShown: false})}>
-        <div style={styles.box}>
-          <div style={styles.modes}>
-            {
-              [0, 1, 2, 3].map((el, i) =>
-                <div
-                  key={i}
-                  style={{...styles.mode, ...(selectedId === i ? styles.selectedMode : {})}}
-                  onClick={() => {
-                    onModeSelect(i)
-                    this.setState({selectedId: i})
-                  }}
-                >
-                  { i18n.t(modeNameCodes[i]) }
-                </div>
-              )
-            }
-          </div>
+      <Dialog bgClose ref={ref => this.dialog = ref}>
+        <div style={styles.modes}>
+          {
+            [0, 1, 2, 3].map((el, i) =>
+              <div
+                key={i}
+                style={{...styles.mode, ...(selectedId === i ? {color: brandColor, borderColor: brandColor} : {})}}
+                onClick={() => {
+                  onModeSelect(i)
+                  this.setState({selectedId: i})
+                }}
+              >
+                { i18n.t(modeNameCodes[i]) }
+              </div>
+            )
+          }
         </div>
-      </div>
+      </Dialog>
     )
   }
 }
 
 const styles = {
-  ui: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100vw',
-    height: '100vh',
-    background: 'transparent',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  box: {
-    background: '#fff',
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '8px',
-    borderRadius: '4px',
-    border: '1px solid #eee',
-    maxWidth: 'calc(100vw - 16px)',
-  },
   modes: {
     display: 'flex',
     overflow: 'auto',
@@ -86,17 +61,13 @@ const styles = {
     width: '100px',
     height: '100px',
     borderRadius: '8px',
-    border: '2px solid #ccc',
+    borderWidth: '2px',
+    borderStyle: 'solid',
+    borderColor: '#ccc',
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: '18px',
     fontWeight: '600',
     color: '#ccc',
   },
-  selectedMode: {
-    borderColor: '#666',
-    color: '#333',
-  },
 }
-
-export default UI

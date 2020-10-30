@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime'
 import React from 'react'
 import UI from './ui'
 
@@ -47,6 +48,7 @@ XROOM_PLUGIN({
   async register () {
     this.api('addUI', {
       component: <UI
+        ui={this.uiLibrary}
         api={this.api}
         mbox={this.mbox}
         i18n={this.i18n}
@@ -83,7 +85,12 @@ XROOM_PLUGIN({
   },
 
   isSupported () {
-    return window.navigator.mediaDevices && window.navigator.mediaDevices.getUserMedia && window.WebAssembly
+    return (
+      window.navigator.mediaDevices &&
+      window.navigator.mediaDevices.getUserMedia &&
+      window.WebAssembly &&
+      !window.matchMedia('(max-width: 480px)').matches
+    )
   },
 
   addIcon () {

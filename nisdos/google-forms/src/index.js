@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime'
 import React from 'react'
 import UI from './ui'
 import IconSvg from './icon'
