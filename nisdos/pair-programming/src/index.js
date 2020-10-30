@@ -1,9 +1,10 @@
+import 'regenerator-runtime/runtime'
 import React, { Component } from 'react'
 
 // support hot-loading
-if (!global._babelPolyfill) {
+/*if (!global._babelPolyfill) {
   require('babel-polyfill')
-}
+}*/
 
 let TheRange = null
 

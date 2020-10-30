@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime'
 import React, { Component } from 'react'
 import UI from './ui'
 
