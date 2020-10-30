@@ -30,19 +30,25 @@ function onRoomExit () {
 function onRoomLockSet (data) {
   this.isLocked = data
   this.api('renderControls')
-  this.ui.setLock(data)
+  if (this.ui) {
+    this.ui.setLock(data)
+  }
 }
 
 function onPasswordSet (data) {
   this.password = data
   this.api('renderControls')
-  this.ui.setPassword(data)
+  if (this.ui) {
+    this.ui.setPassword(data)
+  }
 }
 
 function onPasswordReset () {
   this.password = null
   this.api('renderControls')
-  this.ui.setPassword(null)
+  if (this.ui) {
+    this.ui.setPassword(null)
+  }
 }
 
 const
@@ -138,7 +144,9 @@ XROOM_PLUGIN({
       title: () => this.i18n.t(this.isLocked ? 'iconCaptionOn' : 'iconCaptionOff'),
       onClick: () => {
         if (this.inDaChat) {
-          this.ui.open()
+          if (this.ui) {
+            this.ui.open()
+          }
         } else {
           this.mbox({text: this.i18n.t('mbox.enterFirst')})
         }

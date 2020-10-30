@@ -13,19 +13,18 @@ function onRoomEnter (data) {
 }
 
 XROOM_PLUGIN({
-
   storage: null,
   isShown: false,
 
   translations: {
     en: {
-      iconCaption: 'Contacts',
+      iconCaption: 'History',
     },
     sv: {
-      iconCaption: 'Kontakter',
+      iconCaption: 'Historik',
     },
     ru: {
-      iconCaption: 'Контакты',
+      iconCaption: 'История',
     },
   },
 

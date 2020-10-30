@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime'
 import React from 'react'
 import UI from './ui'
 
@@ -10,30 +11,32 @@ function onRoomExit () {
 }
 
 function onStreamChanged (data) {
-  this.videoStream = data.stream
+  this.videoStream = new MediaStream(data.stream.getVideoTracks())
 }
 
 XROOM_PLUGIN({
-
   inDaChat: false,
+  scriptRef: null,
   videoStream: null,
 
   translations: {
     en: {
       iconCaption: 'Pulse',
-      useHint: 'Press "start" and put your finger on the camera',
+      useHint: 'Press "start" and put your finger on the camera. Make sure you are in a well lit environment.',
       btnStart: 'Start',
       btnClose: 'Close',
       btnTorch: 'Torch',
       noCamera: 'It looks like all the cameras are blocked',
+      cameraFallback: 'No rear camera found. Falling back to the front camera.',
     },
     sv: {
       iconCaption: 'Puls',
-      useHint: 'Tryck på "starta" och lägg ett finger på kameran',
+      useHint: 'Tryck på "starta" och lägg ett finger på kameran. Se till att du befinner dig i en väl upplyst omgivning.',
       btnStart: 'Starta',
       btnClose: 'Stäng',
       btnTorch: 'Lampa',
       noCamera: 'Det känns som ingen kamera är tillgänglig',
+      cameraFallback: 'No rear camera found. Falling back to the front camera.',
     },
     ru: {
       iconCaption: 'Пульс',
@@ -42,6 +45,7 @@ XROOM_PLUGIN({
       btnClose: 'Закрыть',
       btnTorch: 'Свет',
       noCamera: 'Похоже, ни одна камера не доступна.',
+      cameraFallback: 'No rear camera found. Falling back to the front camera.',
     },
   },
 
@@ -52,21 +56,33 @@ XROOM_PLUGIN({
   },
 
   register () {
-    this.addIcon()
+    this.api('appendScript', {src: 'https://webrtchacks.github.io/adapter/adapter-latest.js'}).then(async (id) => {
+      const [ sysStream ] = await this.api('getLocalStream')
 
-    this.api('addUI', { component:
-      <UI
-        i18n={this.i18n}
-        mbox={this.mbox}
-        ref={(ref) => { this.ui = ref} }
-        isInDaChat={() => this.inDaChat}
-        getSystemStream={() => this.videoStream}
-      />
+      if (!this.videoStream && sysStream) {
+        this.videoStream = new MediaStream(sysStream.getVideoTracks())
+      }
+
+      this.scriptRef = id
+
+      this.api('addUI', { component:
+          <UI
+            ui={this.uiLibrary}
+            i18n={this.i18n}
+            mbox={this.mbox}
+            ref={(ref) => { this.ui = ref} }
+            inDaChat={() => this.inDaChat}
+            getSystemStream={() => this.videoStream}
+          />
+      })
+
+      this.addIcon()
     })
   },
 
   unregister () {
     this.api('removeIcon')
+    this.api('removeElement', this.scriptRef)
   },
 
   isSupported () {
