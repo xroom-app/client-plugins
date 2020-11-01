@@ -26,6 +26,7 @@ XROOM_PLUGIN({
 
     this.api('addUI', {
       component: <UI
+        ui={this.uiLibrary}
         api={this.api}
         mbox={this.mbox}
         ref={(ref) => { this.ui = ref} }

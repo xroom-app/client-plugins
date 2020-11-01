@@ -1,17 +1,8 @@
 import React, { Component } from 'react'
 
 class UI extends Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      isShown: false,
-    }
-  }
-
   toggleShow () {
-    const { isShown } = this.state
-    this.setState({isShown: !isShown})
+    this.dialog && this.dialog.toggle()
   }
 
   onCreate () {
@@ -23,22 +14,21 @@ class UI extends Component {
 
     if (RegExp('<iframe([^>]*)>').test(code)) {
       this.props.api('sendMessage', {to: 'all', message: code})
-      this.setState({isShown: false})
+      this.dialog && this.dialog.close()
     }
   }
 
   render () {
-    const { isShown } = this.state
+    const { Dialog, Button } = this.props.ui
 
     return (
-      <div style={{...styles.ui, ...(isShown ? {} : styles.uiOffset)}}>
-        <div style={styles.box}>
-          <button
-            style={styles.btnCreate}
+      <Dialog bgClose ref={ref => this.dialog = ref}>
+          <Button
+            primary
             onClick={this.onCreate}
           >
             Create new form
-          </button>
+          </Button>
           <div style={styles.steps}>
             <ol style={{paddingLeft: '25px'}}>
               <li>Make sure everyone is in the chat (we do not store messages)</li>
@@ -56,40 +46,12 @@ class UI extends Component {
             placeholder="iframe code from Google..."
           />
           <div style={styles.lastHint}>The next time you may simply paste this code into the chat.</div>
-        </div>
-      </div>
+        </Dialog>
     )
   }
 }
 
 const styles = {
-  ui: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100vw',
-    height: '100vh',
-    background: 'transparent',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  uiOffset: {
-    position: 'fixed',
-    top: '100vh',
-    left: '100vw',
-  },
-  box: {
-    display: 'flex',
-    borderRadius: '4px',
-    background: '#fff',
-    minWidth: '640px',
-    minHeight: '330px',
-    flexDirection: 'column',
-    padding: '16px',
-    lineHeight: '150%',
-    fontSize: '18px',
-  },
   steps: {
     flex: 1,
     textAlign: 'left',
@@ -104,6 +66,7 @@ const styles = {
     border: '0.5px solid #888',
     borderRadius: '4px',
     fontSize: '14px',
+    width: '100%',
   },
   lastHint: {
     textAlign: 'left',

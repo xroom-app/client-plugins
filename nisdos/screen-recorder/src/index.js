@@ -136,6 +136,7 @@ XROOM_PLUGIN({
 
     await this.api('addUI', { component:
       <UI
+        ui={this.uiLibrary}
         i18n={this.i18n}
         api={this.api}
         ref={(ref) => { this.ui = ref} }

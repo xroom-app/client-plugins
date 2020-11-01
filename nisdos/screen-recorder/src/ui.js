@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
 
 class UI extends Component {
-
   constructor(props) {
     super(props)
 
     this.state = {
       recordings: [],
-      isShown: false,
     }
 
+    this.dialog = null
     this.openWith = this.openWith.bind(this)
     this.close = this.close.bind(this)
   }
@@ -18,7 +17,8 @@ class UI extends Component {
     const recordings = this.state.recordings
 
     recordings.push({blob, mimeType, ts: new Date()})
-    this.setState({isShown: true, recordings})
+    this.setState({recordings})
+    this.dialog && this.dialog.toggle()
   }
 
   save (i) {
@@ -54,36 +54,34 @@ class UI extends Component {
   }
 
   close () {
-    this.setState({isShown: false})
+    this.dialog && this.dialog.close()
   }
 
   render () {
-    const { i18n } = this.props
-    const { isShown, recordings } = this.state
-
-    if (!isShown) {
-      return null
-    }
+    const { i18n, ui } = this.props
+    const { recordings } = this.state
+    const { Dialog, Button } = ui
 
     return (
-      <div style={styles.ui}>
-        <div style={styles.box}>
+      <Dialog bgClose ref={ref => this.dialog = ref}>
           <div style={styles.header} dangerouslySetInnerHTML={{__html: i18n.t('warn1') }}/>
           <div>
             {
               recordings.map((el, i) => {
                 return (
                   <div style={styles.recRow} key={i}>
-                    <div>{ i + 1 })</div>
+                    <div>{ i + 1 }) </div>
                     <div>{ el.ts.toISOString().replace('T', ' ').split('.')[0] }</div>
                     <div>{ (el.blob.size / 1024 / 1024).toFixed(2) + ' MB' }</div>
                     <div>
-                      <button onClick={() => this.save(i)}>
+                      &nbsp;
+                      <Button onClick={() => this.save(i)} secondary>
                         { i18n.t('btnSave') }
-                      </button>
-                      <button onClick={() => this.pushToChat(i)} style={styles.btn2}>
+                      </Button>
+                      &nbsp;
+                      <Button onClick={() => this.pushToChat(i)} secondary>
                         { i18n.t('btnToChat') }
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 )
@@ -91,14 +89,14 @@ class UI extends Component {
             }
           </div>
 
-          <button
-            onClick={this.close}
+          <Button
+            primary
             style={styles.button}
+            onClick={this.close}
           >
             { i18n.t('btnClose') }
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Dialog>
     )
   }
 }
@@ -135,9 +133,6 @@ const styles = {
   },
   button: {
     marginTop: '8px',
-  },
-  btn2: {
-    marginLeft: '8px',
   },
 }
 

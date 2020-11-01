@@ -132,8 +132,9 @@ class UI extends Component {
       </fieldset>
 
   render () {
-    const { i18n } = this.props
+    const { i18n, ui } = this.props
     const { isShown, peers, tempRooms } = this.state
+    const { Button, TextInput } = ui
 
     if (!isShown) {
       return null
@@ -156,12 +157,16 @@ class UI extends Component {
                   style={styles.changeCountButton}
                   disabled={tempRooms.length < 3}
                   onClick={() => this.changeRoomCount(false)}
-                >-</button>
+                >
+                  -
+                </button>
                 <button
                   style={styles.changeCountButton}
                   disabled={tempRooms.length === peers.length}
                   onClick={() => this.changeRoomCount(true)}
-                >+</button>
+                >
+                  +
+                </button>
               </div>
               <div style={styles.row}>
                 <button style={styles.sendInviteButton} onClick={this.confirmSplit}>
@@ -171,13 +176,13 @@ class UI extends Component {
             </>
           :
             <>
-              {this.renderPeerList(peers)}
+              { this.renderPeerList(peers) }
               <div style={styles.split}>
-                <button style={styles.splitButton} onClick={this.onSplit}>
+                <Button primary onClick={this.onSplit}>
                   { i18n.t('btnSplitRoom') }
-                </button>
+                </Button>
                 <span style={styles.splitCountSpan}>{ i18n.t('splitOn') }</span>
-                <input
+                <TextInput
                   type="number"
                   style={styles.splitCount}
                   defaultValue={2}
@@ -222,10 +227,6 @@ const styles = {
   },
   split: {
     textAlign: 'center',
-  },
-  splitButton: {
-    height: '30px',
-    cursor: 'pointer',
   },
   row: {
     display: 'flex',

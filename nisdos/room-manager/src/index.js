@@ -70,6 +70,7 @@ XROOM_PLUGIN({
   async register ({roomId}) {
     await this.api('addUI', { component:
       <UI
+        ui={this.uiLibrary}
         i18n={this.i18n}
         api={this.api}
         mbox={this.mbox}
