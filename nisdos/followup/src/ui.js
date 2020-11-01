@@ -16,7 +16,6 @@ function toICalTime(d) {
 }
 
 class UI extends Component {
-
   constructor (props) {
     super(props)
     const
@@ -27,7 +26,7 @@ class UI extends Component {
       icsUrl: null,
       icsBlob: null,
       inDaChat: false,
-      summaryString: 'My xroom meeting',
+      summaryString: 'My xroom.app meeting',
       timeString: `${nums(ts.getHours())}:${nums(ts.getMinutes())}`,
       time2String: `${nums(ts2.getHours())}:${nums(ts2.getMinutes())}`,
       dateString: `${ts.getFullYear()}-${nums(ts.getMonth() + 1)}-${nums(ts.getDate())}`,
@@ -37,10 +36,8 @@ class UI extends Component {
   }
 
   toggleShow () {
-    const { isShown } = this.state
-
-    this.props.api('setHotKeysEnable', isShown)
-    this.setState({isShown: !isShown, icsUrl: null})
+    this.setState({icsUrl: null})
+    this.dialog && this.dialog.toggle()
   }
 
   onChangeDate = (ev) => {
@@ -102,47 +99,42 @@ class UI extends Component {
   }
 
   render () {
-    const i18n = this.props.i18n
-    const { isShown, dateString, timeString, time2String, icsUrl, summaryString } = this.state
-
-    if (!isShown) {
-      return null
-    }
+    const { i18n, ui } = this.props
+    const { dateString, timeString, time2String, icsUrl, summaryString } = this.state
+    const { Dialog, Button, TextInput } = ui
 
     return (
-      <div style={styles.ui} onClick={() => this.setState({isShown: false})}>
-        <div style={styles.box} id="xroom-plugin-followup" onClick={ev => ev.stopPropagation()}>
-          <h4 style={styles.header} dangerouslySetInnerHTML={{__html: i18n.t('header')}} />
-          <div style={styles.inputRows}>
-            <div style={styles.inputRow} >
-              <span>{ i18n.t('theDate') }</span>
-              <input style={styles.input} type="date" value={dateString} onChange={this.onChangeDate}/>
-            </div>
-            <div style={{...styles.inputRow, margin: '4px 0'}}>
-              <span>{ i18n.t('fromTime') }</span>
-              <input style={styles.input} type="time" value={timeString} onChange={this.onChangeTime} />
-            </div>
-            <div style={styles.inputRow}>
-              <span>{ i18n.t('toTime') }</span>
-              <input style={styles.input} type="time" value={time2String} onChange={this.onChangeTime2} />
-            </div>
-            <div style={styles.inputRow}>
-              <span>{ i18n.t('summary') }</span>
-              <input style={styles.textInput} type="text" value={summaryString} onChange={this.onChangeSummary} />
-            </div>
+      <Dialog bgClose ref={ref => this.dialog = ref}>
+        <h4 style={styles.header} dangerouslySetInnerHTML={{__html: i18n.t('header')}} />
+        <div style={styles.inputRows}>
+          <div style={styles.inputRow} >
+            <span>{ i18n.t('theDate') }</span>
+            <input style={styles.input} type="date" value={dateString} onChange={this.onChangeDate}/>
           </div>
-          <div>
-            <button onClick={this.generate} style={styles.button}>{ i18n.t('btnGenerate') }</button>
-            {
-              !!icsUrl &&
-                <Fragment>
-                  <a href={icsUrl} download="meeting.ics" style={styles.button}>{ i18n.t('btnDownload') }</a>
-                  <button onClick={this.share} style={styles.button}>{ i18n.t('btnShare') }</button>
-                </Fragment>
-            }
+          <div style={{...styles.inputRow, margin: '4px 0'}}>
+            <span>{ i18n.t('fromTime') }</span>
+            <input style={styles.input} type="time" value={timeString} onChange={this.onChangeTime} />
+          </div>
+          <div style={styles.inputRow}>
+            <span>{ i18n.t('toTime') }</span>
+            <input style={styles.input} type="time" value={time2String} onChange={this.onChangeTime2} />
+          </div>
+          <div style={styles.inputRow}>
+            <span>{ i18n.t('summary') }</span>
+            <TextInput style={styles.textInput} value={summaryString} onChange={this.onChangeSummary}/>
           </div>
         </div>
-      </div>
+        <div>
+          <Button primary onClick={this.generate}>{ i18n.t('btnGenerate') }</Button>
+          {
+            !!icsUrl &&
+              <Fragment>
+                <a href={icsUrl} download="meeting.ics" className="button secondary">{ i18n.t('btnDownload') }</a>
+                <Button secondary onClick={this.share}>{ i18n.t('btnShare') }</Button>
+              </Fragment>
+          }
+        </div>
+      </Dialog>
     )
   }
 }
@@ -185,26 +177,9 @@ const styles = {
     marginLeft: '8px',
   },
   textInput: {
-    border: '1px solid #cccc',
     marginTop: '4px',
     marginLeft: '8px',
-    padding: '4px',
     fontSize: '20px',
-    borderRadius: '4px',
-  },
-  button: {
-    cursor: 'pointer',
-    borderRadius: '4px',
-    backgroundColor: '#009ED8',
-    fontWeight: 300,
-    color: '#fff',
-    textDecoration: 'none',
-    outline: 'none',
-    border: 0,
-    padding: '4px 8px',
-    display: 'inline-block',
-    fontSize: '20px',
-    marginRight: '4px',
   },
 }
 

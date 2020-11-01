@@ -20,7 +20,6 @@ export default class extends Component {
   render () {
     const { selectedId } = this.state
     const { onModeSelect, i18n, ui } = this.props
-
     const { Dialog, brandColor } = ui
 
     return (
