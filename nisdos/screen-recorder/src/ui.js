@@ -71,14 +71,13 @@ class UI extends Component {
                 return (
                   <div style={styles.recRow} key={i}>
                     <div>{ i + 1 }) </div>
-                    <div>{ el.ts.toISOString().replace('T', ' ').split('.')[0] }</div>
-                    <div>{ (el.blob.size / 1024 / 1024).toFixed(2) + ' MB' }</div>
+                    <div style={{margin: '0 8px'}}>{ el.ts.toISOString().replace('T', ' ').split('.')[0] }</div>
+                    <div style={{marginRight: '8px'}}>{ (el.blob.size / 1024 / 1024).toFixed(2) + ' MB' }</div>
                     <div>
-                      &nbsp;
                       <Button onClick={() => this.save(i)} secondary>
                         { i18n.t('btnSave') }
                       </Button>
-                      &nbsp;
+                      &nbsp;&nbsp;
                       <Button onClick={() => this.pushToChat(i)} secondary>
                         { i18n.t('btnToChat') }
                       </Button>
