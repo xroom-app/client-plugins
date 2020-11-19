@@ -46,6 +46,8 @@ class UI extends Component {
             this.props.api('sendData', {data: {cmd: 'key', args: [key]}})
           //  console.log('keyCode', domEvent.keyCode)
         }
+
+        domEvent.stopPropagation()
       })
     }
   }
