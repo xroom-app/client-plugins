@@ -19,6 +19,10 @@ class Shell {
     this.sh.stderr.on('data', function (data) {
       sendData(data.toString())
     })
+
+    this.sh.on('close', function () {
+      sendData('Bye-bye!')
+    })
   }
 
   write(data) {
