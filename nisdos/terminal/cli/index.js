@@ -63,7 +63,13 @@ transportEventSystem.on(transportEvents.roomRemoved, () => {
   process.exit(0)
 })
 
-rtcEventSystem.on(rtcEvents.onDCMessage, ({ id, data }) => {
+rtcEventSystem.on(rtcEvents.onDCOpen, ({ peerId, id }) => {
+  if (id === 3) {
+    setTimeout(() => rtcDataSend(3, peerId, {cmd: 'init-ok', pluginId: 'nisdos/terminal'}), 500)
+  }
+})
+
+rtcEventSystem.on(rtcEvents.onDCMessage, ({ peerId, id, data }) => {
   if (id === 3) {
     switch (data.cmd) {
       case 'line':
@@ -75,7 +81,9 @@ rtcEventSystem.on(rtcEvents.onDCMessage, ({ id, data }) => {
         break
 
       case 'init':
-        rtcDataSend(3, null, {cmd: 'init-ok', pluginId: 'nisdos/terminal'})
+        if (id === 3) {
+          setTimeout(() => rtcDataSend(3, peerId, {cmd: 'init-ok', pluginId: 'nisdos/terminal'}), 500)
+        }
         break
 
       default:
@@ -133,32 +141,32 @@ function getStrategy (id) {
     ], [
       [id, ClientType.HOST], {
         data: true,
-        audio: { in: true, out: false },
-        video: { in: true, out: false },
+        audio: { in: false, out: false },
+        video: { in: false, out: false },
       }
     ], [
       [ClientType.HOST, id], {
         data: true,
-        audio: { in: false, out: true },
-        video: { in: false, out: true },
+        audio: { in: false, out: false },
+        video: { in: false, out: false },
       }
     ], [
       [id, ClientType.USER], {
         data: true,
-        audio: { in: false, out: true },
-        video: { in: false, out: true },
+        audio: { in: false, out: false },
+        video: { in: false, out: false },
       }
     ], [
       [ClientType.USER, id], {
         data: true,
-        audio: { in: true, out: false },
-        video: { in: true, out: false },
+        audio: { in: false, out: false },
+        video: { in: false, out: false },
       }
     ], [
       [id, ClientType.ROBOT], {
         data: true,
-        audio: { in: false, out: true },
-        video: { in: false, out: true },
+        audio: { in: false, out: false },
+        video: { in: false, out: false },
       }
     ]
   ]
