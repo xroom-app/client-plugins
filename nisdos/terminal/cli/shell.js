@@ -9,7 +9,6 @@ class Shell {
 
   init({command = null, sendData}) {
     this.sh = spawn(this.command)
-
     this.sh.stdin.resume()
 
     this.sh.stdout.on('data', function (data) {
@@ -20,8 +19,9 @@ class Shell {
       sendData(data.toString())
     })
 
-    this.sh.on('close', function () {
-      sendData('Bye-bye!')
+    this.sh.on('close', () => {
+      sendData('You killed the shell, so we restarted it. :)')
+      this.init({sendData})
     })
   }
 
