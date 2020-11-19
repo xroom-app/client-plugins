@@ -64,8 +64,6 @@ transportEventSystem.on(transportEvents.roomRemoved, () => {
 })
 
 rtcEventSystem.on(rtcEvents.onDCMessage, ({ id, data }) => {
-  console.log('qqq', id, data)
-
   if (id === 3) {
     switch (data.cmd) {
       case 'line':
