@@ -21,6 +21,24 @@ function onStreamChanged (data) {
   }
 }
 
+async function onMuteSet ({ peerId, camOn }) {
+  if (peerId === 'self') {
+    if (!camOn) {
+      this.paused = true
+      this.stashedMode = this.mode
+    } else {
+      const [ sysStream ] = await this.api('getLocalStream')
+      this.videoStream = new MediaStream(sysStream.getVideoTracks())
+      this.camLoaded = true
+      this.prepare()
+
+      if (this.stashedMode) {
+        this.selectMode(this.stashedMode)
+      }
+    }
+  }
+}
+
 XROOM_PLUGIN({
   ctx: null,
   net: null,
@@ -55,6 +73,7 @@ XROOM_PLUGIN({
 
   events: {
     'localStream/changed': onStreamChanged,
+    'peer/muteSet': onMuteSet,
   },
 
   async register () {
