@@ -9,6 +9,33 @@ function onStreamChanged (data) {
     this.videoStream = new MediaStream(data.stream.getVideoTracks())
     this.camLoaded = true
     this.prepare()
+
+    if (this.stashedMode) {
+      this.selectMode(this.stashedMode)
+    }
+  }
+
+  if (!data.videoOn && !data.external) {
+    this.paused = true
+    this.stashedMode = this.mode
+  }
+}
+
+async function onMuteSet ({ peerId, camOn }) {
+  if (peerId === 'self') {
+    if (!camOn) {
+      this.paused = true
+      this.stashedMode = this.mode
+    } else {
+      const [ sysStream ] = await this.api('getLocalStream')
+      this.videoStream = new MediaStream(sysStream.getVideoTracks())
+      this.camLoaded = true
+      this.prepare()
+
+      if (this.stashedMode) {
+        this.selectMode(this.stashedMode)
+      }
+    }
   }
 }
 
@@ -23,6 +50,9 @@ XROOM_PLUGIN({
   videoElem: null,
   canvasElem: null,
   bgPixels: null,
+  paused: false,
+  mode: 0,
+  stashedMode: 0,
 
   translations: {
     en: {
@@ -43,6 +73,7 @@ XROOM_PLUGIN({
 
   events: {
     'localStream/changed': onStreamChanged,
+    'peer/muteSet': onMuteSet,
   },
 
   async register () {
@@ -89,7 +120,8 @@ XROOM_PLUGIN({
       window.navigator.mediaDevices &&
       window.navigator.mediaDevices.getUserMedia &&
       window.WebAssembly &&
-      !window.matchMedia('(max-width: 480px)').matches
+      !window.matchMedia('(max-width: 480px)').matches && //to disable phones
+      !!window.MediaRecorder && window.MediaRecorder.isTypeSupported('video/webm') //disable safari
     )
   },
 
@@ -106,6 +138,7 @@ XROOM_PLUGIN({
 
   async selectMode (mode) {
     this.mode = mode
+    this.stashedMode = mode
 
     if (mode === 3) {
       this.bgPixels = await new Promise(resolve => {
@@ -130,6 +163,8 @@ XROOM_PLUGIN({
   },
 
   async prepare () {
+    this.paused = true
+
     const tracks = this.videoStream.getVideoTracks()
 
     if (!tracks.length) {
@@ -174,52 +209,55 @@ XROOM_PLUGIN({
       // document.getElementById('root').appendChild(canvas)
 
       this.net = await bodyPix.load(options)
+      this.paused = false
     } catch (e) {
       console.log('AI init error', e)
     }
   },
 
   async perform () {
-    const
-      edgeBlurAmount = 5,
-      backgroundBlurAmount = 6,
-      segmentation = await this.net.segmentPerson(this.videoElem)
+    if (!this.paused) {
+      const
+        edgeBlurAmount = 5,
+        backgroundBlurAmount = 6,
+        segmentation = await this.net.segmentPerson(this.videoElem)
 
-    switch (this.mode) {
-      case 1:
-        bodyPix.drawBokehEffect(this.canvasElem, this.videoElem, segmentation, backgroundBlurAmount, edgeBlurAmount)
-        break
+      switch (this.mode) {
+        case 1:
+          bodyPix.drawBokehEffect(this.canvasElem, this.videoElem, segmentation, backgroundBlurAmount, edgeBlurAmount)
+          break
 
-      case 2:
-        this.ctx.drawImage(this.videoElem, 0, 0, X_SIZE, X_SIZE * this.aspectRatio)
-        const imageData2 = this.ctx.getImageData(0, 0, X_SIZE, X_SIZE * this.aspectRatio)
-        const pixel2 = imageData2.data
-        for (let p = 0; p < pixel2.length; p += 4) {
-          if (segmentation.data[p / 4] === 0) {
-            const gray = ((0.3 * pixel2[p]) + (0.59 * pixel2[p + 1]) + (0.11 * pixel2[p + 2]))
-            pixel2[p] = gray
-            pixel2[p + 1] = gray
-            pixel2[p + 2] = gray
-          }
-        }
-        this.ctx.putImageData(imageData2, 0, 0)
-        break
-
-      case 3:
-        this.ctx.drawImage(this.videoElem, 0, 0, X_SIZE, X_SIZE * this.aspectRatio)
-        const imageData = this.ctx.getImageData(0, 0, X_SIZE, X_SIZE * this.aspectRatio)
-        const pixel = imageData.data
-        for (let p = 0; p < pixel.length; p += 4) {
-          if (segmentation.data[p / 4] === 0) {
-            if (this.bgPixels) {
-              pixel[p] = this.bgPixels[p]
-              pixel[p + 1] = this.bgPixels[p + 1]
-              pixel[p + 2] = this.bgPixels[p + 2]
+        case 2:
+          this.ctx.drawImage(this.videoElem, 0, 0, X_SIZE, X_SIZE * this.aspectRatio)
+          const imageData2 = this.ctx.getImageData(0, 0, X_SIZE, X_SIZE * this.aspectRatio)
+          const pixel2 = imageData2.data
+          for (let p = 0; p < pixel2.length; p += 4) {
+            if (segmentation.data[p / 4] === 0) {
+              const gray = ((0.3 * pixel2[p]) + (0.59 * pixel2[p + 1]) + (0.11 * pixel2[p + 2]))
+              pixel2[p] = gray
+              pixel2[p + 1] = gray
+              pixel2[p + 2] = gray
             }
           }
-        }
-        this.ctx.putImageData(imageData, 0, 0)
-        break
+          this.ctx.putImageData(imageData2, 0, 0)
+          break
+
+        case 3:
+          this.ctx.drawImage(this.videoElem, 0, 0, X_SIZE, X_SIZE * this.aspectRatio)
+          const imageData = this.ctx.getImageData(0, 0, X_SIZE, X_SIZE * this.aspectRatio)
+          const pixel = imageData.data
+          for (let p = 0; p < pixel.length; p += 4) {
+            if (segmentation.data[p / 4] === 0) {
+              if (this.bgPixels) {
+                pixel[p] = this.bgPixels[p]
+                pixel[p + 1] = this.bgPixels[p + 1]
+                pixel[p + 2] = this.bgPixels[p + 2]
+              }
+            }
+          }
+          this.ctx.putImageData(imageData, 0, 0)
+          break
+      }
     }
 
     window.requestAnimationFrame(() => {
