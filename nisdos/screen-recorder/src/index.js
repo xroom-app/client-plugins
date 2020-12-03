@@ -161,7 +161,7 @@ XROOM_PLUGIN({
   },
 
   isSupported () {
-    return !!window.MediaRecorder && window.MediaRecorder.isTypeSupported('video/webm')
+    return !!window.MediaRecorder && window.MediaRecorder.isTypeSupported && window.MediaRecorder.isTypeSupported('video/webm')
   },
 
   countDown () {
