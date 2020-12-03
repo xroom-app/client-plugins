@@ -84,9 +84,8 @@ async function onStreamsChanged () {
 }
 
 XROOM_PLUGIN({
-
   inDaChat: null,
-  mimeType: null,
+  mimeType: 'audio/webm',
   recordedBlobs: [],
   mediaRecorder: null,
   isRecording: false,
@@ -130,10 +129,12 @@ XROOM_PLUGIN({
   },
 
   register () {
-    if (window.MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
-      this.mimeType = 'audio/ogg'
-    } else if (window.MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
-      this.mimeType = 'audio/webm'
+    if (window.MediaRecorder.isTypeSupported) {
+      if (window.MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
+        this.mimeType = 'audio/ogg'
+      } else if (window.MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+        this.mimeType = 'audio/webm'
+      }
     }
 
     onStreamsChanged.bind(this)()
