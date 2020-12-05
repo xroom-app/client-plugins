@@ -13,7 +13,7 @@ class UI extends Component {
     const code = ev.target.value.trim()
 
     if (RegExp('<iframe([^>]*)>').test(code)) {
-      this.props.api('sendMessage', {to: 'all', message: code})
+      this.props.api('sendMessage', {type: 'text', content: code, to: 'all'})
       this.dialog && this.dialog.close()
     }
   }

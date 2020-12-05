@@ -214,7 +214,7 @@ XROOM_PLUGIN({
     document.body.appendChild(iDiv)
 
     this.countDown()
-    this.api('sendMessage', {message: this.i18n.t('recNotify'), to: null})
+    this.api('sendMessage', {type: 'text', content: this.i18n.t('recNotify'), to: 'all'})
   },
 
   startRecording () {

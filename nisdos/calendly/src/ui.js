@@ -63,7 +63,7 @@ class UI extends Component {
     const { isInDaChat, api, mbox } = this.props
 
     if (isInDaChat()) {
-      api('sendMessage', {to: null, message: `Book me here: https://calendly.com/${this.state.extId}`})
+      api('sendMessage', {type: 'text', content: `Book me here: https://calendly.com/${this.state.extId}`, to: 'all'})
       mbox({text: 'Sent to everyone in the chat'})
     } else {
       mbox({text: 'Enter a room first'})
