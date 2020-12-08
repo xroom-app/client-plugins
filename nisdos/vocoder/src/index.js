@@ -1,10 +1,15 @@
 import React from 'react'
 import UI from './ui'
+import processor from './Effects/morpherProcessor'
 
 async function onStreamsChanged () {
   const { local } = await this.api('getStreams')
 
-  if (local) this.composite(local)
+  if (local) {
+    await this.ctx.audioWorklet.addModule(processor);
+    this.composite(local)
+    console.log('Composition recomputed', !!local)
+  }
 }
 
 XROOM_PLUGIN({
@@ -24,6 +29,10 @@ XROOM_PLUGIN({
       pitch: {
         label: 'Pitch',
         pitch: 'Pitch',
+      },
+      morpher: {
+        label: 'Morpher',
+        pitch: 'Morpher',
       },
       background: {
         label: 'Background',
@@ -57,6 +66,10 @@ XROOM_PLUGIN({
         label: 'Pitch',
         pitch: 'Pitch',
       },
+      morpher: {
+        label: 'Morpher',
+        pitch: 'Morpher',
+      },
       background: {
         label: 'Фоновая музыка',
         background: 'Фоновая музыка',
@@ -80,11 +93,10 @@ XROOM_PLUGIN({
     'peer/trackAdded': onStreamsChanged,
   },
 
-  register () {
+  async register () {
     this.ctx = this.audioContext
-    onStreamsChanged.bind(this)()
 
-    this.api('addUI', { component:
+    await this.api('addUI', { component:
       <UI
         api={this.api}
         i18n={this.i18n}
@@ -92,6 +104,7 @@ XROOM_PLUGIN({
       />
     })
 
+    onStreamsChanged.bind(this)()
     this.addIcon()
   },
 
@@ -116,6 +129,6 @@ XROOM_PLUGIN({
 
   composite (stream = null) {
     this.source = this.ctx.createMediaStreamSource(stream)
-    this.source.connect(this.ctx.destination)
+    // this.source.connect(this.ctx.destination)
   }
 })
