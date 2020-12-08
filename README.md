@@ -47,8 +47,7 @@ XROOM_PLUGIN({
 | removeIcon          | Remove icon from UI | —
 | renderControls      | Rerender UI, useful for dynamic icons | —
 | sendData            | Send data to peer(s) with this plugin | `{data: string, to: string}`
-| sendFile            | Post a file to chat | `{file, to: string}`
-| sendMessage         | Post a message to chat | `{message: string, to: string}`
+| sendMessage         | Post a message to chat | `{type: string, content: string, to: string}`
 | setPeerVis          | Set peer container visibility | `{peerId: string, off: boolean}`
 | setRoomLock         | Lock/unlock the current room | Lock flag
 | setRoomPassword     | Set/reset room password | Password (null to reset)

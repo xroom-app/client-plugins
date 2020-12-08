@@ -48,8 +48,9 @@ class UI extends Component {
       return
     }
 
-    this.props.api('sendFile', {
-      file: new File([recordings[i].blob], recordings[i].mimeType.replace('/', `-${i + 1}.`), { type: 'video/webm' }),
+    this.props.api('sendMessage', {
+      type: 'file', to: 'all',
+      content: new File([recordings[i].blob], recordings[i].mimeType.replace('/', `-${i + 1}.`), { type: 'video/webm' }),
     })
   }
 

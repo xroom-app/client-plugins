@@ -92,7 +92,7 @@ class UI extends Component {
       const suffix = String(Math.random()).slice(2, 8)
 
       for (const peer of this.state.tempRooms[r]) {
-        api('sendMessage', {to: peer.id, message: `${i18n.t('breakRoomOffer')} ${this.roomId}-${suffix}`})
+        api('sendMessage', {type: 'text', to: peer.id, content: `${i18n.t('breakRoomOffer')} ${this.roomId}-${suffix}`})
       }
     }
 
