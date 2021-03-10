@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react'
+import * as React from 'preact'
 
 let width, height, hist = [], videoContext, graphContext
 
-class UI extends Component {
+class UI extends React.Component {
   constructor(props) {
     super(props)
 
@@ -33,6 +33,9 @@ class UI extends Component {
 
   close () {
     this.setState({isShown: false})
+    if (this.localStream){
+      this.localStream.getVideoTracks().forEach(t => t.stop())
+    }
   }
 
   async start () {
@@ -215,13 +218,13 @@ class UI extends Component {
         <div style={styles.firstRow}>
           {
             started ?
-              <Fragment>
+              <>
                 <canvas ref={c => this.videoCanvas = c} style={styles.videoCanvas} />
                 <div style={styles.bpmBox}>
                   <span ref={c => this.bpm = c} style={styles.bpm}>⏳</span>
                   <span> bpm</span>
                 </div>
-              </Fragment>
+              </>
               :
               <div style={{textAlign: 'center'}}>{ i18n.t('useHint') }</div>
           }

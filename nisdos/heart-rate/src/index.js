@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime'
-import React from 'react'
+import * as React from 'preact'
 import UI from './ui'
 
 function onRoomEnter () {
@@ -10,11 +10,16 @@ function onRoomExit () {
   this.inDaChat = false
 }
 
-function onStreamChanged (data) {
-  this.videoStream = new MediaStream(data.stream.getVideoTracks())
+function onStreamChanged () {
+  const ls = xroom.api('getStreams').local
+
+  if (ls) {
+    this.videoStream = new MediaStream(ls.getVideoTracks())
+  }
 }
 
-XROOM_PLUGIN({
+xroom.plugin = {
+  uiRef: null,
   inDaChat: false,
   scriptRef: null,
   videoStream: null,
@@ -50,14 +55,14 @@ XROOM_PLUGIN({
   },
 
   events: {
-    'ss/onJoin': onRoomEnter,
+    'room/ready': onRoomEnter,
     'room/exit': onRoomExit,
     'localStream/changed': onStreamChanged,
   },
 
   register () {
-    this.api('appendScript', {src: 'https://webrtchacks.github.io/adapter/adapter-latest.js'}).then(async (id) => {
-      const [ sysStream ] = await this.api('getLocalStream')
+    xroom.api('appendScript', {src: 'https://webrtchacks.github.io/adapter/adapter-latest.js'}).then(id => {
+      const sysStream = xroom.api('getStreams').local
 
       if (!this.videoStream && sysStream) {
         this.videoStream = new MediaStream(sysStream.getVideoTracks())
@@ -65,15 +70,15 @@ XROOM_PLUGIN({
 
       this.scriptRef = id
 
-      this.api('addUI', { component:
-          <UI
-            ui={this.uiLibrary}
-            i18n={this.i18n}
-            mbox={this.mbox}
-            ref={(ref) => { this.ui = ref} }
-            inDaChat={() => this.inDaChat}
-            getSystemStream={() => this.videoStream}
-          />
+      xroom.api('addUI', { component:
+        <UI
+          ui={xroom.ui}
+          i18n={xroom.i18n}
+          mbox={xroom.mbox}
+          ref={(ref) => { this.uiRef = ref} }
+          inDaChat={() => this.inDaChat}
+          getSystemStream={() => this.videoStream}
+        />
       })
 
       this.addIcon()
@@ -81,8 +86,8 @@ XROOM_PLUGIN({
   },
 
   unregister () {
-    this.api('removeIcon')
-    this.api('removeElement', this.scriptRef)
+    xroom.api('removeIcon')
+    xroom.api('removeElement', this.scriptRef)
   },
 
   isSupported () {
@@ -90,13 +95,14 @@ XROOM_PLUGIN({
   },
 
   addIcon () {
-    this.api('addIcon', {
-      title: () => this.i18n.t('iconCaption'),
-      onClick: () => this.ui.toggle(),
+    xroom.api('addIcon', {
+      title: () => xroom.i18n.t('iconCaption'),
+      onClick: () => this.uiRef.toggle(),
       svg: props =>
-        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24">
-          <path fill={props.color || '#000'} d="M7.5,4A5.5,5.5 0 0,0 2,9.5C2,10 2.09,10.5 2.22,11H6.3L7.57,7.63C7.87,6.83 9.05,6.75 9.43,7.63L11.5,13L12.09,11.58C12.22,11.25 12.57,11 13,11H21.78C21.91,10.5 22,10 22,9.5A5.5,5.5 0 0,0 16.5,4C14.64,4 13,4.93 12,6.34C11,4.93 9.36,4 7.5,4V4M3,12.5A1,1 0 0,0 2,13.5A1,1 0 0,0 3,14.5H5.44L11,20C12,20.9 12,20.9 13,20L18.56,14.5H21A1,1 0 0,0 22,13.5A1,1 0 0,0 21,12.5H13.4L12.47,14.8C12.07,15.81 10.92,15.67 10.55,14.83L8.5,9.5L7.54,11.83C7.39,12.21 7.05,12.5 6.6,12.5H3Z" />
+        <svg width={props.size || 25} height={props.size || 25} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path stroke={props.color} d="M4 16h5l2-3 4 6 2-3h3" stroke-width={1.5 * 32/25} stroke-linecap="round" stroke-linejoin="round" />
+          <path stroke={props.color} d="M3.5 12v-.5A6.5 6.5 0 0116 9h0a6.5 6.5 0 0112.5 2.5C28.5 20 16 27 16 27s-5-2.8-8.7-7" stroke-width={1.5 * 32/25} stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-    })
+     })
   }
-})
+}
