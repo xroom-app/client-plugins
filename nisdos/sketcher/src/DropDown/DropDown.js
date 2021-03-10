@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'preact'
 import styles from './styles.module.css'
 
 const DropDownOption = ({option, onClick, isCurrent}) => (

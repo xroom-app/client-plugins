@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import * as React from 'preact'
 import { LazyBrush } from 'lazy-brush'
 import { Catenary } from 'catenary-curve'
 import ResizeObserver from 'resize-observer-polyfill'
@@ -35,7 +35,7 @@ const canvasTypes = [
   }
 ]
 
-export default class extends PureComponent {
+export default class extends React.Component {
 
   static defaultProps = {
     onChange: null,

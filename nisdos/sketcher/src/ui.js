@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import * as React from 'preact'
 import CanvasDraw from './canvasDraw'
 import DropDown from './DropDown/DropDown'
 
@@ -15,21 +15,21 @@ const tools = i18n => [
   },
   {
     key: 2,
-    icon: (<Fragment>
+    icon: (<>
       <path fill="none" stroke="#333" strokeWidth="1.97675" d="M 17.97679,13.853333 A 7.182672,6.8464398 0 0 1 13.542807,20.178619 7.182672,6.8464398 0 0 1 5.7152018,18.694497 7.182672,6.8464398 0 0 1 4.1581943,11.233314 7.182672,6.8464398 0 0 1 10.794118,7.0068936" />
       <rect fill="#333" y="3" x="17" height="8" width="2" />
       <rect fill="#333" y="6" x="14" height="2" width="8" />
-    </Fragment>),
+    </>),
     value: i18n.t('tool.' + 2)
   },
   {
     key: 3,
-    icon: (<Fragment>
+    icon: (<>
       <rect width="2" height="8" x="17" y="3" />
       <rect fill="#333" width="8" height="2" x="14" y="6" />
       <path d="M 5.5735473,18.850937 13.974937,10.991939" fill="none" stroke="#333" strokeWidth="1.99692" />
       <path transform="rotate(167.5,-2.4527899,0.53806368)" d="m -5.1658267,-16.921792 -2.413727,-4.158403 4.8081461,-0.01115 z" fill="#333" />
-    </Fragment>),
+    </>),
     value: i18n.t('tool.' + 3)
   },
   {
@@ -39,10 +39,10 @@ const tools = i18n => [
   },
   {
     key: 5,
-    icon: (<Fragment>
+    icon: (<>
       <path fill="none" d="M 10,7 H 4 v 11 h 14 v -8" stroke="#333333" strokeWidth="2"strokeDasharray="8,4" />
       <path fill="#333333" strokeWidth="0.4" d="m 17.98,1.2 c -0.204,0 -0.408,0.08 -0.564,0.236 L 12.96,5.892 c -0.312,0.308 -0.312,0.816 0,1.132 L 13.936,8 H 17 l 3.488,-3.492 c 0.316,-0.308 0.316,-0.816 0,-1.132 l -1.94,-1.94 C 18.392,1.28 18.184,1.2 17.98,1.2"/>
-    </Fragment>),
+    </>),
     value: i18n.t('tool.' + 5)
   }
 ]
@@ -61,7 +61,7 @@ const getColors = i18n =>
     value: i18n.t('color.' + color)
   }))
 
-class UI extends Component {
+class UI extends React.Component {
 
   constructor(props) {
     super(props)
@@ -71,7 +71,7 @@ class UI extends Component {
       color: 'black',
       size: 1,
       isShown: false,
-      saveData: "",
+      saveData: '',
       keys: [],
       tabs: 3,
       currentTab: 0,
@@ -84,11 +84,11 @@ class UI extends Component {
   toggle () {
     const { isShown } = this.state
     if (!isShown) {
-      document.addEventListener("keydown", this.handleKeyDown)
-      document.addEventListener("keyup", this.handleKeyUp)
+      document.addEventListener('keydown', this.handleKeyDown)
+      document.addEventListener('keyup', this.handleKeyUp)
     } else {
-      document.removeEventListener("keydown", this.handleKeyDown)
-      document.removeEventListener("keyup", this.handleKeyUp)
+      document.removeEventListener('keydown', this.handleKeyDown)
+      document.removeEventListener('keyup', this.handleKeyUp)
     }
     this.setState({isShown: !isShown})
   }
@@ -131,6 +131,7 @@ class UI extends Component {
 
   handleKeyUp = e => {
     const { keys } = this.state
+
     if (e.key === 'Control') {
       keys.splice(keys.indexOf('Control'), 1)
       this.setState({keys})
@@ -207,16 +208,18 @@ class UI extends Component {
         </div>
 
         <div style={styles.tabs}>
-          {Array.from(Array(tabs).keys()).map(tab =>
-            <div
-              onClick={() => this.setState({currentTab: tab})}
-              style={tab === currentTab ? {...styles.tab, ...styles.current_tab} : styles.tab}
-              contentEditable={true}
-            >
-              { this.props.i18n.t('tab') } { tab+1 }
-              { tabs > 1 && <span style={styles.remove_tab} onClick={e => this.removeTab(e, tab)}>&times;</span> }
-            </div>
-          )}
+          {
+            Array.from(Array(tabs).keys()).map(tab =>
+              <div
+                onClick={() => this.setState({currentTab: tab})}
+                style={tab === currentTab ? {...styles.tab, ...styles.current_tab} : styles.tab}
+                contentEditable={true}
+              >
+                { this.props.i18n.t('tab') } { tab+1 }
+                { tabs > 1 && <span style={styles.remove_tab} onClick={e => this.removeTab(e, tab)}>&times;</span> }
+              </div>
+            )
+          }
           <svg style={styles.add_tab} viewBox="0 0 24 24" onClick={() => this.setState({tabs: tabs+1})}>
             <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
           </svg>
