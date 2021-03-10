@@ -30,8 +30,8 @@ xroom.plugin = {
 
   translations: {
     en: {
-      iconCaptionOn: 'Rec on',
-      iconCaptionOff: 'Rec off',
+      iconCaptionOn: 'Sound rec on',
+      iconCaptionOff: 'Sound rec off',
       btnSave: 'Save',
       btnClose: 'Close',
       warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
@@ -39,8 +39,8 @@ xroom.plugin = {
       recNotify: '📢 I have started recording audio.',
     },
     sv: {
-      iconCaptionOn: 'Insp. på',
-      iconCaptionOff: 'Insp. av',
+      iconCaptionOn: 'Ljudinsp. på',
+      iconCaptionOff: 'Ljudinsp. av',
       btnSave: 'Spara',
       btnClose: 'Stäng',
       warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
@@ -48,8 +48,8 @@ xroom.plugin = {
       recNotify: '📢 Jag har börjat en inspelning',
     },
     ru: {
-      iconCaptionOn: 'Запись вкл.',
-      iconCaptionOff: 'Запись выкл.',
+      iconCaptionOn: 'Запись звука вкл.',
+      iconCaptionOff: 'Запись звука выкл.',
       btnSave: 'Сохранить',
       btnClose: 'Закрыть',
       warn1: 'Файлы исчезнут после закрытия окна.<br>Скачайте их, если они нужны!',
