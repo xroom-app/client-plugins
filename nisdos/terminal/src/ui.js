@@ -1,7 +1,6 @@
-import React, { Component } from 'react'
+import * as React from 'preact'
 
-class UI extends Component {
-
+class UI extends React.Component {
   constructor(props) {
     super(props)
 
@@ -10,7 +9,7 @@ class UI extends Component {
       isShown: false,
     }
 
-    this.open = this.open.bind(this)
+    this.toggle = this.toggle.bind(this)
     this.close = this.close.bind(this)
   }
 
@@ -52,14 +51,12 @@ class UI extends Component {
     }
   }
 
-  open () {
-    this.setState({isShown: true})
-    this.props.api('setHotKeysEnable', false)
+  toggle () {
+    this.setState({isShown: !this.state.isShown})
   }
 
   close () {
     this.setState({isShown: false})
-    this.props.api('setHotKeysEnable', true)
   }
 
   dataIn ({cmd, args}) {

@@ -1,25 +1,24 @@
 import 'regenerator-runtime/runtime'
-import React from 'react'
+import * as React from 'preact'
 import UI from './ui'
 
 function onRoomEnter () {
   this.addIcon()
-  this.api('renderControls')
+  xroom.api('renderControls')
 }
 
 function onRoomExit () {
-  this.api('removeIcon')
+  xroom.api('removeIcon')
 }
 
 function onDataIn (data) {
   const { pluginId, cmd, args } = data
 
-  if (pluginId !== this.id || !cmd) return
-  this.ui.dataIn({cmd, args})
+  if (pluginId !== xroom.id || !cmd) return
+  this.uiRef.dataIn({cmd, args})
 }
 
-XROOM_PLUGIN({
-
+xroom.plugin = {
   translations: {
     en: {
       iconCaption: 'Terminal',
@@ -36,20 +35,20 @@ XROOM_PLUGIN({
   },
 
   events: {
-    'ss/onJoin': onRoomEnter,
+    'room/ready': onRoomEnter,
     'room/exit': onRoomExit,
     'data/in': onDataIn,
   },
 
   register ({roomId}) {
-    this.api('appendScript', {src: '/plugins/nisdos/terminal/xterm.js'})
-    this.api('appendStyle', {src: '/plugins/nisdos/terminal/xterm.css'})
+    xroom.api('appendScript', {src: '/plugins/nisdos/terminal/xterm.js'})
+    xroom.api('appendStyle', {src: '/plugins/nisdos/terminal/xterm.css'})
 
-    this.api('addUI', { component:
+    xroom.api('addUI', { component:
       <UI
-        i18n={this.i18n}
-        api={this.api}
-        ref={(ref) => { this.ui = ref} }
+        i18n={xroom.i18n}
+        api={xroom.api}
+        ref={(ref) => { this.uiRef = ref} }
       />
     })
 
@@ -59,20 +58,20 @@ XROOM_PLUGIN({
   },
 
   unregister () {
-    this.api('removeIcon')
+    xroom.api('removeIcon')
   },
 
   addIcon () {
-    this.api('addIcon', {
-      title: this.i18n.t('iconCaption'),
+    xroom.api('addIcon', {
+      title: () => xroom.i18n.t('iconCaption'),
       onClick: () => {
-        if (this.ui) {
-          this.ui.open()
+        if (this.uiRef) {
+          this.uiRef.toggle()
         }
       },
       svg: props =>
-        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24">
-          <path fill={props.color || '#000'} d='M20,19V7H4V19H20M20,3A2,2 0 0,1 22,5V19A2,2 0 0,1 20,21H4A2,2 0 0,1 2,19V5C2,3.89 2.9,3 4,3H20M13,17V15H18V17H13M9.58,13L5.57,9H8.4L11.7,12.3C12.09,12.69 12.09,13.33 11.7,13.72L8.42,17H5.59L9.58,13Z' />
+        <svg width={props.size || 25} height={props.size || 25} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path stroke={props.color} d="M5 8l9 8-9 8M15 24h12" stroke-width={1.5 * 32/25} stroke-linecap="round" stroke-linejoin="round" />
         </svg>
     })
   },
@@ -80,4 +79,4 @@ XROOM_PLUGIN({
   isSupported () {
     return window.screen && window.screen.width > 1000
   }
-})
+}

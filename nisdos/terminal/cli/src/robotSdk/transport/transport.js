@@ -225,7 +225,7 @@ function getCommandHandler (send) {
         id = undefined
         break
 
-      case 'setId':
+      case 'addId':
         // @ts-ignore temporary
         id = data
         eventSystem.emit(events.handshakeCompleted, { commands: getBasicTransportCommands(send) })

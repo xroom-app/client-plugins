@@ -3,7 +3,7 @@ const
   transportEventSystem = require('./src/robotSdk/transport/transport').eventSystem,
   rtcEvents = require('./src/robotSdk/webrtc/webrtc').events,
   rtcEventSystem = require('./src/robotSdk/webrtc/webrtc').eventSystem,
-  { rtcDataSend, getPeerIds } = require('./src/robotSdk/webrtc/webrtc'),
+  { rtcDataSend } = require('./src/robotSdk/webrtc/webrtc'),
   { connectToServer, getId } = require('./src/robotSdk/transport/transport'),
   { enableTransportLogging } = require('./src/robotSdk/transport/extensions'),
   { enableExchangeListener, enablePeerUpdateListener, enablePeerRemoveListener } = require('./src/robotSdk/webrtc/extensions')
@@ -11,18 +11,19 @@ const
 const Shell = require('./shell')
 const RTCConfig = { iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }] }
 
-if (process.argv.length < 3) {
-  console.log('Usage: ./terminal [ROOM NAME] (SIGNAL SERVER)\n\n')
+if (process.argv.length < 4) {
+  console.log('Usage: ./terminal [ROOM NAME] [KEY] (SIGNAL SERVER)\n\n')
   process.exit(0)
 }
 
 const args = process.argv.slice(2)
 
-console.log(`Connecting to room ${args[0]}...`)
-
 const roomName = args[0]
+const roomKey = args[1]
 const shell = new Shell()
-const signalServerUrl = args[1] ? `https://${args[1]}` : 'http://localhost:4010'
+const signalServerUrl = args[2] ? `https://${args[2]}` : 'http://localhost:4010'
+
+console.log(`Connecting to room ${args[0]}, using server ${signalServerUrl}...`)
 
 enableTransportLogging()
 enableExchangeListener(RTCConfig)
@@ -32,7 +33,7 @@ enablePeerRemoveListener()
 connectToServer({
   ssUrl: signalServerUrl,
   reconnectInterval: 1000,
-  protoVersion: 4,
+  protoVersion: 5,
 })
 
 transportEventSystem.on(transportEvents.handshakeCompleted, ({ commands }) => {
@@ -43,14 +44,16 @@ transportEventSystem.on(transportEvents.handshakeCompleted, ({ commands }) => {
       commands.robotJoin({
         roomId: roomName,
         robotId: 1,
-        connectKey: '',
+        connectKey: roomKey,
         options: {
           removable: false,
           singleton: true,
         }
       })
     } else {
-      setTimeout(() => { commands.readRoom(roomName) }, 3000)
+      setTimeout(() => {
+        commands.readRoom(roomName)
+      }, 3000)
     }
   })
 })
