@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import * as React from 'preact'
 
-export default class extends Component {
+export default class extends React.Component {
   constructor(props) {
     super(props)
 
@@ -76,7 +76,7 @@ export default class extends Component {
         <Button
           primary
           onClick={this.close}
-          style={{marginTop: '8px'}}
+          style={{marginTop: '1rem'}}
         >
           { i18n.t('btnClose') }
         </Button>
