@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import * as React from 'preact'
 
-class UI extends Component {
+class UI extends React.Component {
   constructor(props) {
     super(props)
 
@@ -49,8 +49,8 @@ class UI extends Component {
     }
 
     this.props.api('sendMessage', {
-      type: 'file', to: 'all',
-      content: new File([recordings[i].blob], recordings[i].mimeType.replace('/', `-${i + 1}.`), { type: 'video/webm' }),
+      to: 'all', from: 'self', pvt: false, uid: Math.random(),
+      file: new File([recordings[i].blob], recordings[i].mimeType.replace('/', `-${i + 1}.`), { type: 'video/webm' }),
     })
   }
 
@@ -74,7 +74,7 @@ class UI extends Component {
                     <div>{ i + 1 }) </div>
                     <div style={{margin: '0 8px'}}>{ el.ts.toISOString().replace('T', ' ').split('.')[0] }</div>
                     <div style={{marginRight: '8px'}}>{ (el.blob.size / 1024 / 1024).toFixed(2) + ' MB' }</div>
-                    <div>
+                    <div style={{display: 'flex'}}>
                       <Button onClick={() => this.save(i)} secondary>
                         { i18n.t('btnSave') }
                       </Button>
