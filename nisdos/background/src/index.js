@@ -7,7 +7,7 @@ const X_SIZE = 480
 function onStreamChanged () {
   const { camOn } = xroom.api('getFlags')
 
-  if (camOn && this.tfLoaded) {
+  if (this.paused && camOn && this.tfLoaded) {
     const systemVT = xroom.api('getStreams').local.getVideoTracks()[0]
 
     if (this.outputStream && this.outputStream.getVideoTracks()[0].id === systemVT.id) {
@@ -21,9 +21,7 @@ function onStreamChanged () {
     if (this.stashedMode) {
       this.selectMode(this.stashedMode)
     }
-  }
-
-  if (!camOn) {
+  } else if (!camOn && !this.paused) {
     this.paused = true
     this.stashedMode = this.mode
   }
@@ -227,6 +225,8 @@ xroom.plugin = {
   },
 
   async perform () {
+    try {
+
     if (!this.paused) {
       const
         edgeBlurAmount = 5,
@@ -269,6 +269,11 @@ xroom.plugin = {
           this.ctx.putImageData(imageData, 0, 0)
           break
       }
+    }
+
+    } catch (e) {
+      this.paused = true
+      this.stashedMode = this.mode
     }
 
     window.requestAnimationFrame(() => {

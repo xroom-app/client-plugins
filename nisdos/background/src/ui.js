@@ -19,7 +19,7 @@ export default class extends React.Component {
 
   render () {
     const { selectedId } = this.state
-    const { onModeSelect, i18n, ui } = this.props
+    const { onModeSelect, i18n, ui, api } = this.props
     const { Dialog, brandColor } = ui
 
     return (
@@ -31,8 +31,10 @@ export default class extends React.Component {
                 key={i}
                 style={{...styles.mode, ...(selectedId === i ? {color: brandColor, borderColor: brandColor} : {})}}
                 onClick={() => {
-                  onModeSelect(i)
-                  this.setState({selectedId: i})
+                  if (api('getFlags').camOn) {
+                    onModeSelect(i)
+                    this.setState({selectedId: i})
+                  }
                 }}
               >
                 { i18n.t(modeNameCodes[i]) }
@@ -54,7 +56,7 @@ const styles = {
   },
   mode: {
     display: 'flex',
-    margin: '16px',
+    margin: '1rem',
     cursor: 'pointer',
     minWidth: '100px',
     width: '100px',
@@ -66,7 +68,8 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: '18px',
-    fontWeight: '600',
+    fontWeight: '400',
     color: '#ccc',
+    textAlign: 'center',
   },
 }
