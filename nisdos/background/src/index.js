@@ -125,10 +125,10 @@ xroom.plugin = {
   isSupported () {
     return (
       window.navigator.mediaDevices &&
-      window.navigator.mediaDevices.getUserMedia &&
-      window.WebAssembly &&
-      !window.matchMedia('(max-width: 480px)').matches && // to disable phones
-      !!window.MediaRecorder && window.MediaRecorder.isTypeSupported('video/webm') // disable safari
+      window.navigator.mediaDevices.getUserMedia
+      // window.WebAssembly &&
+      // !window.matchMedia('(max-width: 480px)').matches && // to disable phones
+      // !!window.MediaRecorder && window.MediaRecorder.isTypeSupported('video/webm') // disable safari
     )
   },
 
