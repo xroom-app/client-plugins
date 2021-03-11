@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import * as React from 'preact'
 
-class UI extends Component {
+class UI extends React.Component {
   constructor (props) {
     super(props)
     this.state = {

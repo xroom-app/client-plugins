@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime'
-import React from 'react'
+import * as React from 'preact'
 import UI from './ui'
 
 const ROOT_URL = '/plugins/nisdos/masks/'
@@ -10,10 +10,12 @@ const masksData = [
   ['m3',  0.0, -0.85, 1.2, 1.2],
 ]
 
-function onStreamChanged (data) {
-  if (data.videoOn) {
+function onStreamChanged () {
+  const { camOn } = xroom.api('getFlags')
+
+  if (camOn && !this.active) {
     this.camLoaded = true
-    this.videoStream = new MediaStream(data.stream.getVideoTracks())
+    this.videoStream = new MediaStream(xroom.api('getStreams').local.getVideoTracks())
     this.createMats()
 
     if (this.cvLoaded) {
@@ -23,16 +25,36 @@ function onStreamChanged (data) {
 
       this.cvVideoBuffer.srcObject = this.videoStream
       this.cvVideoBuffer.height = 320 * this.aspectRatio
+    }
+    this.active = true
+  } else if (!camOn && this.active) {
+    this.active = false
+  }
+}
 
-      /*if (this.outputStream) {
-        this.api('setLocalVideo', {track: this.outputStream.getVideoTracks()[0]})
-      }*/
+function onFlagsChange ({ peerId, mf }) {
+  if (peerId === 'self') {
+    if (!mf[1] && !this.paused) {
+      this.paused = true
+    } else if (mf[1] && this.paused) {
+      this.camLoaded = true
+      this.videoStream = new MediaStream(xroom.api('getStreams').local.getVideoTracks())
+      this.createMats()
+
+      if (this.cvLoaded) {
+        if (!this.cvVideoBuffer) {
+          this.prepare()
+        }
+
+        this.cvVideoBuffer.srcObject = this.videoStream
+        this.cvVideoBuffer.height = 320 * this.aspectRatio
+      }
+      this.active = true
     }
   }
 }
 
-XROOM_PLUGIN({
-
+xroom.plugin = {
   videoStream: null,
   active: false,
   cvLoaded: false,
@@ -56,24 +78,24 @@ XROOM_PLUGIN({
 
   events: {
     'localStream/changed': onStreamChanged,
+    'peer/flags': onFlagsChange,
   },
 
   async register () {
     // a bit risky to leave it async
     this.loadMasks()
 
-    this.api('addUI', {
+    xroom.api('addUI', {
       component: <UI
-        api={this.api}
-        mbox={this.mbox}
-        i18n={this.i18n}
+        mbox={xroom.mbox}
+        i18n={xroom.i18n}
         masksData={masksData}
         onMaskSelect={id => this.chooseMask(id)}
-        ref={(ref) => { this.ui = ref} }
+        ref={(ref) => { this.uiRef = ref} }
       />
     })
 
-    await this.api('appendScript', { src: '/plugins/nisdos/masks/opencv.js' })
+    await xroom.api('appendScript', { src: '/plugins/nisdos/masks/opencv.js' })
 
     await new Promise(resolve => {
       cv['onRuntimeInitialized'] = () => {
@@ -89,11 +111,12 @@ XROOM_PLUGIN({
               console.log('Mask: AI ready')
               this.cvLoaded = true
 
-              const [ sysStream ] = await this.api('getLocalStream')
+              const sysStream = xroom.api('getStreams').local
 
               if (!this.videoStream && sysStream) {
                 this.videoStream = new MediaStream(sysStream.getVideoTracks())
                 this.camLoaded = true
+                this.active = true
               }
 
               if (!this.mats.dst) {
@@ -117,25 +140,27 @@ XROOM_PLUGIN({
   },
 
   unregister () {
-    this.api('removeIcon')
+    xroom.api('removeIcon')
   },
 
   isSupported () {
     return (
       window.navigator.mediaDevices &&
-       window.navigator.mediaDevices.getUserMedia &&
-        window.WebAssembly &&
-        !window.matchMedia('(max-width: 480px)').matches
+      window.navigator.mediaDevices.getUserMedia &&
+      window.WebAssembly &&
+      !window.matchMedia('(max-width: 480px)').matches
     )
   },
 
   addIcon () {
-    this.api('addIcon', {
-      title: () => this.i18n.t('iconCaption'),
-      onClick: () => this.ui.toggleShow(),
+    xroom.api('addIcon', {
+      title: () => xroom.i18n.t('iconCaption'),
+      onClick: () => this.uiRef.toggleShow(),
       svg: props =>
-        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24">
-          <path fill={props.color || '#000'} d="M21,13A9,9 0 0,1 12,22A9,9 0 0,1 3,13L3.03,4.43C5.68,2.88 8.76,2 12.05,2C15.3,2 18.36,2.87 21,4.38V13M13,19.93C16.39,19.44 19,16.5 19,13V5.59C16.9,4.57 14.54,4 12.05,4C9.5,4 7.08,4.6 4.94,5.66L5,13C5,16.5 7.63,19.44 11,19.93V18H13V19.93M11,16H8L6,13L9,14H10L11,13H13L14,14H15L18,13L16,16H13L12,15L11,16M6,9.03C6.64,8.4 7.5,8.05 8.5,8.05C9.45,8.05 10.34,8.4 11,9.03C10.34,9.65 9.45,10 8.5,10C7.5,10 6.64,9.65 6,9.03M13,9.03C13.64,8.4 14.5,8.05 15.5,8.05C16.45,8.05 17.34,8.4 18,9.03C17.34,9.65 16.45,10 15.5,10C14.5,10 13.64,9.65 13,9.03Z" />
+        <svg width={props.size || 25} height={props.size || 25} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path stroke={props.color} d="M21 13H11a4 4 0 00-4 4v1a4 4 0 004 4h10a4 4 0 004-4v-1a4 4 0 00-4-4z" stroke-width={1.5 * 32/25} stroke-linecap="round" stroke-linejoin="round" />
+          <path stroke={props.color} d="M11.5 19a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM20.5 19a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" stroke-width={1.5 * 32/25} stroke-linecap="round" stroke-linejoin="round" />
+          <path stroke={props.color} d="M3 8a3 3 0 116 0h14a3 3 0 016 0v10a8 8 0 01-8 8H11a8 8 0 01-8-8V8z" stroke-width={1.5 * 32/25} stroke-linecap="round" stroke-linejoin="round" />
         </svg>
     })
   },
@@ -156,7 +181,7 @@ XROOM_PLUGIN({
       this.mats.dst = new cv.Mat(320 * this.aspectRatio, 320, cv.CV_8UC4)
       console.log('Aspect ratio', this.aspectRatio)
     } else {
-      this.mbox({text: 'This browser does not support fully support masks. Video may be squeezed.'})
+      xroom.mbox({text: 'This browser does not support fully support masks. Video may be squeezed.'})
       this.mats.src = new cv.Mat(240, 320, cv.CV_8UC4)
       this.mats.dst = new cv.Mat(240, 320, cv.CV_8UC4)
     }
@@ -178,12 +203,12 @@ XROOM_PLUGIN({
 
   chooseMask (id) {
     if (!this.camLoaded || !this.cvLoaded) {
-      return alert(this.i18n.t('notLoaded'))
+      return alert(xroom.i18n.t('notLoaded'))
     }
 
     if (!id) {
       this.currentMask = null
-      this.api('setLocalVideo', {reset: true})
+      xroom.api('setLocalVideo', {reset: true})
     } else {
       this.currentMask = masksData[id - 1]
 
@@ -194,7 +219,7 @@ XROOM_PLUGIN({
       this.cvVideoBuffer.srcObject = this.videoStream
 
       if (this.outputStream) {
-        this.api('setLocalVideo', {track: this.outputStream.getVideoTracks()[0]})
+        xroom.api('setLocalVideo', {track: this.outputStream.getVideoTracks()[0]})
       }
     }
   },
@@ -258,7 +283,7 @@ XROOM_PLUGIN({
       console.log('AI init error', e)
     }
   }
-})
+}
 
 /**
  * OpenCV error printer
