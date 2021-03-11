@@ -1,12 +1,20 @@
 import 'regenerator-runtime/runtime'
-import React from 'react'
+import * as React from 'preact'
 import UI from './ui'
 
 const X_SIZE = 480
 
-function onStreamChanged (data) {
-  if (data.videoOn && this.tfLoaded) {
-    this.videoStream = new MediaStream(data.stream.getVideoTracks())
+function onStreamChanged () {
+  const { camOn } = xroom.api('getFlags')
+
+  if (camOn && this.tfLoaded) {
+    const systemVT = xroom.api('getStreams').local.getVideoTracks()[0]
+
+    if (this.outputStream && this.outputStream.getVideoTracks()[0].id === systemVT.id) {
+      return
+    }
+
+    this.videoStream = new MediaStream([systemVT])
     this.camLoaded = true
     this.prepare()
 
@@ -15,20 +23,21 @@ function onStreamChanged (data) {
     }
   }
 
-  if (!data.videoOn && !data.external) {
+  if (!camOn) {
     this.paused = true
     this.stashedMode = this.mode
   }
 }
 
-async function onMuteSet ({ peerId, camOn }) {
+async function onFlagsChange ({ peerId, mf }) {
   if (peerId === 'self') {
-    if (!camOn) {
+    if (!mf[1] && !this.paused) {
       this.paused = true
       this.stashedMode = this.mode
-    } else {
-      const [ sysStream ] = await this.api('getLocalStream')
-      this.videoStream = new MediaStream(sysStream.getVideoTracks())
+    } else if (this.paused) {
+      const systemVT = xroom.api('getStreams').local.getVideoTracks()[0]
+
+      this.videoStream = new MediaStream([systemVT])
       this.camLoaded = true
       this.prepare()
 
@@ -39,7 +48,7 @@ async function onMuteSet ({ peerId, camOn }) {
   }
 }
 
-XROOM_PLUGIN({
+xroom.plugin = {
   ctx: null,
   net: null,
   videoStream: null,
@@ -73,30 +82,30 @@ XROOM_PLUGIN({
 
   events: {
     'localStream/changed': onStreamChanged,
-    'peer/muteSet': onMuteSet,
+    'peer/flags': onFlagsChange,
   },
 
   async register () {
-    this.api('addUI', {
+    xroom.api('addUI', {
       component: <UI
-        ui={this.uiLibrary}
-        api={this.api}
-        mbox={this.mbox}
-        i18n={this.i18n}
-        ref={(ref) => { this.ui = ref} }
+        ui={xroom.ui}
+        api={xroom.api}
+        mbox={xroom.mbox}
+        i18n={xroom.i18n}
+        ref={(ref) => { this.uiRef = ref} }
         onModeSelect={mode => this.selectMode(mode)}
       />
     })
 
-    await this.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.2' })
-    await this.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.0' })
+    await xroom.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.2' })
+    await xroom.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.0' })
 
     tf.enableProdMode()
     await tf.ready()
 
     this.tfLoaded = true
 
-    const [ sysStream ] = await this.api('getLocalStream')
+    const sysStream = xroom.api('getStreams').local
 
     if (!this.videoStream && sysStream) {
       this.videoStream = new MediaStream(sysStream.getVideoTracks())
@@ -108,10 +117,10 @@ XROOM_PLUGIN({
   },
 
   unregister () {
-    this.api('removeIcon')
+    xroom.api('removeIcon')
 
     if (this.mode) {
-      this.api('setLocalVideo', {reset: true})
+      xroom.api('setLocalVideo', {reset: true})
     }
   },
 
@@ -120,18 +129,20 @@ XROOM_PLUGIN({
       window.navigator.mediaDevices &&
       window.navigator.mediaDevices.getUserMedia &&
       window.WebAssembly &&
-      !window.matchMedia('(max-width: 480px)').matches && //to disable phones
-      !!window.MediaRecorder && window.MediaRecorder.isTypeSupported('video/webm') //disable safari
+      !window.matchMedia('(max-width: 480px)').matches && // to disable phones
+      !!window.MediaRecorder && window.MediaRecorder.isTypeSupported('video/webm') // disable safari
     )
   },
 
   addIcon () {
-    this.api('addIcon', {
-      title: () => this.i18n.t('iconCaption'),
-      onClick: () => this.ui.toggleShow(),
+    xroom.api('addIcon', {
+      title: () => xroom.i18n.t('iconCaption'),
+      onClick: () => this.uiRef.toggleShow(),
       svg: props =>
-        <svg xmlns="http://www.w3.org/2000/svg" width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24">
-          <path fill={props.color || '#000'} d="M14,8.5A1.5,1.5 0 0,0 12.5,10A1.5,1.5 0 0,0 14,11.5A1.5,1.5 0 0,0 15.5,10A1.5,1.5 0 0,0 14,8.5M14,12.5A1.5,1.5 0 0,0 12.5,14A1.5,1.5 0 0,0 14,15.5A1.5,1.5 0 0,0 15.5,14A1.5,1.5 0 0,0 14,12.5M10,17A1,1 0 0,0 9,18A1,1 0 0,0 10,19A1,1 0 0,0 11,18A1,1 0 0,0 10,17M10,8.5A1.5,1.5 0 0,0 8.5,10A1.5,1.5 0 0,0 10,11.5A1.5,1.5 0 0,0 11.5,10A1.5,1.5 0 0,0 10,8.5M14,20.5A0.5,0.5 0 0,0 13.5,21A0.5,0.5 0 0,0 14,21.5A0.5,0.5 0 0,0 14.5,21A0.5,0.5 0 0,0 14,20.5M14,17A1,1 0 0,0 13,18A1,1 0 0,0 14,19A1,1 0 0,0 15,18A1,1 0 0,0 14,17M21,13.5A0.5,0.5 0 0,0 20.5,14A0.5,0.5 0 0,0 21,14.5A0.5,0.5 0 0,0 21.5,14A0.5,0.5 0 0,0 21,13.5M18,5A1,1 0 0,0 17,6A1,1 0 0,0 18,7A1,1 0 0,0 19,6A1,1 0 0,0 18,5M18,9A1,1 0 0,0 17,10A1,1 0 0,0 18,11A1,1 0 0,0 19,10A1,1 0 0,0 18,9M18,17A1,1 0 0,0 17,18A1,1 0 0,0 18,19A1,1 0 0,0 19,18A1,1 0 0,0 18,17M18,13A1,1 0 0,0 17,14A1,1 0 0,0 18,15A1,1 0 0,0 19,14A1,1 0 0,0 18,13M10,12.5A1.5,1.5 0 0,0 8.5,14A1.5,1.5 0 0,0 10,15.5A1.5,1.5 0 0,0 11.5,14A1.5,1.5 0 0,0 10,12.5M10,7A1,1 0 0,0 11,6A1,1 0 0,0 10,5A1,1 0 0,0 9,6A1,1 0 0,0 10,7M10,3.5A0.5,0.5 0 0,0 10.5,3A0.5,0.5 0 0,0 10,2.5A0.5,0.5 0 0,0 9.5,3A0.5,0.5 0 0,0 10,3.5M10,20.5A0.5,0.5 0 0,0 9.5,21A0.5,0.5 0 0,0 10,21.5A0.5,0.5 0 0,0 10.5,21A0.5,0.5 0 0,0 10,20.5M3,13.5A0.5,0.5 0 0,0 2.5,14A0.5,0.5 0 0,0 3,14.5A0.5,0.5 0 0,0 3.5,14A0.5,0.5 0 0,0 3,13.5M14,3.5A0.5,0.5 0 0,0 14.5,3A0.5,0.5 0 0,0 14,2.5A0.5,0.5 0 0,0 13.5,3A0.5,0.5 0 0,0 14,3.5M14,7A1,1 0 0,0 15,6A1,1 0 0,0 14,5A1,1 0 0,0 13,6A1,1 0 0,0 14,7M21,10.5A0.5,0.5 0 0,0 21.5,10A0.5,0.5 0 0,0 21,9.5A0.5,0.5 0 0,0 20.5,10A0.5,0.5 0 0,0 21,10.5M6,5A1,1 0 0,0 5,6A1,1 0 0,0 6,7A1,1 0 0,0 7,6A1,1 0 0,0 6,5M3,9.5A0.5,0.5 0 0,0 2.5,10A0.5,0.5 0 0,0 3,10.5A0.5,0.5 0 0,0 3.5,10A0.5,0.5 0 0,0 3,9.5M6,9A1,1 0 0,0 5,10A1,1 0 0,0 6,11A1,1 0 0,0 7,10A1,1 0 0,0 6,9M6,17A1,1 0 0,0 5,18A1,1 0 0,0 6,19A1,1 0 0,0 7,18A1,1 0 0,0 6,17M6,13A1,1 0 0,0 5,14A1,1 0 0,0 6,15A1,1 0 0,0 7,14A1,1 0 0,0 6,13Z" />
+        <svg width={props.size || 25} height={props.size || 25} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path stroke={props.color} d="M26 5H6a1 1 0 00-1 1v20c0 .6.4 1 1 1h20c.6 0 1-.4 1-1V6c0-.6-.4-1-1-1z" stroke-width={1.5 * 32/25} stroke-linecap="round" stroke-linejoin="round" />
+          <path stroke={props.color} d="M27 20l-5.3-5.3a1 1 0 00-1.4 0l-5.6 5.6a1 1 0 01-1.4 0l-2.6-2.6a1 1 0 00-1.4 0L5 22" stroke-width={1.5 * 32/25} stroke-linecap="round" stroke-linejoin="round" />
+          <path stroke={props.color} d="M12.5 13a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" stroke-width={1.5 * 32/25} stroke-linecap="round" stroke-linejoin="round" />
         </svg>
     })
   },
@@ -154,11 +165,11 @@ XROOM_PLUGIN({
 
     if (mode > 0) {
       if (this.outputStream) {
-        this.api('setLocalVideo', {track: this.outputStream.getVideoTracks()[0]})
+        xroom.api('setLocalVideo', {track: this.outputStream.getVideoTracks()[0]})
         this.perform()
       }
     } else {
-      this.api('setLocalVideo', {reset: true})
+      xroom.api('setLocalVideo', {reset: true})
     }
   },
 
@@ -176,7 +187,7 @@ XROOM_PLUGIN({
     if (settings && settings.width) {
       this.aspectRatio = settings.height / settings.width
     } else {
-      this.mbox({text: 'This browser does not support fully support rescaling. Video may be squeezed.'})
+      xroom.mbox({text: 'This browser does not support fully support rescaling. Video may be squeezed.'})
     }
 
     // https://github.com/tensorflow/tfjs-models/tree/master/body-pix
@@ -267,4 +278,4 @@ XROOM_PLUGIN({
       }
     })
   }
-})
+}

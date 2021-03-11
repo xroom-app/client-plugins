@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import * as React from 'preact'
 
 const modeNameCodes = ['modeNormal', 'modeBlur', 'modeColorPop', 'modeImage']
 
-export default class extends Component {
+export default class extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
