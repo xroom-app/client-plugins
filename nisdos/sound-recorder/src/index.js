@@ -112,7 +112,7 @@ xroom.plugin = {
   },
 
   startRecording (stream) {
-    xroom.api('sendMessage', {type: 'text', content: xroom.i18n.t('recNotify'), to: 'all'})
+    xroom.api('sendMessage', {msg: xroom.i18n.t('recNotify'), from: 'self', to: 'all', pvt: false})
 
     this.recordedBlobs = []
 
