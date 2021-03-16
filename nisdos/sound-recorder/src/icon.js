@@ -49,9 +49,9 @@ export default class IconSvg extends React.Component {
     color = color || '#000'
 
     return (
-      <svg width={size || 25} height={size || 25} fill="none" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-        <path d="M16 28a12 12 0 100-24 12 12 0 000 24z" stroke={ color } stroke-width={1.5 * 32/25} stroke-miterlimit="10" />
-        <path d="M16 24a8 8 0 100-16 8 8 0 000 16z" stroke={ blink ? '#e04006' : color } stroke-width={1.5 * 32/25} stroke-miterlimit="10" />
+      <svg width={size || 25} height={size || 25} fill="none" viewBox="0 0 25 26" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12.5 7.3v10.4M15.6 10.4v4.2M18.8 8.3v8.4M21.9 13.5v-2M9.4 4.2v16.6M6.3 9.4v6.2M3.1 13.5v-2" stroke={ color } stroke-width={1.5 * 32/25} stroke-linecap="round"/>
+        <circle cx="18" cy="20" r="5" fill={ blink ? '#e04006' : color } stroke={ blink ? '#e04006' : color } />
       </svg>
     )
   }
