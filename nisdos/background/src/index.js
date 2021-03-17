@@ -4,17 +4,17 @@ import UI from './ui'
 
 const X_SIZE = 480
 
-function onStreamChanged () {
+function onStreamChanged (external) {
+  if (external) {
+    return
+  }
+
   const { camOn } = xroom.api('getFlags')
 
   if (this.paused && camOn && this.tfLoaded) {
-    const systemVT = xroom.api('getStreams').local.getVideoTracks()[0]
+    const cameraVT = xroom.api('getStreams').local.getVideoTracks().filter(t => !t.isScreen)[0]
 
-    if (this.outputStream && this.outputStream.getVideoTracks()[0].id === systemVT.id) {
-      return
-    }
-
-    this.videoStream = new MediaStream([systemVT])
+    this.videoStream = new MediaStream([cameraVT])
     this.camLoaded = true
     this.prepare()
 
@@ -95,18 +95,17 @@ xroom.plugin = {
       />
     })
 
-    await xroom.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.2' })
-    await xroom.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.0' })
+    await xroom.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.1' })
+    await xroom.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.1' })
 
     tf.enableProdMode()
     await tf.ready()
-
     this.tfLoaded = true
 
-    const sysStream = xroom.api('getStreams').local
+    const cameraVT = xroom.api('getStreams').local.getVideoTracks().filter(t => !t.isScreen)[0]
 
-    if (!this.videoStream && sysStream) {
-      this.videoStream = new MediaStream(sysStream.getVideoTracks())
+    if (!this.videoStream && cameraVT) {
+      this.videoStream = new MediaStream([cameraVT])
       this.camLoaded = true
       this.prepare()
     }
@@ -125,10 +124,10 @@ xroom.plugin = {
   isSupported () {
     return (
       window.navigator.mediaDevices &&
-      window.navigator.mediaDevices.getUserMedia
+      window.navigator.mediaDevices.getUserMedia &&
       // window.WebAssembly &&
-      // !window.matchMedia('(max-width: 480px)').matches && // to disable phones
-      // !!window.MediaRecorder && window.MediaRecorder.isTypeSupported('video/webm') // disable safari
+      // !window.matchMedia('(max-width: 1024px)').matches && // to disable phones and tablets
+      !!window.MediaRecorder && window.MediaRecorder.isTypeSupported('video/webm') // disable safari
     )
   },
 
@@ -185,13 +184,14 @@ xroom.plugin = {
     if (settings && settings.width) {
       this.aspectRatio = settings.height / settings.width
     } else {
-      xroom.mbox({text: 'This browser does not support fully support rescaling. Video may be squeezed.'})
+      console.log('This browser does not support fully support rescaling. Video may be squeezed.')
+      // xroom.mbox({text: 'This browser does not support fully support rescaling. Video may be squeezed.'})
     }
 
     // https://github.com/tensorflow/tfjs-models/tree/master/body-pix
     const options = {
       multiplier: 0.75,
-      stride: 32,
+      outputStride: 16,
       quantBytes: 4,
     }
 
@@ -214,8 +214,8 @@ xroom.plugin = {
       this.videoElem = video
       this.canvasElem = canvas
 
-      // canvas.style.position = 'absolute'
-      // document.getElementById('root').appendChild(canvas)
+    //  canvas.style.position = 'absolute'
+    //  document.body.appendChild(canvas)
 
       this.net = await bodyPix.load(options)
       this.paused = false
