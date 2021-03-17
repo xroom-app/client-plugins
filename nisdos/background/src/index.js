@@ -33,9 +33,9 @@ async function onFlagsChange ({ peerId, mf }) {
       this.paused = true
       this.stashedMode = this.mode
     } else if (this.paused) {
-      const systemVT = xroom.api('getStreams').local.getVideoTracks()[0]
+      const cameraVT = xroom.api('getStreams').local.getVideoTracks().filter(t => !t.isScreen)[0]
 
-      this.videoStream = new MediaStream([systemVT])
+      this.videoStream = new MediaStream([cameraVT])
       this.camLoaded = true
       this.prepare()
 
