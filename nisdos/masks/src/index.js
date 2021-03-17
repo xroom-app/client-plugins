@@ -10,12 +10,18 @@ const masksData = [
   ['m3',  0.0, -0.85, 1.2, 1.2],
 ]
 
-function onStreamChanged () {
+function onStreamChanged (external) {
+  if (external) {
+    return
+  }
+
   const { camOn } = xroom.api('getFlags')
 
   if (camOn && !this.active) {
+    const cameraVT = xroom.api('getStreams').local.getVideoTracks().filter(t => !t.isScreen)[0]
+
     this.camLoaded = true
-    this.videoStream = new MediaStream(xroom.api('getStreams').local.getVideoTracks())
+    this.videoStream = new MediaStream([cameraVT])
     this.createMats()
 
     if (this.cvLoaded) {
@@ -37,8 +43,10 @@ function onFlagsChange ({ peerId, mf }) {
     if (!mf[1] && !this.paused) {
       this.paused = true
     } else if (mf[1] && this.paused) {
+      const cameraVT = xroom.api('getStreams').local.getVideoTracks().filter(t => !t.isScreen)[0]
+
+      this.videoStream = new MediaStream([cameraVT])
       this.camLoaded = true
-      this.videoStream = new MediaStream(xroom.api('getStreams').local.getVideoTracks())
       this.createMats()
 
       if (this.cvLoaded) {
@@ -111,10 +119,10 @@ xroom.plugin = {
               console.log('Mask: AI ready')
               this.cvLoaded = true
 
-              const sysStream = xroom.api('getStreams').local
+              const cameraVT = xroom.api('getStreams').local.getVideoTracks().filter(t => !t.isScreen)[0]
 
-              if (!this.videoStream && sysStream) {
-                this.videoStream = new MediaStream(sysStream.getVideoTracks())
+              if (!this.videoStream && cameraVT) {
+                this.videoStream = new MediaStream([cameraVT])
                 this.camLoaded = true
                 this.active = true
               }
