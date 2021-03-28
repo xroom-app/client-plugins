@@ -51,6 +51,7 @@ export default class extends React.Component {
 
     this.props.api('sendMessage', {
       to: 'all', from: 'self', pvt: false, uid: Math.random(),
+      // TODO: take type from MIME
       file: new File([recordings[i].blob], recordings[i].mimeType.replace('/', `-${i + 1}.`), { type: 'audio/webm' }),
     })
   }

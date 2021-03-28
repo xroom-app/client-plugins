@@ -72,11 +72,15 @@ xroom.plugin = {
   },
 
   register () {
-    if (window.MediaRecorder.isTypeSupported) {
-      if (window.MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
+    const isSupported = window.MediaRecorder.isTypeSupported
+
+    if (isSupported) {
+      if (isSupported('audio/ogg;codecs=opus')) {
         this.mimeType = 'audio/ogg'
-      } else if (window.MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+      } else if (isSupported('audio/webm;codecs=opus')) {
         this.mimeType = 'audio/webm'
+      } else if (isSupported('audio/mp4')) {
+        this.mimeType = 'audio/mp4'
       }
     }
 
