@@ -4,6 +4,24 @@ import UI from './ui'
 
 const X_SIZE = 480
 
+function connectCamera (that) {
+  const cameraVT = xroom.api('getStreams').local.getVideoTracks().filter(t => t.source === 'user')[0]
+
+  if (!cameraVT) {
+    return
+  }
+
+  console.log('background plugin: connectCamera()')
+
+  that.videoStream = new MediaStream([cameraVT])
+  that.camLoaded = true
+  that.prepare()
+
+  if (that.stashedMode) {
+    that.selectMode(that.stashedMode)
+  }
+}
+
 function onStreamChanged (external) {
   if (external) {
     return
@@ -12,15 +30,7 @@ function onStreamChanged (external) {
   const { camOn } = xroom.api('getFlags')
 
   if (this.paused && camOn && this.tfLoaded) {
-    const cameraVT = xroom.api('getStreams').local.getVideoTracks().filter(t => !t.isScreen)[0]
-
-    this.videoStream = new MediaStream([cameraVT])
-    this.camLoaded = true
-    this.prepare()
-
-    if (this.stashedMode) {
-      this.selectMode(this.stashedMode)
-    }
+    connectCamera(this)
   } else if (!camOn && !this.paused) {
     this.paused = true
     this.stashedMode = this.mode
@@ -33,15 +43,7 @@ async function onFlagsChange ({ peerId, mf }) {
       this.paused = true
       this.stashedMode = this.mode
     } else if (this.paused) {
-      const cameraVT = xroom.api('getStreams').local.getVideoTracks().filter(t => !t.isScreen)[0]
-
-      this.videoStream = new MediaStream([cameraVT])
-      this.camLoaded = true
-      this.prepare()
-
-      if (this.stashedMode) {
-        this.selectMode(this.stashedMode)
-      }
+      connectCamera(this)
     }
   }
 }
