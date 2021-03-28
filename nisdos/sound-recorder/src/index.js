@@ -37,6 +37,7 @@ xroom.plugin = {
       warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
       getIntoRoom: 'To start recording enter this room with a plugin already added.',
       recNotify: '📢 I have started recording audio.',
+      recOffNotify: '⏹️ Audio recording stopped.',
     },
     sv: {
       iconCaptionOn: 'Ljudinsp. på',
@@ -46,6 +47,7 @@ xroom.plugin = {
       warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
       getIntoRoom: 'För att börja inspelningen, gå in i rummet med plugin:et redan lagt till.',
       recNotify: '📢 Jag har börjat en inspelning',
+      recOffNotify: '⏹️ Inspelningen slutat.',
     },
     ru: {
       iconCaptionOn: 'Запись звука вкл.',
@@ -55,6 +57,7 @@ xroom.plugin = {
       warn1: 'Файлы исчезнут после закрытия окна.<br>Скачайте их, если они нужны!',
       getIntoRoom: 'Для записи зайдите в комнату с уже добавленным плагином.',
       recNotify: '📢 Я начал запись аудио.',
+      recOffNotify: '⏹️ Запись аудио завершена.',
     },
   },
 
@@ -149,6 +152,7 @@ xroom.plugin = {
     this.mediaRecorder.stop()
     this.isRecording = false
     xroom.api('renderControls')
+    xroom.api('sendMessage', {msg: xroom.i18n.t('recOffNotify'), from: 'self', to: 'all', pvt: false})
   },
 
   composite (videoTrackStream = null, audioTrackStreams = []) {
