@@ -13,12 +13,22 @@ function connectCamera (that) {
 
   console.log('background plugin: connectCamera()')
 
-  that.videoStream = new MediaStream([cameraVT])
+  that.videoStream = new MediaStream([cameraVT.clone()])
   that.camLoaded = true
   that.prepare()
 
   if (that.stashedMode) {
     that.selectMode(that.stashedMode)
+  }
+}
+
+function resetCamera (that) {
+  xroom.api('setLocalVideo', {reset: true})
+
+  const track = that.videoStream.getTracks()[0]
+
+  if (track) {
+    track.stop()
   }
 }
 
@@ -119,7 +129,7 @@ xroom.plugin = {
     xroom.api('removeIcon')
 
     if (this.mode) {
-      xroom.api('setLocalVideo', {reset: true})
+      resetCamera(this)
     }
   },
 
@@ -168,7 +178,7 @@ xroom.plugin = {
         this.perform()
       }
     } else {
-      xroom.api('setLocalVideo', {reset: true})
+      resetCamera(this)
     }
   },
 
