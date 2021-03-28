@@ -42,6 +42,19 @@ export default class extends React.Component {
     window.URL.revokeObjectURL(url)
   }
 
+  pushToChat (i) {
+    const { recordings } = this.state
+
+    if (!recordings[i]) {
+      return
+    }
+
+    this.props.api('sendMessage', {
+      to: 'all', from: 'self', pvt: false, uid: Math.random(),
+      file: new File([recordings[i].blob], recordings[i].mimeType.replace('/', `-${i + 1}.`), { type: 'audio/webm' }),
+    })
+  }
+
   close () {
     this.dialog && this.dialog.close()
   }
@@ -60,11 +73,15 @@ export default class extends React.Component {
               return (
                 <div style={styles.recRow} key={i}>
                   <div>{ i + 1 })</div>
-                  <div>{ el.ts.toISOString().replace('T', ' ').split('.')[0] }</div>
-                  <div>{ (el.blob.size / 1024 / 1024).toFixed(2) + ' MB' }</div>
-                  <div>
+                  <div style={{margin: '0 8px'}}>{ el.ts.toISOString().replace('T', ' ').split('.')[0] }</div>
+                  <div style={{marginRight: '8px'}}>{ (el.blob.size / 1024 / 1024).toFixed(2) + ' MB' }</div>
+                  <div style={{display: 'flex'}}>
                     <Button secondary onClick={() => this.save(i)}>
                       { i18n.t('btnSave') }
+                    </Button>
+                    &nbsp;&nbsp;
+                    <Button onClick={() => this.pushToChat(i)} secondary>
+                      { i18n.t('btnToChat') }
                     </Button>
                   </div>
                 </div>

@@ -34,6 +34,7 @@ xroom.plugin = {
       iconCaptionOff: 'Sound rec off',
       btnSave: 'Save',
       btnClose: 'Close',
+      btnToChat: 'Send to chat',
       warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
       getIntoRoom: 'To start recording enter this room with a plugin already added.',
       recNotify: '📢 I have started recording audio.',
@@ -44,6 +45,7 @@ xroom.plugin = {
       iconCaptionOff: 'Ljudinsp. av',
       btnSave: 'Spara',
       btnClose: 'Stäng',
+      btnToChat: 'Skicka till chat',
       warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
       getIntoRoom: 'För att börja inspelningen, gå in i rummet med plugin:et redan lagt till.',
       recNotify: '📢 Jag har börjat en inspelning',
@@ -54,6 +56,7 @@ xroom.plugin = {
       iconCaptionOff: 'Запись звука выкл.',
       btnSave: 'Сохранить',
       btnClose: 'Закрыть',
+      btnToChat: 'Отправить в чат',
       warn1: 'Файлы исчезнут после закрытия окна.<br>Скачайте их, если они нужны!',
       getIntoRoom: 'Для записи зайдите в комнату с уже добавленным плагином.',
       recNotify: '📢 Я начал запись аудио.',
@@ -81,6 +84,7 @@ xroom.plugin = {
 
     xroom.api('addUI', { component:
       <UI
+        api={xroom.api}
         ui={xroom.ui}
         i18n={xroom.i18n}
         ref={(ref) => { this.ui = ref} }
