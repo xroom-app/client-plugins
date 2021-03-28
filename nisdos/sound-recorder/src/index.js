@@ -75,7 +75,7 @@ xroom.plugin = {
     const isSupported = window.MediaRecorder.isTypeSupported
 
     if (isSupported) {
-      if (isSupported('audio/ogg;codecs=opus')) {
+      if (isSupported('audio/ogg;codecs=opus') && !xroom.device.startsWith('Firefox')) {
         this.mimeType = 'audio/ogg'
       } else if (isSupported('audio/webm;codecs=opus')) {
         this.mimeType = 'audio/webm'
