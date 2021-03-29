@@ -47,7 +47,7 @@ xroom.plugin = {
       iconCaptionOn: 'Skärminsp. på',
       iconCaptionOff: 'Skärminsp. av',
       btnSave: 'Spara',
-      btnClose: 'Stänga',
+      btnClose: 'Stäng',
       btnToChat: 'Skicka till chat',
       warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
       warn2: 'Starta kameran eller skärmdelningen först',
