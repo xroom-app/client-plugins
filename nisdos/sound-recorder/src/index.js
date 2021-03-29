@@ -40,6 +40,17 @@ xroom.plugin = {
       recNotify: '📢 I have started recording audio.',
       recOffNotify: '⏹️ Audio recording stopped.',
     },
+    es: {
+      iconCaptionOn: 'Screen rec on',
+      iconCaptionOff: 'Screen rec off',
+      btnSave: 'Save',
+      btnClose: 'Close',
+      btnToChat: 'Send to chat',
+      warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
+      warn2: 'Turn on your mic and cam or start screen sharing first',
+      recNotify: '📢 Empecé a grabar audio.',
+      recOffNotify: '⏹️ Se detuvo la grabación de audio.',
+    },
     sv: {
       iconCaptionOn: 'Ljudinsp. på',
       iconCaptionOff: 'Ljudinsp. av',
@@ -49,7 +60,7 @@ xroom.plugin = {
       warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
       getIntoRoom: 'För att börja inspelningen, gå in i rummet med plugin:et redan lagt till.',
       recNotify: '📢 Jag har börjat en inspelning',
-      recOffNotify: '⏹️ Inspelningen slutat.',
+      recOffNotify: '⏹️ Inspelning avslutad.',
     },
     ru: {
       iconCaptionOn: 'Запись звука вкл.',

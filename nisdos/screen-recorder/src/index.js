@@ -43,6 +43,17 @@ xroom.plugin = {
       recNotify: '📢 I have started recording my screen.',
       recOffNotify: '⏹️ Screen recording stopped.',
     },
+    es: {
+      iconCaptionOn: 'Screen rec on',
+      iconCaptionOff: 'Screen rec off',
+      btnSave: 'Save',
+      btnClose: 'Close',
+      btnToChat: 'Send to chat',
+      warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
+      warn2: 'Turn on your mic and cam or start screen sharing first',
+      recNotify: '📢 Empecé a grabar pantalla.',
+      recOffNotify: '⏹️ Se detuvo la grabación de pantalla.',
+    },
     sv: {
       iconCaptionOn: 'Skärminsp. på',
       iconCaptionOff: 'Skärminsp. av',
@@ -52,7 +63,7 @@ xroom.plugin = {
       warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
       warn2: 'Starta kameran eller skärmdelningen först',
       recNotify: '📢 Jag har börjat en skärminspelning',
-      recOffNotify: '⏹️ Inspelningen slutat.',
+      recOffNotify: '⏹️ Inspelning avslutad.',
     },
     ru: {
       iconCaptionOn: 'Запись экрана вкл.',
