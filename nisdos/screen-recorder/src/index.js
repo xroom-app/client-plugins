@@ -41,6 +41,7 @@ xroom.plugin = {
       warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
       warn2: 'Turn on your mic and cam or start screen sharing first',
       recNotify: '📢 I have started recording my screen.',
+      recOffNotify: '⏹️ Screen recording stopped.',
     },
     sv: {
       iconCaptionOn: 'Skärminsp. på',
@@ -51,6 +52,7 @@ xroom.plugin = {
       warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
       warn2: 'Starta kameran eller skärmdelningen först',
       recNotify: '📢 Jag har börjat en skärminspelning',
+      recOffNotify: '⏹️ Inspelningen slutat.',
     },
     ru: {
       iconCaptionOn: 'Запись экрана вкл.',
@@ -61,6 +63,7 @@ xroom.plugin = {
       warn1: 'Файлы исчезнут после закрытия окна.<br>Скачайте их, если они нужны!',
       warn2: 'Сначала активируйте камеру или скриншеринг',
       recNotify: '📢 Я начал запись экрана.',
+      recOffNotify: '⏹️ Запись экрана завершена.',
     },
   },
 
@@ -179,6 +182,7 @@ xroom.plugin = {
     this.mediaRecorder.stop()
     this.isRecording = false
     xroom.api('renderControls')
+    xroom.api('sendMessage', {msg: xroom.i18n.t('recOffNotify'), from: 'self', to: 'all', pvt: false})
   },
 
   composite (videoTrackStream = null, audioTrackStreams = []) {
