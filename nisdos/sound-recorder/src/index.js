@@ -175,13 +175,10 @@ xroom.plugin = {
     })
 
     if (videoTrackStream) {
-      const
-        tracks = [],
-        videoTrack = videoTrackStream.getVideoTracks()[0],
-        mixedTracks = dest.stream.getAudioTracks()[0]
+      const tracks = []
 
-      videoTrack && tracks.push(videoTrack)
-      mixedTracks && tracks.push(mixedTracks)
+      videoTrackStream.getVideoTracks().forEach(tracks.push)
+      dest.stream.getAudioTracks().forEach(tracks.push)
 
       return new MediaStream(tracks)
     }
