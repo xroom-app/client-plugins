@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "catenary-curve": "^1.0.1",
+    "classnames": "^2.2.6",
     "lazy-brush": "^1.0.1",
     "resize-observer-polyfill": "^1.5.1"
   }

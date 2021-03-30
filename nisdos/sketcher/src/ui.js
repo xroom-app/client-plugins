@@ -263,7 +263,6 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
-    position: 'fixed',
     background: '#fff',
     zIndex: 100,
     top: 650,
