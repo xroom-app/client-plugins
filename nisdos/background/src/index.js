@@ -21,7 +21,7 @@ async function connectCamera (that) {
 function resetCamera (that) {
   xroom.api('setLocalVideo', {reset: true})
 
-  const track = that.videoStream.getTracks()[0]
+  const track = that.videoStream ? that.videoStream.getTracks()[0] : undefined
 
   if (track) {
     track.stop()
