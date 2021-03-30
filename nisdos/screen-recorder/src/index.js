@@ -39,7 +39,7 @@ xroom.plugin = {
       btnClose: 'Close',
       btnToChat: 'Send to chat',
       warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
-      warn2: 'Turn on your mic and cam or start screen sharing first',
+      warn2: 'Turn on your cam or start screen sharing first',
       recNotify: '📢 I have started recording my screen.',
       recOffNotify: '⏹️ Screen recording stopped.',
     },
@@ -50,7 +50,7 @@ xroom.plugin = {
       btnClose: 'Close',
       btnToChat: 'Send to chat',
       warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
-      warn2: 'Turn on your mic and cam or start screen sharing first',
+      warn2: 'Turn on your cam or start screen sharing first',
       recNotify: '📢 Empecé a grabar pantalla.',
       recOffNotify: '⏹️ Se detuvo la grabación de pantalla.',
     },
@@ -149,7 +149,7 @@ xroom.plugin = {
     this.countDownStep = 3
     this.recordedBlobs = []
 
-    if (!this.audioCompositeStream || !micOn || (!screenOn && !camOn)) {
+    if (!this.audioCompositeStream || (!micOn && !screenOn && !camOn)) {
       return xroom.mbox({text: xroom.i18n.t('warn2')})
     }
 
@@ -198,32 +198,35 @@ xroom.plugin = {
 
   composite (videoTrackStream = null, audioTrackStreams = []) {
     const
+      tracks = [],
       ctx = new AudioContext(),
       dest = ctx.createMediaStreamDestination()
 
-    audioTrackStreams.map(stream => {
-      if (stream && stream.getAudioTracks().length) {
+    let atc = 0
+
+    audioTrackStreams.filter(Boolean).map((/** @type {MediaStream} */ stream) => {
+      const count = stream.getAudioTracks().length
+
+      if (count) {
         ctx.createMediaStreamSource(stream).connect(dest)
+        atc += count
       }
     })
 
-    if (videoTrackStream) {
-      const
-        tracks = [],
-        { screenOn } = xroom.api('getFlags'),
-        videoTrack = videoTrackStream.getVideoTracks()[screenOn ? 1 : 0]
+    if (atc) {
+      const mixedTrack = dest.stream.getAudioTracks()[0]
 
-      videoTrack && tracks.push(videoTrack)
-
-      if (audioTrackStreams.length) {
-        const mixedTracks = dest.stream.getAudioTracks()[0]
-
-        mixedTracks && tracks.push(mixedTracks)
-      }
-
-      return new MediaStream(tracks)
+      mixedTrack && tracks.push(mixedTrack)
     }
 
-    return dest.stream
+    if (videoTrackStream) {
+      const
+        { screenOn } = xroom.api('getFlags'),
+        videoTrack = videoTrackStream.getVideoTracks().filter(t => t.source === (screenOn ? 'screen' : 'user'))[0]
+
+      videoTrack && tracks.push(videoTrack)
+    }
+
+    return new MediaStream(tracks)
   }
 }
