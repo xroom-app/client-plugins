@@ -136,7 +136,8 @@ xroom.plugin = {
       !xroom.device.startsWith('Firefox') &&
       // window.WebAssembly &&
       // !window.matchMedia('(max-width: 1024px)').matches && // to disable phones and tablets
-      !!window.MediaRecorder && window.MediaRecorder.isTypeSupported('video/webm') // disable safari
+      !!window.MediaRecorder && window.MediaRecorder.isTypeSupported('video/webm') && // disable safari
+      !window.matchMedia('(max-width: 480px)').matches
     )
   },
 
