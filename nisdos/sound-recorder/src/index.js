@@ -30,45 +30,45 @@ xroom.plugin = {
 
   translations: {
     en: {
+      header: 'Audio recorder',
       iconCaptionOn: 'Sound rec on',
       iconCaptionOff: 'Sound rec off',
-      btnSave: 'Save',
-      btnClose: 'Close',
-      btnToChat: 'Send to chat',
-      warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
+      btnStart: 'Start recording',
+      btnStop: 'Stop recording',
+      files: 'Recently recorded files',
       getIntoRoom: 'To start recording enter this room with a plugin already added.',
       recNotify: '📢 I have started recording audio.',
       recOffNotify: '⏹️ Audio recording stopped.',
     },
     es: {
+      header: 'Audio recorder',
       iconCaptionOn: 'Screen rec on',
       iconCaptionOff: 'Screen rec off',
-      btnSave: 'Save',
-      btnClose: 'Close',
-      btnToChat: 'Send to chat',
-      warn1: 'Files will disappear if you close the browser.<br>Download them if you need them!',
-      warn2: 'Turn on your mic and cam or start screen sharing first',
+      btnStart: 'Start recording',
+      btnStop: 'Stop recording',
+      files: 'Recently recorded files',
+      getIntoRoom: 'To start recording enter this room with a plugin already added.',
       recNotify: '📢 Empecé a grabar audio.',
       recOffNotify: '⏹️ Se detuvo la grabación de audio.',
     },
     sv: {
+      header: 'Ljudinspelning',
       iconCaptionOn: 'Ljudinsp. på',
       iconCaptionOff: 'Ljudinsp. av',
-      btnSave: 'Spara',
-      btnClose: 'Stäng',
-      btnToChat: 'Skicka till chat',
-      warn1: 'Filerna ska försvinna efter du stänger webbläsaren.<br>Ladda dem ner om dem behövs!',
+      btnStart: 'Börja inspelningen',
+      btnStop: 'Sluta inspelningen',
+      files: 'Inspelade filer',
       getIntoRoom: 'För att börja inspelningen, gå in i rummet med plugin:et redan lagt till.',
       recNotify: '📢 Jag har börjat en inspelning',
       recOffNotify: '⏹️ Inspelning avslutad.',
     },
     ru: {
+      header: 'Запись аудио',
       iconCaptionOn: 'Запись звука вкл.',
       iconCaptionOff: 'Запись звука выкл.',
-      btnSave: 'Сохранить',
-      btnClose: 'Закрыть',
-      btnToChat: 'Отправить в чат',
-      warn1: 'Файлы исчезнут после закрытия окна.<br>Скачайте их, если они нужны!',
+      btnStart: 'Начать запись',
+      btnStop: 'Закончить запись',
+      files: 'Недавно записаные файлы',
       getIntoRoom: 'Для записи зайдите в комнату с уже добавленным плагином.',
       recNotify: '📢 Я начал запись аудио.',
       recOffNotify: '⏹️ Запись аудио завершена.',
@@ -103,6 +103,8 @@ xroom.plugin = {
         ui={xroom.ui}
         i18n={xroom.i18n}
         ref={(ref) => { this.ui = ref} }
+        startRec={() => this.startRecording(this.audioCompositeStream)}
+        stopRec={() => this.stopRecording()}
       />
     })
 
@@ -118,13 +120,7 @@ xroom.plugin = {
       title: () => {
         return this.isRecording ? xroom.i18n.t('iconCaptionOn') : xroom.i18n.t('iconCaptionOff')
       },
-      onClick: () => {
-        if (this.isRecording) {
-          this.stopRecording()
-        } else {
-          this.startRecording(this.audioCompositeStream)
-        }
-      },
+      onClick: () => this.ui.open(),
       svg: props => <IconSvg {...props} on={this.isRecording} />,
     })
   },
@@ -152,7 +148,7 @@ xroom.plugin = {
     }
 
     this.mediaRecorder.onstop = () => {
-      this.ui.openWith(new Blob(this.recordedBlobs, { type: this.mimeType }), this.mimeType)
+      this.ui.push(new Blob(this.recordedBlobs, { type: this.mimeType }), this.mimeType)
     }
 
     this.mediaRecorder.ondataavailable = (e) => this.handleDataAvailable(e)
