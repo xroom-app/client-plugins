@@ -95,7 +95,10 @@ export default class extends React.Component {
 
           {
             recordings.length ?
-              <div style={styles.filesHeader}>{ i18n.t('files') }</div>
+              <>
+                <div style={styles.filesHeader}>{ i18n.t('files') }</div>
+                <div style={styles.filesHeader2}>({ i18n.t('warn1') })</div>
+              </>
               : null
           }
         </div>
@@ -109,14 +112,18 @@ export default class extends React.Component {
                   <div style={{margin: '0px auto 0 0.5rem'}}>{ el.ts.toISOString().replace('T', ' ').split('.')[0] }</div>
                   <div style={{margin: 'auto'}}>{ (el.blob.size / 1024 / 1024).toFixed(2) + ' MB' }</div>
                   <div style={{display: 'flex'}}>
-                    <svg onClick={() => this.pushToChat(i)} style={{cursor: 'pointer'}} width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path stroke="var(--box-1)" d="M19.1 5L3.5 9.4a.7.7 0 00-.1 1.3l7.2 3.4.3.3 3.4 7.2a.7.7 0 001.3 0L20 5.8A.7.7 0 0019 5zM11 14l4-4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <a title={ i18n.t('btnToChat') } href="#" onClick={ev => ev.preventDefault()}>
+                      <svg onClick={() => this.pushToChat(i)} style={{cursor: 'pointer'}} width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke="var(--box-1)" d="M19.1 5L3.5 9.4a.7.7 0 00-.1 1.3l7.2 3.4.3.3 3.4 7.2a.7.7 0 001.3 0L20 5.8A.7.7 0 0019 5zM11 14l4-4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </a>
                     &nbsp; &nbsp;
-                    <svg onClick={() => this.save(i)} style={{cursor: 'pointer'}} width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path stroke="var(--box-1)" d="M8.4 10.7l4.1 4.1 4.1-4M12.5 3.9v11" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path stroke="var(--box-1)" d="M21.9 13.3v7a.8.8 0 01-.8.8H3.9a.8.8 0 01-.8-.8v-7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <a title={ i18n.t('btnSave') } href="#" onClick={ev => ev.preventDefault()}>
+                      <svg onClick={() => this.save(i)} style={{cursor: 'pointer'}} width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke="var(--box-1)" d="M8.4 10.7l4.1 4.1 4.1-4M12.5 3.9v11" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path stroke="var(--box-1)" d="M21.9 13.3v7a.8.8 0 01-.8.8H3.9a.8.8 0 01-.8-.8v-7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </a>
                   </div>
                 </div>
               )
@@ -145,12 +152,17 @@ const styles = {
     fontWeight: '500',
   },
   filesHeader: {
-    borderBottom: '0.5px solid',
-    paddingBottom: '0.5rem',
     width: '100%',
     fontSize: '0.88rem',
-    margin: '3rem 0 0.5rem',
+    margin: '3rem 0 0',
     fontWeight: '400',
+  },
+  filesHeader2: {
+    width: '100%',
+    fontSize: '0.7rem',
+    fontWeight: '300',
+    borderBottom: '0.5px solid',
+    paddingBottom: '0.5rem',
   },
   recRow: {
     display: 'flex',
