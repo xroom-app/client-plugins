@@ -106,10 +106,15 @@ xroom.plugin = {
 
     await xroom.api('addUI', { component:
       <UI
+        api={xroom.api}
         ui={xroom.ui}
         i18n={xroom.i18n}
-        api={xroom.api}
-        ref={(ref) => { this.uiRef = ref} }
+        ref={(ref) => { this.ui = ref} }
+        startRec={() => {
+          this.ui.close()
+          this.preStartRecording()
+        }}
+        stopRec={() => this.stopRecording()}
       />
     })
 
@@ -125,7 +130,7 @@ xroom.plugin = {
   addIcon () {
     xroom.api('addIcon', {
       title: () => this.isRecording ? xroom.i18n.t('iconCaptionOn') : xroom.i18n.t('iconCaptionOff'),
-      onClick: () => this.isRecording ? this.stopRecording() : this.preStartRecording(),
+      onClick: () => this.ui.open(),
       svg: props => <IconSvg {...props} on={this.isRecording}/>
     })
   },
@@ -173,7 +178,7 @@ xroom.plugin = {
     }
 
     this.mediaRecorder.onstop = () => {
-      this.uiRef.openWith(new Blob(this.recordedBlobs, { type: this.mimeType }), this.mimeType)
+      this.ui.push(new Blob(this.recordedBlobs, { type: this.mimeType }), this.mimeType)
     }
 
     this.mediaRecorder.ondataavailable = (e) => this.handleDataAvailable(e)
