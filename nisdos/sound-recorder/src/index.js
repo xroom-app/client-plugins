@@ -39,21 +39,19 @@ xroom.plugin = {
       btnToChat: 'Send to chat',
       warn1: 'All recorded data will disappear after the browser is closed',
       files: 'Recently recorded files',
-      getIntoRoom: 'To start recording enter this room with a plugin already added.',
       recNotify: '📢 I have started recording audio.',
       recOffNotify: '⏹️ Audio recording stopped.',
     },
     es: {
       header: 'Audio recorder',
-      iconCaptionOn: 'Screen rec on',
-      iconCaptionOff: 'Screen rec off',
+      iconCaptionOn: 'Sound rec on',
+      iconCaptionOff: 'Sound rec off',
       btnStart: 'Start recording',
       btnStop: 'Stop recording',
       btnSave: 'Save',
       btnToChat: 'Send to chat',
       warn1: 'All recorded data will disappear after the browser is closed',
       files: 'Recently recorded files',
-      getIntoRoom: 'To start recording enter this room with a plugin already added.',
       recNotify: '📢 Empecé a grabar audio.',
       recOffNotify: '⏹️ Se detuvo la grabación de audio.',
     },
@@ -67,7 +65,6 @@ xroom.plugin = {
       btnToChat: 'Skicka till chat',
       warn1: 'All recorded data will disappear after the browser is closed',
       files: 'Inspelade filer',
-      getIntoRoom: 'För att börja inspelningen, gå in i rummet med plugin:et redan lagt till.',
       recNotify: '📢 Jag har börjat en inspelning',
       recOffNotify: '⏹️ Inspelning avslutad.',
     },
@@ -81,7 +78,6 @@ xroom.plugin = {
       btnToChat: 'Отправить в чат',
       warn1: 'После закрытия браузера все данные исчезнут',
       files: 'Недавно записаные файлы',
-      getIntoRoom: 'Для записи зайдите в комнату с уже добавленным плагином.',
       recNotify: '📢 Я начал запись аудио.',
       recOffNotify: '⏹️ Запись аудио завершена.',
     },
@@ -147,10 +143,6 @@ xroom.plugin = {
     this.recordedBlobs = []
 
     let options = { mimeType: this.mimeType }
-
-    if (!stream) {
-      return xroom.mbox({text: xroom.i18n.t('getIntoRoom')})
-    }
 
     try {
       this.mediaRecorder = new MediaRecorder(stream, options)
