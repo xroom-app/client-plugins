@@ -5,17 +5,19 @@ import UI from './ui'
 const X_SIZE = 480
 
 async function connectCamera (that) {
-  const cameraVT = (await xroom.api('acquireMediaTracks'))[0]
+  return xroom.mutex('connectCamera', '.', async () => {
+    const cameraVT = (await xroom.api('acquireMediaTracks'))[0]
 
-  if (!cameraVT) {
-    return
-  }
+    if (!cameraVT) {
+      return
+    }
 
-  console.log('background plugin: connectCamera()')
+    console.log('background plugin: connectCamera()')
 
-  that.videoStream = new MediaStream([cameraVT])
-  that.camLoaded = true
-  that.prepare()
+    that.videoStream = new MediaStream([cameraVT])
+    that.camLoaded = true
+    await that.prepare()
+  })
 }
 
 function resetCamera (that) {
