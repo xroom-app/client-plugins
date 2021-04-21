@@ -110,9 +110,9 @@ xroom.plugin = {
         ui={xroom.ui}
         i18n={xroom.i18n}
         ref={(ref) => { this.ui = ref} }
-        startRec={() => {
+        startRec={async () => {
           this.ui.close()
-          this.preStartRecording()
+          return await this.preStartRecording()
         }}
         stopRec={() => this.stopRecording()}
       />
@@ -167,14 +167,16 @@ xroom.plugin = {
     this.recordedBlobs = []
 
     if (!this.audioCompositeStream || (!micOn && !screenOn && !camOn)) {
-      return xroom.mbox({text: xroom.i18n.t('warn2')})
+      await xroom.mbox({text: xroom.i18n.t('warn2')})
+
+      return false
     }
 
     try {
       this.mediaRecorder = new MediaRecorder(this.audioCompositeStream, { mimeType: this.mimeType })
     } catch (e) {
       console.error('MediaRecorder:', e)
-      return
+      return false
     }
 
     this.mediaRecorder.onstop = () => {
@@ -192,6 +194,8 @@ xroom.plugin = {
 
     this.countDown()
     xroom.api('sendMessage', {msg: xroom.i18n.t('recNotify'), from: 'self', to: 'all', pvt: false})
+
+    return true
   },
 
   startRecording () {
@@ -211,6 +215,8 @@ xroom.plugin = {
     this.isRecording = false
     xroom.api('renderControls')
     xroom.api('sendMessage', {msg: xroom.i18n.t('recOffNotify'), from: 'self', to: 'all', pvt: false})
+
+    return true
   },
 
   composite (videoTrackStream = null, audioTrackStreams = []) {

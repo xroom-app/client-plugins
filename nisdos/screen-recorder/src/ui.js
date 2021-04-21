@@ -83,9 +83,10 @@ class UI extends React.Component {
 
           <Button
             primary
-            onClick={() => {
-              this.setState({recOn: !recOn})
-              recOn ? stopRec() : startRec()
+            onClick={async () => {
+              if (recOn ? stopRec() : await startRec()) {
+                this.setState({recOn: !recOn})
+              }
             }}
           >
             { i18n.t(recOn ? 'btnStop' : 'btnStart') }
