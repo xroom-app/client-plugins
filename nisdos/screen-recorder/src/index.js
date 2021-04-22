@@ -211,7 +211,10 @@ xroom.plugin = {
   },
 
   stopRecording () {
-    this.mediaRecorder.stop()
+    if (this.mediaRecorder) {
+      this.mediaRecorder.stop()
+    }
+
     this.isRecording = false
     xroom.api('renderControls')
     xroom.api('sendMessage', {msg: xroom.i18n.t('recOffNotify'), from: 'self', to: 'all', pvt: false})
