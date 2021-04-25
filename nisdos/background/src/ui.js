@@ -24,6 +24,7 @@ export default class extends React.Component {
 
     return (
       <Dialog bgClose ref={ref => this.dialog = ref}>
+        <div style={styles.warning}>{ i18n.t('warning') }</div>
         <div style={styles.modes}>
           {
             [0, 1, 2, 3].map((el, i) =>
@@ -71,5 +72,9 @@ const styles = {
     fontWeight: '400',
     color: '#ccc',
     textAlign: 'center',
+  },
+  warning: {
+    textAlign: 'center',
+    marginBottom: '0.8rem',
   },
 }

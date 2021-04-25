@@ -78,13 +78,15 @@ xroom.plugin = {
       modeBlur: 'Blurred',
       modeColorPop: 'Color pop',
       modeImage: 'Image (demo)',
+      warning: 'This plugin uses experimental tech that can be unstable. If your video freezes, remove the plugin.',
     },
     ru: {
       iconCaption: 'Фон',
       modeNormal: 'Как есть',
-      modeBlur: 'Размытый',
-      modeColorPop: '"Color pop"',
+      modeBlur: 'Размытие',
+      modeColorPop: '«Color pop»',
       modeImage: 'Картинка (demo)',
+      warning: 'Плагин использует экспериментальную технологию и может быть нестабилен. Если видео «замёрзнет», просто удалите плагин.',
     },
   },
 
