@@ -1,13 +1,21 @@
 import 'regenerator-runtime/runtime'
 import * as React from 'preact'
+import Containers from './containers'
 
 xroom.plugin = {
+  visible: false,
+  containerId: null,
+
   async register () {
     this.addIcon()
   },
 
   unregister () {
     xroom.api('removeIcon')
+
+    if (this.containerId) {
+      xroom.api('removeContainer', this.containerId)
+    }
   },
 
   isSupported () {
@@ -17,7 +25,22 @@ xroom.plugin = {
   addIcon () {
     xroom.api('addIcon', {
       title: () => 'Manage containers',
-      onClick: () => this.uiRef.toggleShow(),
+      onClick: () => {
+        if (this.visible) {
+          xroom.api('removeContainer', this.containerId)
+          this.visible = false
+        } else {
+          this.containerId = xroom.api('addContainer', {
+            size: 1,
+            component: <Containers
+              ui={xroom.ui}
+              api={xroom.api}
+              i18n={xroom.i18n}
+            />,
+          })
+          this.visible = true
+        }
+      },
       svg: props =>
         <svg width={props.size || 25} height={props.size || 25} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path stroke={props.color} d="M16 10h11a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V13" stroke-width={1.5 * 32/25} stroke-linecap="round" stroke-linejoin="round"/>
