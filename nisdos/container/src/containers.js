@@ -4,7 +4,7 @@ import Container from './container'
 export default class extends React.Component {
   render () {
     const { amount } = this.props
-    const width = `calc(${100 / amount}% - ${amount === 1 ? 0 : 1} * var(--gap))`
+    const width = `calc(${100 / amount}% - ${amount === 1 ? 0 : 0.5} * var(--gap))`
     const objs = [<Container {...this.props} width={width} />]
 
     for (let i = 1; i < amount; i++) {

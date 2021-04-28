@@ -11,12 +11,13 @@ export default class extends React.Component {
   }
 
   render () {
-    const { ui, onAddContainers } = this.props
+    const { ui, onAddContainers, onRemoveContainers } = this.props
     const { Dialog } = ui
 
     return (
       <Dialog bgClose ref={ref => this.dialog = ref}>
         <div style={styles.modes}>
+          <div style={styles.mode} onClick={() => { onRemoveContainers(); this.toggleShow() }}>❌</div>
           <div style={styles.mode} onClick={() => { onAddContainers(1); this.toggleShow() }}>🗔</div>
           <div style={styles.mode} onClick={() => { onAddContainers(2); this.toggleShow() }}>🗔 🗔</div>
         </div>
