@@ -28,5 +28,6 @@ const styles = {
   },
   separator: {
     width: 'var(--gap)',
+    // cursor: 'col-resize',
   },
 }
