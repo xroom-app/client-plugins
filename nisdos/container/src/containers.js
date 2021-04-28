@@ -3,11 +3,18 @@ import Container from './container'
 
 export default class extends React.Component {
   render () {
+    const { amount } = this.props
+    const width = `calc(${100 / amount}% - ${amount === 1 ? 0 : 1} * var(--gap))`
+    const objs = [<Container {...this.props} width={width} />]
+
+    for (let i = 1; i < amount; i++) {
+      objs.push(<div style={styles.separator}/>)
+      objs.push(<Container {...this.props} width={width} />)
+    }
+
     return (
       <div style={styles.containers}>
-        <Container {...this.props} />
-        <div style={styles.separator}/>
-        <Container {...this.props} />
+        { objs }
       </div>
     )
   }
@@ -20,6 +27,6 @@ const styles = {
     display: 'flex',
   },
   separator: {
-    width: '10px',
+    width: 'var(--gap)',
   },
 }

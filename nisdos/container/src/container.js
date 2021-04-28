@@ -19,10 +19,10 @@ export default class extends React.Component {
 
   render () {
     const { url, urlInput } = this.state
-    const { ui, api } = this.props
+    const { ui, api, width } = this.props
 
     return (
-      <div style={styles.container}>
+      <div style={{...styles.container, width}}>
         <div style={styles.topBar}>
           <div style={styles.address}>
             <input
@@ -46,10 +46,9 @@ export default class extends React.Component {
 
 const styles = {
   container: {
-    width: '50%',
     height: '100%',
     background: '#f2f2f2',
-    borderRadius: '8px',
+    borderRadius: 'var(--box-r)',
   },
   topBar: {
     padding: '8px',

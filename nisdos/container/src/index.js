@@ -1,12 +1,14 @@
 import 'regenerator-runtime/runtime'
 import * as React from 'preact'
 import Containers from './containers'
+import UI from './ui'
 
 xroom.plugin = {
   visible: false,
   containerId: null,
 
   async register () {
+    this.addUi()
     this.addIcon()
   },
 
@@ -22,25 +24,47 @@ xroom.plugin = {
     return true
   },
 
+  addUi () {
+    xroom.api('addUI', {
+      component: <UI
+        ui={xroom.ui}
+        api={xroom.api}
+        mbox={xroom.mbox}
+        i18n={xroom.i18n}
+        ref={(ref) => { this.uiRef = ref} }
+        onAddContainers={amount => {
+          this.removeContainers()
+          this.addContainers(amount)
+        }}
+        onRemoveContainers={() => this.removeContainers()}
+      />
+    })
+  },
+
+  addContainers (amount) {
+    this.containerId = xroom.api('addContainer', {
+      size: 1,
+      component: <Containers
+        amount={amount}
+        ui={xroom.ui}
+        api={xroom.api}
+        i18n={xroom.i18n}
+      />,
+    })
+    this.visible = true
+  },
+
+  removeContainers () {
+    if (this.containerId) {
+      xroom.api('removeContainer', this.containerId)
+      this.visible = false
+    }
+  },
+
   addIcon () {
     xroom.api('addIcon', {
       title: () => 'Manage containers',
-      onClick: () => {
-        if (this.visible) {
-          xroom.api('removeContainer', this.containerId)
-          this.visible = false
-        } else {
-          this.containerId = xroom.api('addContainer', {
-            size: 1,
-            component: <Containers
-              ui={xroom.ui}
-              api={xroom.api}
-              i18n={xroom.i18n}
-            />,
-          })
-          this.visible = true
-        }
-      },
+      onClick: () => this.uiRef.toggleShow(),
       svg: props =>
         <svg width={props.size || 25} height={props.size || 25} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path stroke={props.color} d="M16 10h11a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V13" stroke-width={1.5 * 32/25} stroke-linecap="round" stroke-linejoin="round"/>
