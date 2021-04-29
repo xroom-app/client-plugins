@@ -39,7 +39,9 @@ xroom.plugin = {
   },
 
   isSupported () {
-    return true
+    return (
+      !window.matchMedia('(max-width: 480px)').matches
+    )
   },
 
   addUi () {
