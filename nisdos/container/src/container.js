@@ -16,7 +16,13 @@ export default class extends React.Component {
   }
 
   urlChange (ev) {
-    this.setState({urlInput: ev.target.value.trim()})
+    let urlInput = ev.target.value.trim()
+
+    if (!urlInput.startsWith('https://') && !urlInput.startsWith('http://')) {
+      urlInput = 'https://' + urlInput
+    }
+
+    this.setState({urlInput})
   }
 
   onKeyDown (ev) {
@@ -48,8 +54,8 @@ export default class extends React.Component {
   }
 
   render () {
+    const { width } = this.props
     const { url, urlInput } = this.state
-    const { ui, width } = this.props
 
     return (
       <div style={{...styles.container, width}}>
@@ -57,16 +63,23 @@ export default class extends React.Component {
           <div style={styles.address}>
             <input
               type="text"
+              placeholder="https://"
               style={styles.urlInput}
               onKeyDown={this.onKeyDown}
               onKeyUp={this.onKeyUp}
               onChange={this.urlChange}
             />
           </div>
-          <button onClick={() => this.setState({url: urlInput})}>
+          <button
+            style={styles.button}
+            onClick={() => this.setState({url: urlInput})}
+          >
             go
           </button>
-          <button onClick={this.onSync}>
+          <button
+            style={styles.button}
+            onClick={this.onSync}
+          >
             sync
           </button>
         </div>
@@ -95,6 +108,11 @@ const styles = {
   },
   urlInput: {
     width: '100%',
+    height: '1.5rem',
+  },
+  button: {
+    height: '1.5rem',
+    cursor: 'pointer',
   },
   iframe: {
     border: 0,
