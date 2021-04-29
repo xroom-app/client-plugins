@@ -10,11 +10,24 @@ export default class extends React.Component {
     })
 
     this.urlChange = this.urlChange.bind(this)
+    this.onKeyUp = this.onKeyUp.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
   }
 
   urlChange (ev) {
     this.setState({urlInput: ev.target.value.trim()})
+  }
+
+  onKeyDown (ev) {
     ev.stopPropagation()
+  }
+
+  onKeyUp (ev) {
+    ev.stopPropagation()
+
+    if (ev.code === 'Enter') {
+      this.setState({url: this.state.urlInput})
+    }
   }
 
   render () {
@@ -28,6 +41,8 @@ export default class extends React.Component {
             <input
               type="text"
               style={styles.urlInput}
+              onKeyDown={this.onKeyDown}
+              onKeyUp={this.onKeyUp}
               onChange={this.urlChange}
             />
           </div>
@@ -49,6 +64,7 @@ const styles = {
     height: '100%',
     background: '#f2f2f2',
     borderRadius: 'var(--box-r)',
+    overflow: 'hidden',
   },
   topBar: {
     padding: '8px',
@@ -63,6 +79,6 @@ const styles = {
   iframe: {
     border: 0,
     width: '100%',
-    height: 'calc(100% - 32px)',
+    height: 'calc(100% - 36px)',
   },
 }
