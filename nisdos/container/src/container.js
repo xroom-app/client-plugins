@@ -12,6 +12,7 @@ export default class extends React.Component {
     this.urlChange = this.urlChange.bind(this)
     this.onKeyUp = this.onKeyUp.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
+    this.onSync = this.onSync.bind(this)
   }
 
   urlChange (ev) {
@@ -30,9 +31,25 @@ export default class extends React.Component {
     }
   }
 
+  onSync () {
+    const { url } = this.state
+    const { id, internalSync } = this.props
+
+    internalSync({id, url})
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.url) {
+      this.setState({
+        url: nextProps.url,
+        urlInput: nextProps.url,
+      })
+    }
+  }
+
   render () {
     const { url, urlInput } = this.state
-    const { ui, api, width } = this.props
+    const { ui, width } = this.props
 
     return (
       <div style={{...styles.container, width}}>
@@ -48,6 +65,9 @@ export default class extends React.Component {
           </div>
           <button onClick={() => this.setState({url: urlInput})}>
             go
+          </button>
+          <button onClick={this.onSync}>
+            sync
           </button>
         </div>
         <iframe

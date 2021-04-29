@@ -3,9 +3,27 @@ import * as React from 'preact'
 import Containers from './containers'
 import UI from './ui'
 
+function onDataIn (data) {
+  const { pluginId, layout } = data
+
+  if (pluginId !== xroom.id) {
+    return
+  }
+
+  if (this.containersRef) {
+    this.containersRef.externalSync(layout)
+  } else {
+    this.addContainers(layout)
+  }
+}
+
 xroom.plugin = {
   visible: false,
   containerId: null,
+
+  events: {
+    'data/in': onDataIn,
+  },
 
   async register () {
     this.addUi()
@@ -29,26 +47,24 @@ xroom.plugin = {
       component: <UI
         ui={xroom.ui}
         api={xroom.api}
-        mbox={xroom.mbox}
-        i18n={xroom.i18n}
         ref={(ref) => { this.uiRef = ref} }
-        onAddContainers={amount => {
+        onAddContainers={layout => {
           this.removeContainers()
-          this.addContainers(amount)
+          this.addContainers(layout)
         }}
         onRemoveContainers={() => this.removeContainers()}
       />
     })
   },
 
-  addContainers (amount) {
+  addContainers (layout) {
     this.containerId = xroom.api('addContainer', {
       size: 1,
       component: <Containers
-        amount={amount}
+        ref={(ref) => { this.containersRef = ref} }
+        layout={layout}
         ui={xroom.ui}
         api={xroom.api}
-        i18n={xroom.i18n}
       />,
     })
     this.visible = true
