@@ -47,6 +47,7 @@ xroom.plugin = {
       component: <UI
         ui={xroom.ui}
         api={xroom.api}
+        mbox={xroom.mbox}
         ref={(ref) => { this.uiRef = ref} }
         onAddContainers={layout => {
           this.removeContainers()
