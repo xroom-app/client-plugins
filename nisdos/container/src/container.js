@@ -5,8 +5,8 @@ export default class extends React.Component {
     super(props)
 
     this.setState({
-      url: props.layout ? props.layout.filter(c => c.id === props.id)[0].url : '',
-      urlInput: '',
+      url: props.url ?? '',
+      urlInput: props.url ?? '',
     })
 
     this.urlChange = this.urlChange.bind(this)
