@@ -12,7 +12,7 @@ export default class extends React.Component {
   }
 
   invitePeers () {
-    this.props.api('suggestPlugin')
+    this.props.api('suggestPlugin', {force: true})
     this.props.mbox({text: 'Invitation sent out to your peers'})
   }
 
