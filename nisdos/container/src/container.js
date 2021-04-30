@@ -62,6 +62,7 @@ export default class extends React.Component {
         <div style={styles.topBar}>
           <div style={styles.address}>
             <input
+              value={urlInput}
               type="text"
               placeholder="https://"
               style={styles.urlInput}
