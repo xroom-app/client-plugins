@@ -42,7 +42,13 @@ export default class extends React.Component {
   }
 
   render () {
-    const { layout } = this.state
+    let { layout } = this.state
+
+    if (!Array.isArray(layout)) {
+      console.log('Somehow the layout is corrupted')
+
+      layout = []
+    }
 
     const objs = []
     const count = layout.length
