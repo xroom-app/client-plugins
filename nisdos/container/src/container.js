@@ -63,7 +63,7 @@ export default class extends React.Component {
           <div style={styles.address}>
             <input
               value={urlInput}
-              type="text"
+              type="url"
               placeholder="https://"
               style={styles.urlInput}
               onKeyDown={this.onKeyDown}
