@@ -1,4 +1,5 @@
 import * as React from 'preact'
+import placeholderHtml from'./iframePlaceholder'
 
 export default class extends React.Component {
   constructor (props) {
@@ -13,6 +14,7 @@ export default class extends React.Component {
     this.onKeyUp = this.onKeyUp.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
     this.onSync = this.onSync.bind(this)
+    this.frameRef = null
   }
 
   urlChange (ev) {
@@ -44,12 +46,22 @@ export default class extends React.Component {
     internalSync({id, url})
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     if (nextProps.url) {
       this.setState({
         url: nextProps.url,
         urlInput: nextProps.url,
       })
+    }
+  }
+
+  componentDidMount () {
+    if (this.frameRef && !this.state.url) {
+      const doc = this.frameRef.contentWindow.document
+
+      doc.open()
+      doc.write(placeholderHtml)
+      doc.close()
     }
   }
 
@@ -85,6 +97,7 @@ export default class extends React.Component {
           </button>
         </div>
         <iframe
+          ref={ref => this.frameRef = ref}
           src={url}
           style={styles.iframe}
         />

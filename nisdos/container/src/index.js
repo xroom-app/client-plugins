@@ -10,10 +10,16 @@ function onDataIn (data) {
     return
   }
 
-  if (this.containersRef) {
-    this.containersRef.externalSync(layout)
+  if (layout.length) {
+    if (this.containersRef) {
+      this.containersRef.externalSync(layout)
+    } else {
+      this.addContainers(layout)
+    }
   } else {
-    this.addContainers(layout)
+    if (this.containerId) {
+      xroom.api('removeContainer', this.containerId)
+    }
   }
 }
 
