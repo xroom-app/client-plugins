@@ -1,6 +1,20 @@
 import * as React from 'preact'
 import placeholderHtml from'./iframePlaceholder'
 
+function smartUrl (url) {
+  // 1. YouTube helper
+
+  const ytPrefix = 'https://www.youtube.com/watch?v='
+
+  if (url.startsWith(ytPrefix)) {
+    const ytId = url.split(ytPrefix)[1].split('&')[0]
+
+    return `https://www.youtube.com/embed/${ytId}`
+  }
+
+  return url
+}
+
 export default class extends React.Component {
   constructor (props) {
     super(props)
@@ -35,7 +49,7 @@ export default class extends React.Component {
     ev.stopPropagation()
 
     if (ev.code === 'Enter') {
-      this.setState({url: this.state.urlInput})
+      this.setState({url: smartUrl(this.state.urlInput)})
     }
   }
 
@@ -85,7 +99,7 @@ export default class extends React.Component {
           </div>
           <button
             style={styles.button}
-            onClick={() => this.setState({url: urlInput})}
+            onClick={() => this.setState({url: smartUrl(urlInput)})}
           >
             go
           </button>
