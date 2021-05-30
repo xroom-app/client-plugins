@@ -23,7 +23,7 @@ export default class extends React.Component {
     const { Dialog, brandColor } = ui
 
     return (
-      <Dialog bgClose ref={ref => this.dialog = ref}>
+      <Dialog bgClose ref={ref => this.dialog = ref} noClose>
         <div style={styles.warning}>{ i18n.t('warning') }</div>
         <div style={styles.modes}>
           {

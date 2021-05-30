@@ -212,7 +212,7 @@ class UI extends React.Component {
           playsInline
           ref={c => this.video = c}
           height="100"
-          style={{position: 'fixed', zIndex: -1}}
+          style={{position: 'fixed', zIndex: -1, visibility: 'hidden'}}
           muted
         />
         <div style={styles.firstRow}>

@@ -69,18 +69,18 @@ class UI extends React.Component {
     const { Button, Dialog } = ui
 
     return (
-      <Dialog bgClose ref={ref => this.dialog = ref} style={{minWidth: '10rem'}}>
+      <Dialog
+        bgClose
+        ref={ref => this.dialog = ref}
+        style={{minWidth: '10rem'}}
+        header={i18n.t('header')}
+        icon={
+          <svg width="25" height="25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.5 7.3v10.4M15.6 10.4v4.2M18.8 8.3v8.4M21.9 13.5v-2M9.4 4.2v16.6M6.3 9.4v6.2M3.1 13.5v-2" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        }
+      >
         <div style={styles.content}>
-          <div style={styles.header}>
-            <svg width="25" height="25" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path stroke="var(--box-1)" d="M12.5 7.3v10.4M15.6 10.4v4.2M18.8 8.3v8.4M21.9 13.5v-2M9.4 4.2v16.6M6.3 9.4v6.2M3.1 13.5v-2" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-            <span style={{margin: '0 auto 0 1rem'}}>{ i18n.t('header') }</span>
-            <svg style={{cursor: 'pointer'}} onClick={this.close} width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 21L4 4M21 4L4 21" stroke="var(--box-1)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
-
           <Button
             primary
             onClick={async () => {
@@ -140,15 +140,6 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'column',
-  },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
-    justifyContent: 'space-between',
-    marginBottom: '2.5rem',
-    fontSize: '1.25rem',
-    fontWeight: '500',
   },
   filesHeader: {
     width: '100%',
