@@ -1,6 +1,6 @@
 import * as React from 'preact'
 
-const modeNameCodes = ['batman']
+const modeNameCodes = ['theme-01', 'theme-02', 'theme-03']
 
 export default class extends React.Component {
   constructor (props) {
@@ -19,21 +19,19 @@ export default class extends React.Component {
 
   render () {
     const { selectedId } = this.state
-    const { ui, api } = this.props
+    const { ui, api, themes } = this.props
     const { Dialog, brandColor } = ui
 
     return (
       <Dialog bgClose ref={ref => this.dialog = ref}>
         <div style={styles.modes}>
           {
-            [0, 1, 2, 3].map((el, i) =>
+            [0, 1, 2].map((el, i) =>
               <div
                 key={i}
                 style={{...styles.mode, ...(selectedId === i ? {color: brandColor, borderColor: brandColor} : {})}}
-                onClick={async () => {
-                  // TODO: load theme data
-
-                  api('setTheme', {name: modeNameCodes[i], data: null})
+                onClick={() => {
+                  api('setTheme', {name: modeNameCodes[i], data: themes[i]})
                   this.setState({selectedId: i})
                 }}
               >
