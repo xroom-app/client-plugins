@@ -157,7 +157,12 @@ class UI extends React.Component {
             <option value="json">JSON</option>
           </select>
         </div>
-        <div id="nisdos-pp-editor" style={{height:'calc(100% - 46px)'}}/>
+        <div
+          id="nisdos-pp-editor"
+          style={{height:'calc(100% - 46px)'}}
+          onKeyDown={ev => ev.stopPropagation()}
+          onKeyUp={ev => ev.stopPropagation()}
+        />
       </div>
     )
   }
