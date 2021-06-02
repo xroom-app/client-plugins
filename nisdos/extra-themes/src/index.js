@@ -44,6 +44,8 @@ xroom.plugin = {
 
   unregister () {
     xroom.api('removeIcon')
+    localStorage.removeItem(xroom.id)
+    xroom.api('setTheme', {name: 'xroom-dark'})
   },
 
   isSupported () {

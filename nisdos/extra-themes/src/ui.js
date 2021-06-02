@@ -61,7 +61,7 @@ const styles = {
     display: 'flex',
     overflow: 'auto',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   mode: {
     display: 'flex',
