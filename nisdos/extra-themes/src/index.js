@@ -7,6 +7,9 @@ import th02 from './themes/02_mountain_01.json'
 import th03 from './themes/03_space_01.json'
 import th04 from './themes/04_batman_01.json'
 
+const themes = [th01, th02, th03, th04]
+const themeNames = ['01-star-wars-01', '02-mountain-01', '03-space-01', '04-batman-01']
+
 xroom.plugin = {
   uiRef: null,
 
@@ -17,6 +20,12 @@ xroom.plugin = {
   },
 
   async register () {
+    const selectedId = localStorage.getItem(xroom.id)
+
+    if (selectedId !== null) {
+      xroom.api('setTheme', {name: themeNames[selectedId], data: themes[selectedId]})
+    }
+
     xroom.api('addUI', {
       component: <UI
         pluginId={xroom.id}
@@ -25,7 +34,8 @@ xroom.plugin = {
         mbox={xroom.mbox}
         i18n={xroom.i18n}
         ref={(ref) => { this.uiRef = ref} }
-        themes={[th01, th02, th03, th04]}
+        themes={themes}
+        themeNames={themeNames}
       />
     })
 

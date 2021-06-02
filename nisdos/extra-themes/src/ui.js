@@ -1,10 +1,9 @@
 import * as React from 'preact/compat'
 
-let selectedId = 0
-const modeNameCodes = ['01-star-wars-01', '02-mountain-01', '03-space-01', '04-batman-01']
-
-export default React.forwardRef(({ ui, api, themes, pluginId }, ref) => {
+export default React.forwardRef(({ ui, api, themes, pluginId, themeNames }, ref) => {
   const { Dialog, Button } = ui
+
+  let selectedId = Number(localStorage.getItem(pluginId))
 
   return (
     <Dialog
@@ -29,8 +28,8 @@ export default React.forwardRef(({ ui, api, themes, pluginId }, ref) => {
               >
                 <img
                   style={styles.img}
-                  alt={modeNameCodes[i]}
-                  src={`/plugins/${pluginId}/themes/${modeNameCodes[i].replace(/-/g, '_')}.jpg`}
+                  alt={themeNames[i]}
+                  src={`/plugins/${pluginId}/themes/${themeNames[i].replace(/-/g, '_')}.jpg`}
                 />
               </div>
             )
@@ -40,7 +39,8 @@ export default React.forwardRef(({ ui, api, themes, pluginId }, ref) => {
         <Button
           primary
           onClick={() => {
-            api('setTheme', {name: modeNameCodes[selectedId], data: themes[selectedId]})
+            localStorage.setItem(pluginId, selectedId)
+            api('setTheme', {name: themeNames[selectedId], data: themes[selectedId]})
           }}
         >
           Use this theme
