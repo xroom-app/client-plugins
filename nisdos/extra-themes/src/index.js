@@ -19,6 +19,7 @@ xroom.plugin = {
   async register () {
     xroom.api('addUI', {
       component: <UI
+        pluginId={xroom.id}
         ui={xroom.ui}
         api={xroom.api}
         mbox={xroom.mbox}
@@ -42,7 +43,7 @@ xroom.plugin = {
   addIcon () {
     xroom.api('addIcon', {
       title: () => xroom.i18n.t('iconCaption'),
-      onClick: () => this.uiRef.toggleShow(),
+      onClick: () => this.uiRef.toggle(),
       svg: props =>
         <svg width={props.size || 25} height={props.size || 25} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path stroke={props.color} d="M9 4h17a1 1 0 011 1v13a1 1 0 01-1 1H6a1 1 0 01-1-1V8a4 4 0 014-4v0zM14 19l-1 7a3 3 0 006 0l-1-7M5 14h22M21 4v5" stroke-width={1.5 * 32/25} stroke-linecap="round" stroke-linejoin="round" />

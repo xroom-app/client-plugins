@@ -1,64 +1,54 @@
-import * as React from 'preact'
+import * as React from 'preact/compat'
 
+let selectedId = 0
 const modeNameCodes = ['01-star-wars-01', '02-mountain-01', '03-space-01', '04-batman-01']
 
-export default class extends React.Component {
-  constructor (props) {
-    super(props)
-    this.dialog = null
-    this.selectedtId = 0
-    this.toggleShow = this.toggleShow.bind(this)
-  }
+export default React.forwardRef(({ ui, api, themes, pluginId }, ref) => {
+  const { Dialog, Button } = ui
 
-  toggleShow () {
-    this.dialog && this.dialog.toggle()
-  }
-
-  render () {
-    const { ui, api, themes } = this.props
-    const { Dialog, Button } = ui
-
-    return (
-      <Dialog
-        bgClose
-        header="Other Themes"
-        ref={ref => this.dialog = ref}
-      >
-        <div style={styles.body}>
-          <div style={styles.modes}>
-            {
-              [0, 1, 2, 3].map((el, i) =>
-                <div
-                  key={i}
-                  style={{...styles.mode, borderColor: this.selectedId === i? 'var(--box-2)' : 'transparent'}}
-                  onClick={() => {
-                    this.selectedId = i
-                    this.forceUpdate()
-                  }}
-                >
-                  <img
-                    style={styles.img}
-                    alt={modeNameCodes[i]}
-                    src={`/plugins/nisdos/extra-themes/themes/${modeNameCodes[i].replace(/-/g, '_')}.jpg`}
-                  />
-                </div>
-              )
-            }
-          </div>
-          <br/>
-          <Button
-            primary
-            onClick={() => {
-              api('setTheme', {name: modeNameCodes[this.selectedId], data: themes[this.selectedId]})
-            }}
-          >
-            Use this theme
-          </Button>
+  return (
+    <Dialog
+      bgClose
+      ref={ref}
+      header="Other themes"
+    >
+      <div style={styles.body}>
+        <div style={styles.modes}>
+          {
+            [0, 1, 2, 3].map((el, i) =>
+              <div
+                key={i}
+                id={`${pluginId}-mode-${i}`}
+                className={`${pluginId}-mode`}
+                style={{...styles.mode, borderColor: selectedId === i? 'var(--box-2)' : 'transparent'}}
+                onClick={() => {
+                  selectedId = i
+                  Array.from(document.getElementsByClassName(`${pluginId}-mode`)).forEach(el => el.style.borderColor = 'transparent')
+                  document.getElementById(`${pluginId}-mode-${i}`).style.borderColor = 'var(--box-2)'
+                }}
+              >
+                <img
+                  style={styles.img}
+                  alt={modeNameCodes[i]}
+                  src={`/plugins/${pluginId}/themes/${modeNameCodes[i].replace(/-/g, '_')}.jpg`}
+                />
+              </div>
+            )
+          }
         </div>
-      </Dialog>
-    )
-  }
-}
+        <br/>
+        <Button
+          primary
+          onClick={() => {
+            api('setTheme', {name: modeNameCodes[selectedId], data: themes[selectedId]})
+          }}
+        >
+          Use this theme
+        </Button>
+      </div>
+    </Dialog>
+  )
+})
 
 const styles = {
   body: {
