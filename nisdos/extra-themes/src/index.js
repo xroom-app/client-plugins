@@ -5,6 +5,7 @@ import UI from './ui'
 import th01 from './themes/01_star_wars.json'
 import th02 from './themes/02_mountain_01.json'
 import th03 from './themes/03_space_01.json'
+import th04 from './themes/04_batman.json'
 
 xroom.plugin = {
   uiRef: null,
@@ -23,7 +24,7 @@ xroom.plugin = {
         mbox={xroom.mbox}
         i18n={xroom.i18n}
         ref={(ref) => { this.uiRef = ref} }
-        themes={[th01, th02, th03]}
+        themes={[th01, th02, th03, th04]}
       />
     })
 
