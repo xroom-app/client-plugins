@@ -10,11 +10,27 @@ export default class extends React.Component {
     }
 
     this.dialog = null
+    this.videoMounted = false
     this.toggleShow = this.toggleShow.bind(this)
   }
 
   toggleShow () {
-    this.dialog && this.dialog.toggle()
+    if (this.dialog) {
+      this.dialog.toggle()
+      this.reconnect()
+    }
+  }
+
+  reconnect () {
+    setTimeout(() => {
+      if (this.videoRef) {
+        this.videoRef.srcObject = new MediaStream(this.props.api('getStreams').local.getVideoTracks())
+      }
+    }, 500)
+  }
+
+  componentDidUpdate() {
+    this.reconnect()
   }
 
   render () {
@@ -23,25 +39,38 @@ export default class extends React.Component {
     const { Dialog, brandColor } = ui
 
     return (
-      <Dialog bgClose ref={ref => this.dialog = ref} noClose>
-        <div style={styles.warning}>{ i18n.t('warning') }</div>
-        <div style={styles.modes}>
-          {
-            [0, 1, 2, 3].map((el, i) =>
-              <div
-                key={i}
-                style={{...styles.mode, ...(selectedId === i ? {color: brandColor, borderColor: brandColor} : {})}}
-                onClick={() => {
-                  if (api('getFlags').camOn) {
-                    onModeSelect(i)
-                    this.setState({selectedId: i})
-                  }
-                }}
-              >
-                { i18n.t(modeNameCodes[i]) }
-              </div>
-            )
-          }
+      <Dialog
+        bgClose
+        ref={ref => this.dialog = ref}
+        header="Backgrounds"
+      >
+        <div style={styles.body}>
+          <div style={styles.preview} >
+            <video
+              style={styles.previewVideo}
+              autoPlay
+              playsInline
+              ref={ref => this.videoRef = ref}
+            />
+          </div>
+          <div style={styles.modes}>
+            {
+              [0, 1, 2, 3].map((el, i) =>
+                <div
+                  key={i}
+                  style={{...styles.mode, ...(selectedId === i ? {color: brandColor, borderColor: brandColor} : {})}}
+                  onClick={() => {
+                    if (api('getFlags').camOn) {
+                      onModeSelect(i)
+                      this.setState({selectedId: i})
+                    }
+                  }}
+                >
+                  { i18n.t(modeNameCodes[i]) }
+                </div>
+              )
+            }
+          </div>
         </div>
       </Dialog>
     )
@@ -49,19 +78,26 @@ export default class extends React.Component {
 }
 
 const styles = {
+  body: {
+    display: 'flex',
+  },
+  preview: {
+    borderRadius: 'var(--box-rh)',
+    overflow: 'hidden',
+  },
+  previewVideo: {
+    width: '304px',
+    height: '228px',
+    borderRadius: 'var(--box-rh)',
+  },
   modes: {
     display: 'flex',
-    overflow: 'auto',
-    flexWrap: 'wrap',
-    justifyContent: 'space-evenly',
+    flexDirection: 'column',
   },
   mode: {
     display: 'flex',
     margin: '1rem',
     cursor: 'pointer',
-    minWidth: '100px',
-    width: '100px',
-    height: '100px',
     borderRadius: '8px',
     borderWidth: '2px',
     borderStyle: 'solid',
@@ -72,9 +108,5 @@ const styles = {
     fontWeight: '400',
     color: '#ccc',
     textAlign: 'center',
-  },
-  warning: {
-    textAlign: 'center',
-    marginBottom: '0.8rem',
   },
 }
