@@ -1,15 +1,12 @@
 import * as React from 'preact'
 
-const modeNameCodes = ['theme-01', 'theme-02', 'theme-03']
+const modeNameCodes = ['01-star-wars-01', '02-mountain-01', '03-space-01', '04-batman-01']
 
 export default class extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {
-      selectedId: 0,
-    }
-
     this.dialog = null
+    this.selectedtId = 0
     this.toggleShow = this.toggleShow.bind(this)
   }
 
@@ -18,27 +15,45 @@ export default class extends React.Component {
   }
 
   render () {
-    const { selectedId } = this.state
     const { ui, api, themes } = this.props
-    const { Dialog, brandColor } = ui
+    const { Dialog, Button } = ui
 
     return (
-      <Dialog bgClose ref={ref => this.dialog = ref}>
-        <div style={styles.modes}>
-          {
-            [0, 1, 2].map((el, i) =>
-              <div
-                key={i}
-                style={{...styles.mode, ...(selectedId === i ? {color: brandColor, borderColor: brandColor} : {})}}
-                onClick={() => {
-                  api('setTheme', {name: modeNameCodes[i], data: themes[i]})
-                  this.setState({selectedId: i})
-                }}
-              >
-                { modeNameCodes[i] }
-              </div>
-            )
-          }
+      <Dialog
+        bgClose
+        header="Other Themes"
+        ref={ref => this.dialog = ref}
+      >
+        <div style={styles.body}>
+          <div style={styles.modes}>
+            {
+              [0, 1, 2, 3].map((el, i) =>
+                <div
+                  key={i}
+                  style={{...styles.mode, borderColor: this.selectedId === i? 'var(--box-2)' : 'transparent'}}
+                  onClick={() => {
+                    this.selectedId = i
+                    this.forceUpdate()
+                  }}
+                >
+                  <img
+                    style={styles.img}
+                    alt={modeNameCodes[i]}
+                    src={`/plugins/nisdos/extra-themes/themes/${modeNameCodes[i].replace(/-/g, '_')}.jpg`}
+                  />
+                </div>
+              )
+            }
+          </div>
+          <br/>
+          <Button
+            primary
+            onClick={() => {
+              api('setTheme', {name: modeNameCodes[this.selectedId], data: themes[this.selectedId]})
+            }}
+          >
+            Use this theme
+          </Button>
         </div>
       </Dialog>
     )
@@ -46,29 +61,30 @@ export default class extends React.Component {
 }
 
 const styles = {
+  body: {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    maxWidth: '512px',
+  },
   modes: {
     display: 'flex',
     overflow: 'auto',
     flexWrap: 'wrap',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
   },
   mode: {
     display: 'flex',
-    margin: '1rem',
     cursor: 'pointer',
-    minWidth: '100px',
-    width: '100px',
-    height: '100px',
     borderRadius: '8px',
     borderWidth: '2px',
     borderStyle: 'solid',
-    borderColor: '#ccc',
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: '18px',
-    fontWeight: '400',
-    color: '#ccc',
-    textAlign: 'center',
+    overflow: 'hidden',
+    margin: '0 6px 1rem',
+  },
+  img: {
+    width: '237px',
+    height: '72px',
   },
   warning: {
     textAlign: 'center',

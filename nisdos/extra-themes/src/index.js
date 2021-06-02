@@ -2,10 +2,10 @@ import 'regenerator-runtime/runtime'
 import * as React from 'preact'
 import UI from './ui'
 
-import th01 from './themes/01_star_wars.json'
+import th01 from './themes/01_star_wars_01.json'
 import th02 from './themes/02_mountain_01.json'
 import th03 from './themes/03_space_01.json'
-import th04 from './themes/04_batman.json'
+import th04 from './themes/04_batman_01.json'
 
 xroom.plugin = {
   uiRef: null,
