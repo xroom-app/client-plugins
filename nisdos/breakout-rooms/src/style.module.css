@@ -1,0 +1,176 @@
+.drop_over {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.flexRow {
+  display: flex;
+}
+
+.dialog {
+  min-width: 53rem;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.content {
+  /* min-width: 49rem; */
+  width: 50rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.title {
+  margin: 8px 0 24px;
+}
+
+.unassignedList {
+  max-width: 16.5rem;
+  margin-left: 3.5rem;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+}
+
+.unassignedListHeader {
+  padding: 20px 30px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.unassignedListContent {
+  padding: .5rem 0;
+}
+
+.unassignedListEmpty {
+  margin: .8rem 1.63rem;
+}
+
+.rooms {
+  flex-grow: 1;
+  /* padding-right: 3.5rem; */
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  /* width: 100%; */
+  margin: 0 3.5rem 1.5rem 0;
+}
+
+.controlsHeader {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.controlsNumber {
+  width: 7rem;
+}
+
+.controlsRow {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+
+.roomsList {
+  padding-right: 3.5rem;
+  max-height: 29rem;
+  overflow-y: auto;
+}
+
+.room {
+  margin-bottom: 20px;
+}
+
+.roomHeader {
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  padding: 10px 10px 10px 20px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.roomName {
+  font-size: 14px;
+  background: none;
+  border: none;
+  outline: none;
+  /* width: auto; */
+  color: var(--c1);
+}
+
+.room:hover .roomName {
+  text-decoration: underline;
+}
+
+.roomDelete {
+  width: 36px;
+  height: 36px;
+  margin: 0 10px 0 auto;
+  padding: 6px;
+}
+
+.room:hover .roomDelete {
+  stroke: #BBBBBB;
+}
+
+.room:hover .roomDelete:hover {
+  stroke: #FFFFFF;
+}
+
+.roomCount {
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+.peerList {
+  /* height: 50px;
+  background-color: rgba(0, 0, 0, 0.25);
+  border: 1px solid #fff; */
+  border: none;
+  padding: 0 0.8rem;
+  margin: 0;
+  display: grid;
+
+  /* border-radius: 4px; */
+  /* margin-bottom: 16px; */
+  /* min-height: 33px; */
+  /* user-select: none; */
+}
+
+.peerRow {
+  padding: 0.8rem;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.peerRow:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.peerIcon {
+  width: 1.63rem !important;
+  height: 1.63rem !important;
+  position: inherit !important;
+  font-size: 14px !important;
+  flex-shrink: 0;
+}
+
+.peerName {
+  font-size: 14px;
+  margin-left: 0.6rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

@@ -1,0 +1,19 @@
+{
+  "name": "breakout-rooms",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack --mode production"
+  },
+  "dependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-react": "^7.13.13",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^5.2.6",
+    "preact": "^10.5.13",
+    "webpack": "^5.37.1",
+    "webpack-cli": "^4.7.0"
+  }
+}
