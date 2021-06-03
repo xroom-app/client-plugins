@@ -98,8 +98,8 @@ xroom.plugin = {
       />
     })
 
-    await xroom.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.1' })
-    await xroom.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.1' })
+    await xroom.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.6' })
+    await xroom.api('appendScript', { src: 'https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.2' })
 
     tf.enableProdMode()
     await tf.ready()
