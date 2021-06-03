@@ -10,6 +10,7 @@ export default class extends React.Component {
     }
 
     this.dialog = null
+    this.videoRef = null
     this.videoMounted = false
     this.toggleShow = this.toggleShow.bind(this)
   }
@@ -25,6 +26,8 @@ export default class extends React.Component {
     setTimeout(() => {
       if (this.videoRef) {
         this.videoRef.srcObject = new MediaStream(this.props.api('getStreams').local.getVideoTracks())
+      } else {
+        this.setState({random: Math.random()})
       }
     }, 100)
   }
@@ -36,7 +39,7 @@ export default class extends React.Component {
   render () {
     const { selectedId } = this.state
     const { onModeSelect, i18n, ui, api } = this.props
-    const { Dialog, brandColor } = ui
+    const { Dialog } = ui
 
     return (
       <Dialog
