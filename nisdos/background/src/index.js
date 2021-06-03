@@ -160,15 +160,28 @@ xroom.plugin = {
     }
 
     if (mode === 3) {
-      this.bgPixels = await new Promise(resolve => {
-        const im = new Image()
-        im.src = '/plugins/nisdos/background/bg-01.jpg'
-        im.onload = () => {
-          this.ctx.drawImage(im, 0, 0, X_SIZE, X_SIZE * this.aspectRatio)
-          resolve(this.ctx.getImageData(0, 0, X_SIZE, X_SIZE * this.aspectRatio)?.data)
+      const input = document.createElement('input')
+
+      input.type = 'file'
+      input.click()
+
+      input.onchange = (ev) => {
+        const fr = new FileReader()
+
+        fr.onload = async () => {
+          this.bgPixels = await new Promise(resolve => {
+            const im = new Image()
+
+            im.src = fr.result /* '/plugins/nisdos/background/bg-01.jpg' */
+            im.onload = () => {
+              this.ctx.drawImage(im, 0, 0, X_SIZE, X_SIZE * this.aspectRatio)
+              resolve(this.ctx.getImageData(0, 0, X_SIZE, X_SIZE * this.aspectRatio)?.data)
+            }
+            im.onerror = () => resolve(null)
+          })
         }
-        im.onerror = () => resolve(null)
-      })
+        fr.readAsDataURL(ev.target.files[0])
+      }
     }
 
     if (mode > 0) {
