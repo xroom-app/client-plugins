@@ -31,18 +31,9 @@ function resetCamera (that) {
 }
 
 async function onStreamChanged (external) {
-/*  if (external) {
-    return
+  if (external && this.uiRef) {
+    this.uiRef.reconnect()
   }
-
-  await new Promise(resolve => setTimeout(resolve, 50))
-
-  const { camOn } = xroom.api('getFlags')
-
-  if (this.paused && camOn && this.tfLoaded) {
-    // simply reconnect the camera
-    connectCamera(this)
-  } */
 }
 
 async function onFlagsChange ({ peerId, mf }) {
@@ -74,18 +65,18 @@ xroom.plugin = {
   translations: {
     en: {
       iconCaption: 'Background',
-      modeNormal: 'As is',
+      modeNormal: 'No effects',
       modeBlur: 'Blurred',
       modeColorPop: 'Color pop',
-      modeImage: 'Image (demo)',
+      modeImage: 'Upload image',
       warning: 'This plugin uses experimental tech that can be unstable. If your video freezes, remove the plugin.',
     },
     ru: {
       iconCaption: 'Фон',
-      modeNormal: 'Как есть',
+      modeNormal: 'Без эффекта',
       modeBlur: 'Размытие',
       modeColorPop: '«Color pop»',
-      modeImage: 'Картинка (demo)',
+      modeImage: 'Картинка в фоне',
       warning: 'Плагин использует экспериментальную технологию и может быть нестабилен. Если видео «замёрзнет», просто удалите плагин.',
     },
   },

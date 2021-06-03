@@ -26,7 +26,7 @@ export default class extends React.Component {
       if (this.videoRef) {
         this.videoRef.srcObject = new MediaStream(this.props.api('getStreams').local.getVideoTracks())
       }
-    }, 500)
+    }, 100)
   }
 
   componentDidUpdate() {
@@ -58,7 +58,7 @@ export default class extends React.Component {
               [0, 1, 2, 3].map((el, i) =>
                 <div
                   key={i}
-                  style={{...styles.mode, ...(selectedId === i ? {color: brandColor, borderColor: brandColor} : {})}}
+                  style={{...styles.mode, color: selectedId === i ? 'var(--box-2)' : 'var(--box-1)'}}
                   onClick={() => {
                     if (api('getFlags').camOn) {
                       onModeSelect(i)
@@ -86,9 +86,10 @@ const styles = {
     overflow: 'hidden',
   },
   previewVideo: {
-    width: '304px',
-    height: '228px',
+    width: '298px',
+    height: '224px',
     borderRadius: 'var(--box-rh)',
+    transform: 'rotateY(180deg)',
   },
   modes: {
     display: 'flex',
@@ -96,17 +97,16 @@ const styles = {
   },
   mode: {
     display: 'flex',
-    margin: '1rem',
+    margin: '0 0 8px 10px',
     cursor: 'pointer',
-    borderRadius: '8px',
-    borderWidth: '2px',
-    borderStyle: 'solid',
-    borderColor: '#ccc',
     justifyContent: 'center',
     alignItems: 'center',
-    fontSize: '18px',
+    fontSize: '16px',
     fontWeight: '400',
-    color: '#ccc',
     textAlign: 'center',
+    background: 'var(--box-0d)',
+    width: '170px',
+    height: '50px',
+    borderRadius: 'var(--bt-r)',
   },
 }
