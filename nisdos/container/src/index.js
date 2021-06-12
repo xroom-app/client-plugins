@@ -10,7 +10,7 @@ function onDataIn (data) {
     return
   }
 
-  if (layout.length) {
+  if (layout && layout.length) {
     if (this.containersRef) {
       this.containersRef.externalSync(layout)
     } else {
