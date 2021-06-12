@@ -49,6 +49,7 @@ export default class extends React.Component {
       >
         <div style={styles.body}>
           <div style={styles.preview} >
+            <div style={styles.poster}>No video</div>
             <video
               style={styles.previewVideo}
               autoPlay
@@ -87,6 +88,17 @@ const styles = {
   preview: {
     borderRadius: 'var(--box-rh)',
     overflow: 'hidden',
+  },
+  poster: {
+    width: '298px',
+    height: '224px',
+    borderRadius: 'var(--box-rh)',
+    position: 'absolute',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: '1.5rem',
+    letterSpacing: '3px',
   },
   previewVideo: {
     width: '298px',
