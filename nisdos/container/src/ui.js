@@ -1,53 +1,81 @@
 import * as React from 'preact'
+import Pictogram from './pictogram'
 
 export default class extends React.Component {
   constructor (props) {
     super(props)
     this.toggleShow = this.toggleShow.bind(this)
-    this.invitePeers = this.invitePeers.bind(this)
-    this.closeRemotely = this.closeRemotely.bind(this)
+    this.start = this.start.bind(this)
+    this.stop = this.stop.bind(this)
+    this.setState({
+      selected: 1,
+    })
   }
 
   toggleShow () {
     this.dialog && this.dialog.toggle()
   }
 
-  invitePeers () {
-    this.props.api('suggestPlugin', {force: true})
-    this.props.mbox({text: 'Invitation sent out to your peers'})
+  start () {
+    const { selected } = this.state
+    const { onAddContainers, api, mbox } = this.props
+
+    if (selected === 1) {
+      onAddContainers([{id: 0}])
+    }
+    if (selected === 2) {
+      onAddContainers([{id: 0}, {id: 1}])
+    }
+
+    this.toggleShow()
+
+    api('suggestPlugin', {force: true})
+    mbox({text: 'Invitation sent out to your peers'})
   }
 
-  closeRemotely () {
-    this.props.api('sendData', {
+  stop () {
+    const { api, onRemoveContainers } = this.props
+
+    onRemoveContainers()
+    this.toggleShow()
+    api('sendData', {
       data: { layout: [] },
     })
   }
 
   render () {
-    const { ui, onAddContainers, onRemoveContainers } = this.props
+    const { ui } = this.props
     const { Dialog, Button } = ui
+    const { selected } = this.state
 
     return (
-      <Dialog bgClose ref={ref => this.dialog = ref}>
-        <div style={styles.header}>Amount of visible containers</div>
-        <div style={styles.modes}>
-          <div style={styles.mode} onClick={() => { onRemoveContainers(); this.toggleShow() }}>0</div>
-          <div style={styles.mode} onClick={() => { onAddContainers([{id: 0}]); this.toggleShow() }}>1</div>
-          <div style={styles.mode} onClick={() => { onAddContainers([{id: 0}, {id: 1}]); this.toggleShow() }}>2</div>
+      <Dialog
+        bgClose
+        header="Configure containers"
+        ref={ref => this.dialog = ref}
+      >
+        <div style={styles.mode(selected === 1)} onClick={() => { this.setState({selected: 1}) }}>
+          <div style={styles.modeName}>One</div>
+          <Pictogram size="96" />
+        </div>
+        <div style={styles.mode(selected === 2)} onClick={() => { this.setState({selected: 2}) }}>
+          <div style={styles.modeName}>Two</div>
+          <Pictogram size="96" />
+          <Pictogram size="96" style={{marginLeft: '1rem'}} />
         </div>
         <div style={styles.buttons}>
           <Button
             primary
-            onClick={this.invitePeers}
+            onClick={this.start}
           >
-            Open for peers
+            Start
           </Button>
           &nbsp; &nbsp;
           <Button
             secondary
-            onClick={this.closeRemotely}
+            onClick={this.stop}
           >
-            Close for peers
+            Stop
           </Button>
         </div>
       </Dialog>
@@ -61,24 +89,25 @@ const styles = {
     textAlign: 'center',
     marginBottom: '0.5rem',
   },
-  modes: {
+  mode: (isSelected) => ({
+    background: 'var(--box-0d)',
+    color: 'var(--box-1)',
     display: 'flex',
-  },
-  mode: {
-    border: '1px solid var(--box-1)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '8rem',
-    height: '5rem',
-    margin: '1rem',
-    fontSize: '2rem',
-    borderRadius: 'var(--box-r)',
+    border: '1px solid transparent',
+    padding: '1rem',
+    width: '22rem',
+    borderRadius: 'var(--box-rh)',
+    marginBottom: '1rem',
     cursor: 'pointer',
+    borderColor: isSelected ? 'var(--box-2)' : 'transparent',
+  }),
+  modeName: {
+    margin: '0 auto 0 0',
+    fontSize: '1.1rem',
   },
   buttons: {
     display: 'flex',
     justifyContent: 'center',
-    marginTop: '1rem',
+    marginTop: '2rem',
   },
 }
